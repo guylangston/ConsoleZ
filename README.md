@@ -9,8 +9,8 @@ Would it not be great if the console and html versions share the same interface 
 - Html Renders to a virtual console (thread-safe) and renders HTML Markdown
 
 Interfaces:
- - ISimpleTextWriter ( Write + WriteLine )
- - IVirtualConsole : ISimpelTextWriter
+ - ITextWriterBasic ( Write + WriteLine )
+ - IVirtualConsole : ITextWriterBasic
     - Token
     - Title
     - Width
@@ -18,6 +18,7 @@ Interfaces:
     
 Features:
 - Markdown is the common format (Rendering to Console or HTML)
+- ANSI escaping (+ HTML mapping)
 - Threadsafe for the web (many IVirtualConsoles at once)
 - Easy inline colours "Hello ^red^World^default^" or string.Format("Hello {0}World{1}", Color.Red, Color.Default)
 
@@ -27,3 +28,4 @@ Features:
 - https://meta.stackexchange.com/questions/36833/markdown-console-application
 - https://github.com/kneufeld/consolemd
 - https://stackoverflow.com/questions/23904274/is-there-a-way-to-get-colored-text-in-github-flavored-markdown/41043795
+- ANSI escape chars: http://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html
