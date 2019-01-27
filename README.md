@@ -26,6 +26,7 @@ Features:
 Stretch:
 - Wolfram-style cell input/output consoles
 - Standard ASP.NET core console terminal (with possible SignalR support)
+- Very Fast console update/FPS see: https://github.com/OneLoneCoder/videos/blob/master/olcConsoleGameEngine.h
 
 
 ## Research / Related projects
