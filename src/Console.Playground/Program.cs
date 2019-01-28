@@ -24,7 +24,7 @@ namespace Console.Playground
 
 
             
-            Thread.Sleep(1000);
+            
 
             cons.UpdateLine(t, "MyWorld");
 
@@ -34,15 +34,24 @@ namespace Console.Playground
             var a = cons.WriteLine($"A");
             var b = cons.WriteLine($"B");
             cons.WriteLine($"End Line");
-            cons.WriteLine($"End Line");
+            cons.WriteLine($"");
+
+            //https://en.wikipedia.org/wiki/Box-drawing_character
+            cons.WriteLine($"Sample List:");
+            cons.WriteLine($"├ List items 1");
+            cons.WriteLine($"├ List items 2");
+            cons.WriteLine($"└ List items 3");
+
+
+            
 
             Task.Run(() =>
             {
-                var p = 40;
+                var p = 432;
                 for (int i = 0; i < p; i++)
                 {
-                    cons.UpdateLine(a, $"Percentage: {i * 100 / p:0.00}%");
-                    Thread.Sleep(100);
+                    cons.UpdateLine(a, $"Percentage: {i * 100 / p}%");
+                    Thread.Sleep(300);
                 }
             });
             Task.Run(() =>
@@ -50,11 +59,16 @@ namespace Console.Playground
                 var p = 140;
                 for (int i = 0; i < p; i++)
                 {
-                    cons.UpdateLine(b, $"Percentage: {i * 100 / p:0.00}%");
+                    cons.UpdateLine(b, $"Percentage: {i * 100 / p}%");
                     Thread.Sleep(200);
                 }
             });
 
+            cons.WriteLine($"End Line");
+            Thread.Sleep(1000);
+            cons.WriteLine($"End Line");
+            Thread.Sleep(1000);
+            cons.WriteLine($"End Line");
 
             System.Console.ReadLine();
         }
