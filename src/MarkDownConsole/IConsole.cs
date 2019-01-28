@@ -77,6 +77,14 @@ namespace MarkDownConsole
         }
     }
 
+    /// <summary>
+    /// ANSI Terminal Escape Codes
+    /// http://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html
+    ///
+    /// Enable in Win10
+    /// https://www.jerriepelser.com/blog/using-ansi-color-codes-in-net-console-apps/
+    /// 
+    /// </summary>
     public class Console2 : ConsoleBase
     {
 
@@ -98,29 +106,29 @@ namespace MarkDownConsole
 
         public Console2()
         {
+           
+
+            
+        }
+
+        public void EnableANSI()
+        {
             var iStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
             if (!GetConsoleMode(iStdOut, out uint outConsoleMode))
             {
-                Console.WriteLine("failed to get output console mode");
-                Console.ReadKey();
-                return;
+                throw new Exception("failed to get output console mode");
             }
 
             outConsoleMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
             if (!SetConsoleMode(iStdOut, outConsoleMode))
             {
-                Console.WriteLine($"failed to set output console mode, error code: {GetLastError()}");
-                Console.ReadKey();
-                return;
+                throw new Exception($"failed to set output console mode, error code: {GetLastError()}");
             }           
-
-            
         }
 
         protected override  int AddLine(string s)
         {
             var i = base.AddLine(s);
-
             Console.WriteLine(lines[i]);
             return i;
         }

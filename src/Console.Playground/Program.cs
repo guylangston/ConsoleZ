@@ -11,8 +11,10 @@ namespace Console.Playground
         {
 
             
-            // http://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html
+            
             var cons = new Console2();
+            cons.EnableANSI();
+
             cons.WriteLine($"Well, {1234}...");
             var t = cons.WriteLine($"Hello");
             cons.WriteLine($"World!");
