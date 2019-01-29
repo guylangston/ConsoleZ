@@ -1,149 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 namespace MarkDownConsole
 {
     public interface ITextWriter
     {
-        //int WriteLine(string s);        // We don't use Write
-        //int WriteLine(For);
+        int WriteLine(string s);        // We don't use Write, rather update the same line
+        int WriteFormatted(FormattableString formatted);
     }
 
     public interface IConsole : ITextWriter
     {
         string Handle { get; }
+
         int Width { get; }
         int Height { get; }
-        int StartLine { get;  }
-        int LastLine { get; }
+        int DisplayStart { get;  }
+        int DisplayEnd { get; }
 
-        void UpdateLine(int line, string format, params object[] args);
-    }
-
-    public abstract class ConsoleBase : IConsole, IFormatProvider, ICustomFormatter
-    {
-        protected List<string> lines = new List<string>();
-
-        public int WriteLine(FormattableString fm)
-        {
-            var s = fm.ToString(this);
-            return WriteLine(s);
-        }
-
-
-        public int WriteLine(string s)
-        {
-            lock (this)
-            {
-
-                return AddLine(s);
-            }
-        }
-
-
-        protected virtual int AddLine(string s)
-        {
-            lines.Add(s);
-            return lines.Count - 1;
-        }
-
-   
-
-        public string Handle { get; private set; }
-        public int Width { get; private set; }
-        public int Height { get; private set;}
-        public int StartLine { get; private set; }
-        public int LastLine { get; private set; }
-
-        public virtual void UpdateLine(int line, string format, params object[] args)
-        {
-            lock (this)
-            {
-                EditLine(line, format, args);
-            }
-        }
-
-        protected virtual void EditLine(int line, string format, object[] args)
-        {
-            lines[line - StartLine] = string.Format(this, format, args);
-        }
-
-        public object GetFormat(Type formatType) => this;
-
-        string ICustomFormatter.Format(string format, object arg, IFormatProvider formatProvider)
-        {
-            return $"[{arg}]";
-        }
-    }
-
-    /// <summary>
-    /// ANSI Terminal Escape Codes
-    /// http://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html
-    ///
-    /// Enable in Win10
-    /// https://www.jerriepelser.com/blog/using-ansi-color-codes-in-net-console-apps/
-    /// 
-    /// </summary>
-    public class Console2 : ConsoleBase
-    {
-
-        private const int STD_OUTPUT_HANDLE = -11;
-        private const uint ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004;
-        private const uint DISABLE_NEWLINE_AUTO_RETURN = 0x0008;
-
-        [DllImport("kernel32.dll")]
-        private static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
-
-        [DllImport("kernel32.dll")]
-        private static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern IntPtr GetStdHandle(int nStdHandle);
-
-        [DllImport("kernel32.dll")]
-        public static extern uint GetLastError();
-
-        public Console2()
-        {
-           
-
-            
-        }
-
-        public void EnableANSI()
-        {
-            var iStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-            if (!GetConsoleMode(iStdOut, out uint outConsoleMode))
-            {
-                throw new Exception("failed to get output console mode");
-            }
-
-            outConsoleMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
-            if (!SetConsoleMode(iStdOut, outConsoleMode))
-            {
-                throw new Exception($"failed to set output console mode, error code: {GetLastError()}");
-            }           
-        }
-
-        protected override  int AddLine(string s)
-        {
-            var i = base.AddLine(s);
-            Console.WriteLine(lines[i]);
-            return i;
-        }
-
-        protected override void EditLine(int line, string format, params object[] args)
-        {
-            base.EditLine(line, format, args);
-
-            var x = Console.CursorTop;
-            Console.CursorTop = line - StartLine;
-            Console.CursorLeft = 0;
-            Console.Write(lines[line].PadRight(Console.WindowWidth-1));
-            Console.CursorTop = x;
-            Console.CursorLeft = 0;
-        }
-
+        void UpdateLine(int line, string txt);
+        void UpdateFormatted(int line, FormattableString formatted);
     }
 }
