@@ -3,28 +3,29 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Xml.Serialization;
 
 namespace Console.Playground
 {
-    internal class Windows10Console
+ 
+    public static class DirectConsole
     {
-        private static ConsoleInterop.CHAR_INFO[] m_bufScreen;
-
-        // https://pinvoke.net/search.aspx?search=FF_DONTCARE&namespace=[All]
-        private const byte FF_DONTCARE = (0 << 4);
-        private const ushort FW_NORMAL = 400;
-
         // https://github.com/dotnet/corefx/tree/master/src/System.Console
         // https://github.com/dotnet/corefx/blob/master/src/System.Console/src/System/ConsolePal.Windows.cs
-        internal static void Plaground()
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="screenWidth"></param>
+        /// <param name="screenHeight"></param>
+        /// <param name="fontWidth"></param>
+        /// <param name="fontHeight"></param>
+        public static void Setup(int screenWidth, int screenHeight, int fontWidth, int fontHeight, string font)
         {
-            var m_nScreenWidth = 80;
-            var m_nScreenHeight = 30;
-
             //var m_hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-            var m_hConsole = OutputHandle;
+            m_hConsole = ConsoleStdOutputHandle;
 
-            ConsoleInterop.SMALL_RECT m_rectWindow =  new ConsoleInterop.SMALL_RECT() { Left = 0, Top=0, Right = 1, Bottom = 1 };
+            m_rectWindow = new ConsoleInterop.SMALL_RECT() { Left = 0, Top = 0, Right = 1, Bottom = 1 };
             ConsoleInterop.ConsoleFunctions.SetConsoleWindowInfo(m_hConsole, true, ref m_rectWindow);
 
 
@@ -32,12 +33,12 @@ namespace Console.Playground
             //COORD coord = { (short)m_nScreenWidth, (short)m_nScreenHeight };
             //if (!SetConsoleScreenBufferSize(m_hConsole, coord))
             //    Error(L"SetConsoleScreenBufferSize");
-            var coord = new ConsoleInterop.COORD()
+            screenSize = new ConsoleInterop.COORD()
             {
-                X = (short) m_nScreenWidth,
-                Y = (short) m_nScreenHeight
+                X = (short)screenWidth,
+                Y = (short)screenHeight
             };
-            if (!ConsoleInterop.ConsoleFunctions.SetConsoleScreenBufferSize(m_hConsole, coord))
+            if (!ConsoleInterop.ConsoleFunctions.SetConsoleScreenBufferSize(m_hConsole, screenSize))
             {
                 throw new Exception("SetConsoleScreenBufferSize");
             }
@@ -66,11 +67,10 @@ namespace Console.Playground
             */
             if (true)
             {
-                var fontw = 16;
-                var fonth = 16;
+                
 
                 int TMPF_TRUETYPE = 4;
-                var font = "Consolas";
+                
 
                 // https://social.msdn.microsoft.com/Forums/vstudio/en-US/c276b9ae-dc4c-484a-9a59-1ee66cf0f1cc/c-changing-console-font-programmatically?forum=csharpgeneral
                 unsafe
@@ -80,8 +80,8 @@ namespace Console.Playground
                         nFont = 0,
                         dwFontSize = new ConsoleInterop.COORD()
                         {
-                            X = (short)fontw,
-                            Y = (short)fonth
+                            X = (short)fontWidth,
+                            Y = (short)fontHeight
                         },
                         FontFamily = TMPF_TRUETYPE, //FF_DONTCARE,
                         FontWeight = FW_NORMAL,
@@ -98,56 +98,71 @@ namespace Console.Playground
                     }
                 }
             }
-            
+
             ConsoleInterop.CONSOLE_SCREEN_BUFFER_INFO csbi = new ConsoleInterop.CONSOLE_SCREEN_BUFFER_INFO();
             if (!ConsoleInterop.ConsoleFunctions.GetConsoleScreenBufferInfo(m_hConsole, out csbi))
             {
                 throw new Exception("GetConsoleScreenBufferInfo");
             }
-                
-            if (m_nScreenHeight > csbi.dwMaximumWindowSize.Y) throw new Exception("Screen Height / Font Height Too Big");
-            if (m_nScreenWidth > csbi.dwMaximumWindowSize.X) throw new Exception("Screen Width / Font Width Too Big");
 
-            
+            if (screenHeight > csbi.dwMaximumWindowSize.Y) throw new Exception("Screen Height / Font Height Too Big");
+            if (screenWidth > csbi.dwMaximumWindowSize.X) throw new Exception("Screen Width / Font Width Too Big");
+
+
             // Set Physical Console Window Size
             m_rectWindow = new ConsoleInterop.SMALL_RECT()
             {
-                Top =  0,
+                Top = 0,
                 Left = 0,
-                Right = (short)(m_nScreenWidth - 1),
-                Bottom = (short)(m_nScreenHeight - 1)
+                Right = (short)(screenWidth - 1),
+                Bottom = (short)(screenHeight - 1)
             };
             if (!ConsoleInterop.ConsoleFunctions.SetConsoleWindowInfo(m_hConsole, true, ref m_rectWindow))
             {
                 throw new Exception("SetConsoleWindowInfo");
             }
-                
+
 
             // Allocate memory for screen buffer
-            m_bufScreen = new ConsoleInterop.CHAR_INFO[m_nScreenWidth*m_nScreenHeight];
+            m_bufScreen = new ConsoleInterop.CHAR_INFO[screenWidth * screenHeight];
 
-            for (int i = 0; i < 2000; i++)
-            {
-                char x = (char) ((int) 'A' + (i % 26));
-                Array.Fill(m_bufScreen, new ConsoleInterop.CHAR_INFO(x, (byte)(i / 10)));
-                
-                UpdateBuffer(m_hConsole, m_nScreenWidth, m_nScreenHeight, m_rectWindow);
-
-                Thread.Sleep(100);
-            }
-
-
+           
         }
 
-        private static void UpdateBuffer(IntPtr m_hConsole, int m_nScreenWidth, int m_nScreenHeight, ConsoleInterop.SMALL_RECT m_rectWindow)
+        public static void Test(int frameCount = 2000, int frameDelayMs = 100)
+        {
+            for (int i = 0; i < frameCount; i++)
+            {
+                char x = (char)((int)'A' + (i % 26));
+                Array.Fill(m_bufScreen, new ConsoleInterop.CHAR_INFO(x, (byte)(i / 10)));
+
+                UpdateBuffer();
+
+                Thread.Sleep(frameDelayMs);
+            }
+        }
+
+
+        // https://pinvoke.net/default.aspx/kernel32/GetStdHandle.html
+        const int STD_OUTPUT_HANDLE = -11;
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern IntPtr GetStdHandle(int nStdHandle);
+        private static IntPtr ConsoleStdOutputHandle => GetStdHandle(STD_OUTPUT_HANDLE);
+
+        private static ConsoleInterop.CHAR_INFO[] m_bufScreen;
+        private static IntPtr m_hConsole;
+        private static ConsoleInterop.SMALL_RECT m_rectWindow;
+        private static ConsoleInterop.COORD screenSize;
+
+        // https://pinvoke.net/search.aspx?search=FF_DONTCARE&namespace=[All]
+        private const byte FF_DONTCARE = (0 << 4);
+        private const ushort FW_NORMAL = 400;
+
+        private static void UpdateBuffer()
         {
             if (!ConsoleInterop.ConsoleFunctions.WriteConsoleOutput(m_hConsole,
                 m_bufScreen,
-                new ConsoleInterop.COORD()
-                {
-                    X = (short) m_nScreenWidth,
-                    Y = (short) m_nScreenHeight
-                },
+                screenSize,
                 new ConsoleInterop.COORD()
                 {
                     X = 0,
@@ -157,14 +172,6 @@ namespace Console.Playground
             {
                 throw new Exception("WriteConsoleOutput");
             }
-
-            ;
         }
-
-        // https://pinvoke.net/default.aspx/kernel32/GetStdHandle.html
-        const int STD_OUTPUT_HANDLE = -11;
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern IntPtr GetStdHandle(int nStdHandle);
-        private static IntPtr OutputHandle => GetStdHandle(STD_OUTPUT_HANDLE);
     }
 }

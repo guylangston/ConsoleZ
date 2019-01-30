@@ -13,7 +13,8 @@ namespace Console.Playground
 
             //    TestHelper.WriteScenarioA(full);
 
-            Windows10Console.Plaground();
+            DirectConsole.Setup(80, 30, 16, 16, "Consolas");
+            DirectConsole.Test();
         }
     }
 }
