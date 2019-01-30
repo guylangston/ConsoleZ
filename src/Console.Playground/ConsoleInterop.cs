@@ -6,7 +6,7 @@ using System.Text;
 namespace Console.Playground
 {
     // https://pinvoke.net/default.aspx/kernel32/ConsoleFunctions.html
-    public class ConsoleInterop
+    public static class ConsoleInterop
     {
         [StructLayout(LayoutKind.Sequential)]
         public struct COORD
@@ -91,19 +91,22 @@ namespace Console.Playground
             public COORD dwFontSize;
         }
 
-        [StructLayout(LayoutKind.Sequential)]
-        public  struct CONSOLE_FONT_INFO_EX
+
+        // https://stackoverflow.com/questions/20631634/changing-font-in-a-console-window-in-c-sharp
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        unsafe internal struct CONSOLE_FONT_INFO_EX
         {
-            public uint cbSize;
-            public uint nFont;
-            public COORD dwFontSize;
-            public ushort FontFamily;
-            public ushort FontWeight;
-            public char[] FaceName;   //public fixed char FaceName[LF_FACESIZE];
+            internal uint cbSize;
+            internal uint nFont;
+            internal COORD dwFontSize;
+            internal int FontFamily;
+            internal int FontWeight;
+            internal fixed char FaceName[32];
 
-
-            public const uint LF_FACESIZE = 32;
+            //public const int LF_FACESIZE = 32;
         }
+
 
         [StructLayout(LayoutKind.Explicit)]
         public struct INPUT_RECORD
@@ -637,7 +640,8 @@ namespace Console.Playground
         public static extern bool SetCurrentConsoleFontEx(
             IntPtr ConsoleOutput,
             bool MaximumWindow,
-            CONSOLE_FONT_INFO_EX ConsoleCurrentFontEx
+            
+            [In] ref CONSOLE_FONT_INFO_EX ConsoleCurrentFontEx
         );
 
         // http://pinvoke.net/default.aspx/kernel32/SetStdHandle.html

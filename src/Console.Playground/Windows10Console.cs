@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Console.Playground
 {
@@ -62,27 +63,38 @@ namespace Console.Playground
             if (!SetCurrentConsoleFontEx(m_hConsole, false, &cfi))
                 return Error(L"SetCurrentConsoleFontEx");
             */
-            if (false)
+            if (true)
             {
-                var fontw = 8;
-                var fonth = 8;
-            
-                var cfi = new ConsoleInterop.CONSOLE_FONT_INFO_EX()
+                var fontw = 16;
+                var fonth = 16;
+
+                int TMPF_TRUETYPE = 4;
+                var font = "Consolas";
+
+                // https://social.msdn.microsoft.com/Forums/vstudio/en-US/c276b9ae-dc4c-484a-9a59-1ee66cf0f1cc/c-changing-console-font-programmatically?forum=csharpgeneral
+                unsafe
                 {
-                    nFont = 0,
-                    dwFontSize = new ConsoleInterop.COORD()
+                    var cfi = new ConsoleInterop.CONSOLE_FONT_INFO_EX()
                     {
-                        X = (short)fontw,
-                        Y = (short)fonth
-                    },
-                    FontFamily = FF_DONTCARE,
-                    FontWeight = FW_NORMAL,
-                    FaceName = "Consolas".ToCharArray(),
-                };
-                cfi.cbSize = (ushort) Marshal.SizeOf(cfi);
-                if (!ConsoleInterop.ConsoleFunctions.SetCurrentConsoleFontEx(m_hConsole, false, cfi))
-                {
-                    throw new Exception("SetConsoleActiveScreenBuffer");
+                        nFont = 0,
+                        dwFontSize = new ConsoleInterop.COORD()
+                        {
+                            X = (short)fontw,
+                            Y = (short)fonth
+                        },
+                        FontFamily = TMPF_TRUETYPE, //FF_DONTCARE,
+                        FontWeight = FW_NORMAL,
+                    };
+
+                    IntPtr ptr = new IntPtr(cfi.FaceName);
+                    Marshal.Copy(font.ToCharArray(), 0, ptr, font.Length);
+
+                    cfi.cbSize = (ushort)Marshal.SizeOf(cfi);
+                    if (!ConsoleInterop.ConsoleFunctions.SetCurrentConsoleFontEx(m_hConsole, false, ref cfi))
+                    {
+                        var msg = "SetConsoleActiveScreenBuffer:" + Marshal.GetLastWin32Error();
+                        throw new Exception(msg);
+                    }
                 }
             }
             
