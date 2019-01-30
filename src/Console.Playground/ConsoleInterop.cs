@@ -190,7 +190,7 @@ namespace Console.Playground
             [FieldOffset(0)] public readonly char UnicodeChar;
             [FieldOffset(0)] public readonly char AsciiChar;
 
-            [FieldOffset(2)] //2 bytes seems to work properly
+            [FieldOffset(2)] //2 bytes seems to work properly; this is the colour
             public readonly ushort Attributes;
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using MarkDownConsole;
 
 namespace Console.Playground
@@ -7,14 +8,24 @@ namespace Console.Playground
     {
         static void Main(string[] args)
         {
-
-            //    var full = new Console2();
-            //    full.EnableANSI();
-
-            //    TestHelper.WriteScenarioA(full);
-
             DirectConsole.Setup(80, 30, 16, 16, "Consolas");
-            DirectConsole.Test();
+            //DirectConsole.Test();
+
+            var frameCount = 2000;
+            var frameDelayMs = 10;
+            for (int i = 0; i < frameCount; i++)
+            {
+                DirectConsole.Fill(' ', 0);
+                DirectConsole.SetPixel(
+                    i % DirectConsole.ScreenWidth,
+                    i % DirectConsole.ScreenHeight,
+                    'A',
+                    0x3F);
+
+                DirectConsole.Update();
+
+                Thread.Sleep(frameDelayMs);
+            }
         }
     }
 }
