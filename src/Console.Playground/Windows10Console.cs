@@ -6,6 +6,8 @@ namespace Console.Playground
 {
     internal class Windows10Console
     {
+        private static ConsoleInterop.CHAR_INFO[] m_bufScreen;
+
         // https://pinvoke.net/search.aspx?search=FF_DONTCARE&namespace=[All]
         private const byte FF_DONTCARE = (0 << 4);
         private const ushort FW_NORMAL = 400;
@@ -84,7 +86,6 @@ namespace Console.Playground
                 }
             }
             
-
             ConsoleInterop.CONSOLE_SCREEN_BUFFER_INFO csbi = new ConsoleInterop.CONSOLE_SCREEN_BUFFER_INFO();
             if (!ConsoleInterop.ConsoleFunctions.GetConsoleScreenBufferInfo(m_hConsole, out csbi))
             {
@@ -110,11 +111,23 @@ namespace Console.Playground
                 
 
             // Allocate memory for screen buffer
-            var m_bufScreen = new ConsoleInterop.CHAR_INFO[m_nScreenWidth*m_nScreenHeight];
+            m_bufScreen = new ConsoleInterop.CHAR_INFO[m_nScreenWidth*m_nScreenHeight];
 
-            Array.Fill(m_bufScreen, new ConsoleInterop.CHAR_INFO('X', 0x000D));
+            
+
+            for (int i = 0; i < 2000; i++)
+            {
+                char x = (char) ((int) 'A' + (i % 26));
+                Array.Fill(m_bufScreen, new ConsoleInterop.CHAR_INFO(x, 0x00FD));
+                
+                UpdateBuffer(m_hConsole, m_nScreenWidth, m_nScreenHeight, m_rectWindow);
+            }
 
 
+        }
+
+        private static void UpdateBuffer(IntPtr m_hConsole, int m_nScreenWidth, int m_nScreenHeight, ConsoleInterop.SMALL_RECT m_rectWindow)
+        {
             if (!ConsoleInterop.ConsoleFunctions.WriteConsoleOutput(m_hConsole,
                 m_bufScreen,
                 new ConsoleInterop.COORD()
@@ -130,8 +143,9 @@ namespace Console.Playground
                 ref m_rectWindow))
             {
                 throw new Exception("WriteConsoleOutput");
-            };
-           
+            }
+
+            ;
         }
 
         // https://pinvoke.net/default.aspx/kernel32/GetStdHandle.html
