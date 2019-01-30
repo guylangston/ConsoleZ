@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 
 namespace Console.Playground
 {
@@ -125,14 +126,14 @@ namespace Console.Playground
             // Allocate memory for screen buffer
             m_bufScreen = new ConsoleInterop.CHAR_INFO[m_nScreenWidth*m_nScreenHeight];
 
-            
-
             for (int i = 0; i < 2000; i++)
             {
                 char x = (char) ((int) 'A' + (i % 26));
-                Array.Fill(m_bufScreen, new ConsoleInterop.CHAR_INFO(x, 0x00FD));
+                Array.Fill(m_bufScreen, new ConsoleInterop.CHAR_INFO(x, (byte)(i / 10)));
                 
                 UpdateBuffer(m_hConsole, m_nScreenWidth, m_nScreenHeight, m_rectWindow);
+
+                Thread.Sleep(100);
             }
 
 
