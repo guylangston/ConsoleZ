@@ -178,6 +178,12 @@ namespace Console.Playground
         [StructLayout(LayoutKind.Explicit)]
         public struct CHAR_INFO
         {
+            public CHAR_INFO(char unicodeChar, ushort attributes) : this()
+            {
+                UnicodeChar = unicodeChar;
+                Attributes = attributes;
+            }
+
             [FieldOffset(0)] public readonly char UnicodeChar;
             [FieldOffset(0)] public readonly char AsciiChar;
 

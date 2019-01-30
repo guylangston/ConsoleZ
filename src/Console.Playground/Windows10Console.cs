@@ -1,10 +1,15 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Console.Playground
 {
     internal class Windows10Console
     {
+        // https://pinvoke.net/search.aspx?search=FF_DONTCARE&namespace=[All]
+        private const byte FF_DONTCARE = (0 << 4);
+        private const ushort FW_NORMAL = 400;
+
         // https://github.com/dotnet/corefx/tree/master/src/System.Console
         // https://github.com/dotnet/corefx/blob/master/src/System.Console/src/System/ConsolePal.Windows.cs
         internal static void Plaground()
@@ -17,6 +22,116 @@ namespace Console.Playground
 
             ConsoleInterop.SMALL_RECT m_rectWindow =  new ConsoleInterop.SMALL_RECT() { Left = 0, Top=0, Right = 1, Bottom = 1 };
             ConsoleInterop.ConsoleFunctions.SetConsoleWindowInfo(m_hConsole, true, ref m_rectWindow);
+
+
+            //// Set the size of the screen buffer
+            //COORD coord = { (short)m_nScreenWidth, (short)m_nScreenHeight };
+            //if (!SetConsoleScreenBufferSize(m_hConsole, coord))
+            //    Error(L"SetConsoleScreenBufferSize");
+            var coord = new ConsoleInterop.COORD()
+            {
+                X = (short) m_nScreenWidth,
+                Y = (short) m_nScreenHeight
+            };
+            if (!ConsoleInterop.ConsoleFunctions.SetConsoleScreenBufferSize(m_hConsole, coord))
+            {
+                throw new Exception("SetConsoleScreenBufferSize");
+            }
+
+            //// Assign screen buffer to the console
+            //if (!SetConsoleActiveScreenBuffer(m_hConsole))
+            //    return Error(L"SetConsoleActiveScreenBuffer");
+            if (!ConsoleInterop.ConsoleFunctions.SetConsoleActiveScreenBuffer(m_hConsole))
+            {
+                throw new Exception("SetConsoleActiveScreenBuffer");
+            }
+
+            // Set the font size now that the screen buffer has been assigned to the console
+            /*
+            CONSOLE_FONT_INFOEX cfi;
+            cfi.cbSize = sizeof(cfi);
+            cfi.nFont = 0;
+            cfi.dwFontSize.X = fontw;
+            cfi.dwFontSize.Y = fonth;
+            cfi.FontFamily = FF_DONTCARE;
+            cfi.FontWeight = FW_NORMAL;
+                                  
+            wcscpy_s(cfi.FaceName, L"Consolas");
+            if (!SetCurrentConsoleFontEx(m_hConsole, false, &cfi))
+                return Error(L"SetCurrentConsoleFontEx");
+            */
+            if (false)
+            {
+                var fontw = 8;
+                var fonth = 8;
+            
+                var cfi = new ConsoleInterop.CONSOLE_FONT_INFO_EX()
+                {
+                    nFont = 0,
+                    dwFontSize = new ConsoleInterop.COORD()
+                    {
+                        X = (short)fontw,
+                        Y = (short)fonth
+                    },
+                    FontFamily = FF_DONTCARE,
+                    FontWeight = FW_NORMAL,
+                    FaceName = "Consolas".ToCharArray(),
+                };
+                cfi.cbSize = (ushort) Marshal.SizeOf(cfi);
+                if (!ConsoleInterop.ConsoleFunctions.SetCurrentConsoleFontEx(m_hConsole, false, cfi))
+                {
+                    throw new Exception("SetConsoleActiveScreenBuffer");
+                }
+            }
+            
+
+            ConsoleInterop.CONSOLE_SCREEN_BUFFER_INFO csbi = new ConsoleInterop.CONSOLE_SCREEN_BUFFER_INFO();
+            if (!ConsoleInterop.ConsoleFunctions.GetConsoleScreenBufferInfo(m_hConsole, out csbi))
+            {
+                throw new Exception("GetConsoleScreenBufferInfo");
+            }
+                
+            if (m_nScreenHeight > csbi.dwMaximumWindowSize.Y) throw new Exception("Screen Height / Font Height Too Big");
+            if (m_nScreenWidth > csbi.dwMaximumWindowSize.X) throw new Exception("Screen Width / Font Width Too Big");
+
+            
+            // Set Physical Console Window Size
+            m_rectWindow = new ConsoleInterop.SMALL_RECT()
+            {
+                Top =  0,
+                Left = 0,
+                Right = (short)(m_nScreenWidth - 1),
+                Bottom = (short)(m_nScreenHeight - 1)
+            };
+            if (!ConsoleInterop.ConsoleFunctions.SetConsoleWindowInfo(m_hConsole, true, ref m_rectWindow))
+            {
+                throw new Exception("SetConsoleWindowInfo");
+            }
+                
+
+            // Allocate memory for screen buffer
+            var m_bufScreen = new ConsoleInterop.CHAR_INFO[m_nScreenWidth*m_nScreenHeight];
+
+            Array.Fill(m_bufScreen, new ConsoleInterop.CHAR_INFO('X', 0x000D));
+
+
+            if (!ConsoleInterop.ConsoleFunctions.WriteConsoleOutput(m_hConsole,
+                m_bufScreen,
+                new ConsoleInterop.COORD()
+                {
+                    X = (short) m_nScreenWidth,
+                    Y = (short) m_nScreenHeight
+                },
+                new ConsoleInterop.COORD()
+                {
+                    X = 0,
+                    Y = 0
+                },
+                ref m_rectWindow))
+            {
+                throw new Exception("WriteConsoleOutput");
+            };
+           
         }
 
         // https://pinvoke.net/default.aspx/kernel32/GetStdHandle.html
