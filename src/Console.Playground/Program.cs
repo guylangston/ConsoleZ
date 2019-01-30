@@ -19,10 +19,12 @@ namespace Console.Playground
                 DirectConsole.SetPixel(
                     i % DirectConsole.ScreenWidth,
                     i % DirectConsole.ScreenHeight,
-                    'A',
+                    '#',
                     0x3F);
 
                 DirectConsole.Update();
+
+                System.Console.Title = i.ToString();
 
                 Thread.Sleep(frameDelayMs);
             }
