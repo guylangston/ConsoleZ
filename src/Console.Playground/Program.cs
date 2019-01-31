@@ -16,7 +16,7 @@ namespace Console.Playground
             for (int i = 0; i < frameCount; i++)
             {
                 DirectConsole.Fill(' ', 0);
-                DirectConsole.SetPixel(
+                DirectConsole.Set(
                     i % DirectConsole.ScreenWidth,
                     i % DirectConsole.ScreenHeight,
                     '#',

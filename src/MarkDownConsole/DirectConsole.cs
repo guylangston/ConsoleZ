@@ -1,17 +1,31 @@
 ﻿using System;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
-using System.Xml.Serialization;
+using MarkDownConsole.Win32;
 
-namespace Console.Playground
+
+namespace MarkDownConsole
 {
  
+    // https://github.com/dotnet/corefx/tree/master/src/System.Console
+    // https://github.com/dotnet/corefx/blob/master/src/System.Console/src/System/ConsolePal.Windows.cs
     public static class DirectConsole
     {
-        // https://github.com/dotnet/corefx/tree/master/src/System.Console
-        // https://github.com/dotnet/corefx/blob/master/src/System.Console/src/System/ConsolePal.Windows.cs
+
+        // https://pinvoke.net/default.aspx/kernel32/GetStdHandle.html
+        const int STD_OUTPUT_HANDLE = -11;
+        
+        private static IntPtr ConsoleStdOutputHandle => ConsoleInterop.GetStdHandle(STD_OUTPUT_HANDLE);
+        private static CHAR_INFO[] m_bufScreen;
+        private static IntPtr m_hConsole;
+        private static SMALL_RECT m_rectWindow;
+        private static COORD screenSize;
+        
+        // https://pinvoke.net/search.aspx?search=FF_DONTCARE&namespace=[All]
+        private const byte FF_DONTCARE = (0 << 4);
+        private const ushort FW_NORMAL = 400;
+
+        
 
         /// <summary>
         /// Setup screen size and direct-access buffer
@@ -25,19 +39,19 @@ namespace Console.Playground
             //var m_hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
             m_hConsole = ConsoleStdOutputHandle;
 
-            m_rectWindow = new ConsoleInterop.SMALL_RECT() { Left = 0, Top = 0, Right = 1, Bottom = 1 };
-            ConsoleInterop.ConsoleFunctions.SetConsoleWindowInfo(m_hConsole, true, ref m_rectWindow);
+            m_rectWindow = new SMALL_RECT() { Left = 0, Top = 0, Right = 1, Bottom = 1 };
+            ConsoleInterop.SetConsoleWindowInfo(m_hConsole, true, ref m_rectWindow);
 
             //// Set the size of the screen buffer
             //COORD coord = { (short)m_nScreenWidth, (short)m_nScreenHeight };
             //if (!SetConsoleScreenBufferSize(m_hConsole, coord))
             //    Error(L"SetConsoleScreenBufferSize");
-            screenSize = new ConsoleInterop.COORD()
+            screenSize = new COORD()
             {
                 X = (short)screenWidth,
                 Y = (short)screenHeight
             };
-            if (!ConsoleInterop.ConsoleFunctions.SetConsoleScreenBufferSize(m_hConsole, screenSize))
+            if (!ConsoleInterop.SetConsoleScreenBufferSize(m_hConsole, screenSize))
             {
                 throw new Exception("SetConsoleScreenBufferSize");
             }
@@ -45,7 +59,7 @@ namespace Console.Playground
             //// Assign screen buffer to the console
             //if (!SetConsoleActiveScreenBuffer(m_hConsole))
             //    return Error(L"SetConsoleActiveScreenBuffer");
-            if (!ConsoleInterop.ConsoleFunctions.SetConsoleActiveScreenBuffer(m_hConsole))
+            if (!ConsoleInterop.SetConsoleActiveScreenBuffer(m_hConsole))
             {
                 throw new Exception("SetConsoleActiveScreenBuffer");
             }
@@ -69,10 +83,10 @@ namespace Console.Playground
             // https://social.msdn.microsoft.com/Forums/vstudio/en-US/c276b9ae-dc4c-484a-9a59-1ee66cf0f1cc/c-changing-console-font-programmatically?forum=csharpgeneral
             unsafe
             {
-                var cfi = new ConsoleInterop.CONSOLE_FONT_INFO_EX()
+                var cfi = new CONSOLE_FONT_INFO_EX()
                 {
                     nFont = 0,
-                    dwFontSize = new ConsoleInterop.COORD()
+                    dwFontSize = new COORD()
                     {
                         X = (short)fontWidth,
                         Y = (short)fontHeight
@@ -85,15 +99,15 @@ namespace Console.Playground
                 Marshal.Copy(font.ToCharArray(), 0, ptr, font.Length);
 
                 cfi.cbSize = (ushort)Marshal.SizeOf(cfi);
-                if (!ConsoleInterop.ConsoleFunctions.SetCurrentConsoleFontEx(m_hConsole, false, ref cfi))
+                if (!ConsoleInterop.SetCurrentConsoleFontEx(m_hConsole, false, ref cfi))
                 {
                     var msg = "SetConsoleActiveScreenBuffer:" + Marshal.GetLastWin32Error();
                     throw new Exception(msg);
                 }
             }
 
-            ConsoleInterop.CONSOLE_SCREEN_BUFFER_INFO csbi = new ConsoleInterop.CONSOLE_SCREEN_BUFFER_INFO();
-            if (!ConsoleInterop.ConsoleFunctions.GetConsoleScreenBufferInfo(m_hConsole, out csbi))
+            var csbi = new CONSOLE_SCREEN_BUFFER_INFO();
+            if (!ConsoleInterop.GetConsoleScreenBufferInfo(m_hConsole, out csbi))
             {
                 throw new Exception("GetConsoleScreenBufferInfo");
             }
@@ -102,21 +116,23 @@ namespace Console.Playground
             if (screenWidth > csbi.dwMaximumWindowSize.X) throw new Exception("Screen Width / Font Width Too Big");
 
             // Set Physical Console Window Size
-            m_rectWindow = new ConsoleInterop.SMALL_RECT()
+            m_rectWindow = new SMALL_RECT()
             {
                 Top = 0,
                 Left = 0,
                 Right = (short)(screenWidth - 1),
                 Bottom = (short)(screenHeight - 1)
             };
-            if (!ConsoleInterop.ConsoleFunctions.SetConsoleWindowInfo(m_hConsole, true, ref m_rectWindow))
+            if (!ConsoleInterop.SetConsoleWindowInfo(m_hConsole, true, ref m_rectWindow))
             {
                 throw new Exception("SetConsoleWindowInfo");
             }
 
             // Allocate memory for screen buffer
-            m_bufScreen = new ConsoleInterop.CHAR_INFO[screenWidth * screenHeight];
+            m_bufScreen = new CHAR_INFO[screenWidth * screenHeight];
         }
+
+        public static CHAR_INFO[] ScreenBuffer => m_bufScreen;
 
         public static void Test(int frameCount = 2000, int frameDelayMs = 100)
         {
@@ -131,37 +147,34 @@ namespace Console.Playground
             }
         }
 
-        public static void Fill(char c, byte clr) => Array.Fill(m_bufScreen, new ConsoleInterop.CHAR_INFO(c, clr));
+        public static void Fill(char c, byte clr)
+        {
+            for (int i = 0; i < m_bufScreen.Length; i++)
+            {
+                m_bufScreen[i] = new CHAR_INFO(c, clr);
+            }
+        }
+
 
         public static int ScreenWidth => screenSize.X;
         public static int ScreenHeight => screenSize.Y;
 
-        public static void SetPixel(int x, int y, char c, byte clr) =>
-            m_bufScreen[y * ScreenWidth + x] = new ConsoleInterop.CHAR_INFO(c, clr);
+        public static void Set(int x, int y, char c, byte clr) =>
+            m_bufScreen[y * ScreenWidth + x] = new CHAR_INFO(c, clr);
 
-        // https://pinvoke.net/default.aspx/kernel32/GetStdHandle.html
-        const int STD_OUTPUT_HANDLE = -11;
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern IntPtr GetStdHandle(int nStdHandle);
-        private static IntPtr ConsoleStdOutputHandle => GetStdHandle(STD_OUTPUT_HANDLE);
-
-        private static ConsoleInterop.CHAR_INFO[] m_bufScreen;
-        private static IntPtr m_hConsole;
-        private static ConsoleInterop.SMALL_RECT m_rectWindow;
-        private static ConsoleInterop.COORD screenSize;
-
-        public static ConsoleInterop.CHAR_INFO[] ScreenBuffer => m_bufScreen;
-
-        // https://pinvoke.net/search.aspx?search=FF_DONTCARE&namespace=[All]
-        private const byte FF_DONTCARE = (0 << 4);
-        private const ushort FW_NORMAL = 400;
+        public static (char c, byte clr) Get(int x, int y, char c, byte clr)
+        {
+            var v = m_bufScreen[y * ScreenWidth + x];
+            return (v.UnicodeChar, (byte)v.Attributes);
+        }
+             
 
         public static void Update()
         {
-            if (!ConsoleInterop.ConsoleFunctions.WriteConsoleOutput(m_hConsole,
+            if (!ConsoleInterop.WriteConsoleOutput(m_hConsole,
                 m_bufScreen,
                 screenSize,
-                new ConsoleInterop.COORD()
+                new COORD()
                 {
                     X = 0,
                     Y = 0
@@ -171,5 +184,9 @@ namespace Console.Playground
                 throw new Exception("WriteConsoleOutput");
             }
         }
+
+        
+
+        
     }
 }

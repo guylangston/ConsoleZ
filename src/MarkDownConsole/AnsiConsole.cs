@@ -11,7 +11,7 @@ namespace MarkDownConsole
     /// https://www.jerriepelser.com/blog/using-ansi-color-codes-in-net-console-apps/
     /// 
     /// </summary>
-    public class Console2 : ConsoleBase
+    public class AnsiConsole : ConsoleBase
     {
 
         private const int STD_OUTPUT_HANDLE = -11;
