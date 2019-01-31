@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MarkDownConsole
+namespace ConsoleZ
 {
     public interface ITextWriter
     {

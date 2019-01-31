@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MarkDownConsole;
+using ConsoleZ;
 
-namespace Console.Playground
+namespace ConsoleZ.Playground
 {
     public class TestHelper
     {

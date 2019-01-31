@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MarkDownConsole.Win32
+namespace ConsoleZ.Win32
 {
     // https://pinvoke.net/default.aspx/kernel32/ConsoleFunctions.html
     [StructLayout(LayoutKind.Sequential)]

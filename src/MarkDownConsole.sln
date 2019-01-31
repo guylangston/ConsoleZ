@@ -3,14 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkDownConsole", "MarkDownConsole\MarkDownConsole.csproj", "{C1B1E9D7-A06B-452C-BFF3-97978BB96C00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleZ", "MarkDownConsole\ConsoleZ.csproj", "{C1B1E9D7-A06B-452C-BFF3-97978BB96C00}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7E020033-AD60-4855-9984-6542FF76B462}"
 	ProjectSection(SolutionItems) = preProject
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console.Playground", "Console.Playground\Console.Playground.csproj", "{0E24D4CD-EAA1-461F-B1D7-7E3165B31C8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleZ.Playground", "Console.Playground\ConsoleZ.Playground.csproj", "{0E24D4CD-EAA1-461F-B1D7-7E3165B31C8A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace MarkDownConsole
+namespace ConsoleZ
 {
     /// <summary>
     /// ANSI Terminal Escape Codes

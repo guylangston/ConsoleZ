@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MarkDownConsole
+namespace ConsoleZ
 {
     public abstract class ConsoleBase : IConsole, IFormatProvider, ICustomFormatter
     {

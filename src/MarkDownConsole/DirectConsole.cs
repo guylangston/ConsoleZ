@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
-using MarkDownConsole.Win32;
+using ConsoleZ.Win32;
 
 
-namespace MarkDownConsole
+namespace ConsoleZ
 {
  
     // https://github.com/dotnet/corefx/tree/master/src/System.Console

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
-using MarkDownConsole;
+using ConsoleZ;
 
-namespace Console.Playground
+namespace ConsoleZ.Playground
 {
     class Program
     {

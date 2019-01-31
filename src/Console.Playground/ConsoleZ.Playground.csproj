@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MarkDownConsole\MarkDownConsole.csproj" />
+    <ProjectReference Include="..\MarkDownConsole\ConsoleZ.csproj" />
   </ItemGroup>
 
 </Project>
