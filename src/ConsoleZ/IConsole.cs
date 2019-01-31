@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml.Linq;
 
 namespace ConsoleZ
 {
@@ -19,5 +20,20 @@ namespace ConsoleZ
 
         void UpdateLine(int line, string txt);
         void UpdateFormatted(int line, FormattableString formatted);
+    }
+
+    public interface IAbsConsole<T>
+    {
+        string Handle { get; }
+        int Width { get; }
+        int Height { get; }
+        T this[int x, int y] { get; set; }
+
+        void Fill(T fill);
+    }
+
+    public interface IBufferedAbsConsole<T> : IAbsConsole<T>
+    {
+        void Update();
     }
 }

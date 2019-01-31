@@ -176,9 +176,14 @@ namespace ConsoleZ.Win32
         public uint bSetFocus;
     }
 
-    //CHAR_INFO struct, which was a union in the old days
-    // so we want to use LayoutKind.Explicit to mimic it as closely
-    // as we can
+    
+    /// <summary>
+    /// https://docs.microsoft.com/en-us/windows/console/char-info-str
+    /// </summary>
+    /// <remarks>
+    /// CHAR_INFO struct, which was a union in the old days
+    /// so we want to use LayoutKind.Explicit to mimic it as closely
+    /// as we can</remarks>
     [StructLayout(LayoutKind.Explicit)]
     public struct CHAR_INFO
     {

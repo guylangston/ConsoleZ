@@ -25,6 +25,26 @@ namespace ConsoleZ
         private const byte FF_DONTCARE = (0 << 4);
         private const ushort FW_NORMAL = 400;
 
+        private class AbsConsole : IBufferedAbsConsole<CHAR_INFO>
+        {
+            public string Handle => "DirectConsole.Win32";
+            public int Width => ScreenWidth;
+            public int Height => ScreenHeight;
+
+            public CHAR_INFO this[int x, int y]
+            {
+                get => m_bufScreen[y * ScreenWidth + x];
+                set => m_bufScreen[y * ScreenWidth + x] = value;
+            }
+
+            public void Fill(CHAR_INFO fill) => DirectConsole.Fill(fill.UnicodeChar, fill.Attributes);
+            public void Update() => DirectConsole.Update();
+        }
+
+        /// <summary>
+        /// Provides a common interface to program against and/or test
+        /// </summary>
+        public static readonly IBufferedAbsConsole<CHAR_INFO> Singleton = new AbsConsole();
         
 
         /// <summary>
@@ -134,20 +154,20 @@ namespace ConsoleZ
 
         public static CHAR_INFO[] ScreenBuffer => m_bufScreen;
 
-        public static void Test(int frameCount = 2000, int frameDelayMs = 100)
-        {
-            for (int i = 0; i < frameCount; i++)
-            {
-                char x = (char)((int)'A' + (i % 26));
-                Fill(x, (byte) (i / 10));
+        //public static void Test(int frameCount = 2000, int frameDelayMs = 100)
+        //{
+        //    for (int i = 0; i < frameCount; i++)
+        //    {
+        //        char x = (char)((int)'A' + (i % 26));
+        //        Fill(x, (byte) (i / 10));
 
-                Update();
+        //        Update();
 
-                Thread.Sleep(frameDelayMs);
-            }
-        }
+        //        Thread.Sleep(frameDelayMs);
+        //    }
+        //}
 
-        public static void Fill(char c, byte clr)
+        public static void Fill(char c, ushort clr)
         {
             for (int i = 0; i < m_bufScreen.Length; i++)
             {
@@ -167,7 +187,6 @@ namespace ConsoleZ
             var v = m_bufScreen[y * ScreenWidth + x];
             return (v.UnicodeChar, (byte)v.Attributes);
         }
-             
 
         public static void Update()
         {
@@ -184,9 +203,5 @@ namespace ConsoleZ
                 throw new Exception("WriteConsoleOutput");
             }
         }
-
-        
-
-        
     }
 }
