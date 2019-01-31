@@ -11,12 +11,8 @@ namespace ConsoleZ.Playground
         static void Main(string[] args)
         {
             DirectConsole.Setup(80, 30, 16, 16, "Consolas");
-            //DirectConsole.Test();
-
             var screen = DirectConsole.Singleton;
-
-            var frameCount = 2000;
-            Console.WriteLine(Benchmark(frameCount, screen));
+            Console.WriteLine(Benchmark(2000, screen));
         }
 
         private static string Benchmark(int frameCount, IBufferedAbsConsole<CHAR_INFO> screen)
