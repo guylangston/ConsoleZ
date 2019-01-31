@@ -11,8 +11,34 @@ namespace ConsoleZ
     /// https://www.jerriepelser.com/blog/using-ansi-color-codes-in-net-console-apps/
     /// 
     /// </summary>
-    public class AnsiConsole : ConsoleBase
+    public sealed class AnsiConsole : ConsoleBase
     {
+        private static readonly object locker = new object();
+        private static AnsiConsole singleton = null;
+        private AnsiConsole()
+        {
+        }
+
+        public static AnsiConsole Singleton
+        {
+            get
+            {
+                if (singleton != null) return singleton;
+                lock (locker)
+                {
+                    if (singleton == null)
+                    {
+                        var t = new AnsiConsole();
+                        t.EnableANSI();
+                        singleton = t;
+                    }
+
+                    return singleton;
+                }
+            }
+        }
+       
+
 
         private const int STD_OUTPUT_HANDLE = -11;
         private const uint ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004;
@@ -30,6 +56,7 @@ namespace ConsoleZ
         [DllImport("kernel32.dll")]
         public static extern uint GetLastError();
 
+        
 
         public void EnableANSI()
         {
@@ -43,7 +70,9 @@ namespace ConsoleZ
             if (!SetConsoleMode(iStdOut, outConsoleMode))
             {
                 throw new Exception($"failed to set output console mode, error code: {GetLastError()}");
-            }           
+            }
+
+            
         }
 
         protected override  int AddLine(string s)
