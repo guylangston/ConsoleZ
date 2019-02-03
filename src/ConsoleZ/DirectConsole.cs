@@ -111,7 +111,7 @@ namespace ConsoleZ
                         X = (short)fontWidth,
                         Y = (short)fontHeight
                     },
-                    FontFamily = TMPF_TRUETYPE, //FF_DONTCARE,
+                    FontFamily = FF_DONTCARE,// TMPF_TRUETYPE, ,
                     FontWeight = FW_NORMAL,
                 };
 
