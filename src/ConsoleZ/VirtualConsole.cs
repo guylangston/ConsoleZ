@@ -4,16 +4,14 @@ using System.Collections.Generic;
 
 namespace ConsoleZ
 {
-    public class VirtualConsole<T> : ConsoleBase
+    public class VirtualConsole : ConsoleBase
     {
-        public VirtualConsole(T handle, int width, int height) : base(handle.ToString(), width, height)
+        public VirtualConsole(string handle, int width, int height) : base(handle.ToString(), width, height)
         {
-            this.Handle = handle;
+            
         }
 
-        public new T Handle { get; }
-
-
+        
         public override void LineChanged(int index, string line, bool updated)
         {
             // Nothing
@@ -23,30 +21,30 @@ namespace ConsoleZ
         public IReadOnlyList<string> GetTextLines() => base.lines;
     }
 
-    public interface IVirtualConsoleRepository<T>
+    public interface IVirtualConsoleRepository
     {
-        bool TryGetConsole(T handle, out VirtualConsole<T> cons);
-        IConsole  AddConsole(VirtualConsole<T> cons);
+        bool TryGetConsole(string handle, out VirtualConsole cons);
+        IConsole AddConsole(VirtualConsole cons);
     }
 
     /// <summary>
     /// Do not use in producton.
     /// </summary>
     /// <typeparam name="T">Handle Type</typeparam>
-    public sealed class StaticVirtualConsoleRepository<T> : IVirtualConsoleRepository<T>
+    public sealed class StaticVirtualConsoleRepository : IVirtualConsoleRepository
     {
-        private readonly ConcurrentDictionary<T, VirtualConsole<T>> consoleList;
+        private readonly ConcurrentDictionary<string, VirtualConsole> consoleList;
 
         private StaticVirtualConsoleRepository()
         {
-            consoleList = new ConcurrentDictionary<T, VirtualConsole<T>>();
+            consoleList = new ConcurrentDictionary<string, VirtualConsole>();
         }
 
         private static readonly object locker = new object();
 
 
-        private static StaticVirtualConsoleRepository<T> inst = null;
-        public static StaticVirtualConsoleRepository<T> Singleton
+        private static StaticVirtualConsoleRepository inst = null;
+        public static StaticVirtualConsoleRepository Singleton
         {
             get
             {
@@ -54,16 +52,16 @@ namespace ConsoleZ
                 lock (locker)
                 {
                     if (inst != null) return inst;
-                    inst = new StaticVirtualConsoleRepository<T>();
+                    inst = new StaticVirtualConsoleRepository();
                     return inst;
                 }
             }
         }
         
 
-        public bool TryGetConsole(T handle, out VirtualConsole<T> cons) => consoleList.TryGetValue(handle, out cons);
+        public bool TryGetConsole(string handle, out VirtualConsole cons) => consoleList.TryGetValue(handle, out cons);
 
-        public IConsole AddConsole(VirtualConsole<T> cons)
+        public IConsole AddConsole(VirtualConsole cons)
         {
             consoleList[cons.Handle] = cons;
             return cons;

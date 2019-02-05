@@ -34,8 +34,7 @@ namespace ConsoleZ.Playground.Web.Controllers
         [HttpPost]
         public IActionResult ConsoleStart(string consoleText)
         {
-            var cons = StaticVirtualConsoleRepository<long>.Singleton.AddConsole(new VirtualConsole<long>(DateTime.Now.Ticks, 80, 30));
-            
+            var cons = StaticVirtualConsoleRepository.Singleton.AddConsole(new VirtualConsole(DateTime.Now.Ticks.ToString(), 80, 30));
             
             var ret = new ConsoleData()
             {
@@ -43,8 +42,6 @@ namespace ConsoleZ.Playground.Web.Controllers
                 HtmlContent = $"> {consoleText}",
                 UpdateUrl = Url.Action("ConsoleUpdate", new{id=cons.Handle})
             };
-
-            
 
             Task.Run(() => { ConsoleZ.Samples.SlowPlayback.SimpleCounter(cons); });
 
@@ -54,9 +51,9 @@ namespace ConsoleZ.Playground.Web.Controllers
         
 
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult ConsoleUpdate(long id)
+        public IActionResult ConsoleUpdate(string id)
         {
-            if (StaticVirtualConsoleRepository<long>.Singleton.TryGetConsole(id, out var cons))
+            if (StaticVirtualConsoleRepository.Singleton.TryGetConsole(id, out var cons))
             {
                 return Json(new ConsoleData()
                 {
