@@ -39,7 +39,7 @@ namespace ConsoleZ.Playground.Web.Controllers
             var ret = new ConsoleData()
             {
                 Handle = cons.Handle,
-                HtmlContent = $"> {consoleText}",
+                HtmlContent = "Loading...",
                 UpdateUrl = Url.Action("ConsoleUpdate", new{id=cons.Handle})
             };
 
