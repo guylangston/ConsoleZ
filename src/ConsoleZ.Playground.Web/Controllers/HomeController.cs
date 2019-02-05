@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ConsoleZ.Playground.Web.Models;
+using ConsoleZ.Web;
+
 
 namespace ConsoleZ.Playground.Web.Controllers
 {
@@ -24,6 +28,47 @@ namespace ConsoleZ.Playground.Web.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+
+        [HttpPost]
+        public IActionResult ConsoleStart(string consoleText)
+        {
+            var cons = StaticVirtualConsoleRepository<long>.Singleton.AddConsole(new VirtualConsole<long>(DateTime.Now.Ticks, 80, 30));
+            
+            
+            var ret = new ConsoleData()
+            {
+                Handle = cons.Handle,
+                HtmlContent = $"> {consoleText}",
+                UpdateUrl = Url.Action("ConsoleUpdate", new{id=cons.Handle})
+            };
+
+            
+
+            Task.Run(() => { ConsoleZ.Samples.SlowPlayback.SimpleCounter(cons); });
+
+            return Json(ret);
+        }
+
+        
+
+        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult ConsoleUpdate(long id)
+        {
+            if (StaticVirtualConsoleRepository<long>.Singleton.TryGetConsole(id, out var cons))
+            {
+                return Json(new ConsoleData()
+                {
+                    Handle = cons.Handle.ToString(),
+                    HtmlContent = string.Join(Environment.NewLine, cons.GetTextLines())
+                });
+            }
+            else
+            {
+                return NotFound(id);
+            }
+            
         }
     }
 }

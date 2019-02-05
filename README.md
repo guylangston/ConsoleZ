@@ -1,5 +1,15 @@
-# MarkDownConsole
-Unified MarkDown Console for HTML and Shell Console
+# ConsoleZ
+
+> A modern console rendering library
+
+Key Features:
+- [ ] Windows 10 Console: ANSI Escape Codes
+- [ ] Alternative human readble inline colour formatting ```"^red;Error:^; Message"```
+- [ ] Fast full-screen updates. Allows Retro Console games. https://onelonecoder.com/olcconsolegameengine/
+- [ ] Unified ```IConsole``` working with HTML, WinForms, Console
+- [ ] UI Components : Percentage Complete Graph, etc
+
+
 
 ## The Idea?
 In my current project we have lots of command logic that output calculation reports to the console. As the functionaliy matures, or reaches a larger audience, the it gets ported to the web.

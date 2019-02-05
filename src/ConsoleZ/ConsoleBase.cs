@@ -1,12 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace ConsoleZ
 {
     public abstract class ConsoleBase : IConsole, IFormatProvider, ICustomFormatter
     {
         protected List<string> lines = new List<string>();
-        
+
+        protected ConsoleBase(string handle, int width, int height)
+        {
+            Handle = handle;
+            Width = width;
+            Height = height;
+        }
+
+
         public int WriteLine(string s)
         {
             lock (this)
@@ -23,10 +32,10 @@ namespace ConsoleZ
             }
         }
 
-        public string Handle { get; private set; }
+        public string Handle { get;  }
         
-        public int Width { get; private set; }
-        public int Height { get; private set;}
+        public int Width { get; protected set; }
+        public int Height { get; protected set;}
 
         public int DisplayStart { get; }
         public int DisplayEnd { get; }
@@ -47,16 +56,47 @@ namespace ConsoleZ
             }
         }
         
-        protected virtual int AddLine(string s)
+        int AddLine(string s)
         {
-            lines.Add(s);
-            return lines.Count - 1;
+            var i = lines.Count -1;
+            if (s.IndexOf('\n') > 0)
+            {
+                // slow
+                using (var tr = new StringReader(s))
+                {
+                    string l = null;
+                    while ((l = tr.ReadLine()) != null)
+                    {
+                        lines.Add(l);
+                        i++;
+                        LineChanged(i, l, false);
+                    }
+                }
+            }
+            else
+            {
+                lines.Add(s);
+                i++;
+                LineChanged(i, s, false);
+            }
+            
+            return i;
         }
 
-        protected virtual void EditLine(int line, string txt)
+        
+
+        void EditLine(int line, string txt)
         {
+            if (txt.IndexOf('\n') > 0)
+            {
+                throw new NotImplementedException();
+            }
             lines[line - DisplayStart] = txt;
+            LineChanged(line, txt, true);
         }
+
+        public abstract void LineChanged(int index, string line, bool updated);
+        
 
         public object GetFormat(Type formatType) => this;
 

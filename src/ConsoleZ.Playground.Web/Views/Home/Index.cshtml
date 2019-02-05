@@ -1,8 +1,73 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+<style>
+    .console-container {
+        white-space: pre;
+        font-family: monospace;
+        background: #333;
+        color: aliceblue;
+        
+        width: 100%;
+        max-height: 50vh;
+        overflow: scroll;
+    }
+
+    .console-active {
+        border: 4px solid green;
+    }
+
+    .console-error {
+        border: 4px solid red;
+    }
+</style>
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+<div class="row">
+    <input type="text" name="consoleText" id="consoleIn"/>
+    <button onclick="runConsoleCommand(this);">Run...</button>
+
+</div>
+<div class="row">
+    <div class="console-container" id="consoleOut">~~~</div>
+</div>
+
+<script>
+
+   
+    function runConsoleCommand(e) {
+        var cmd = document.getElementById('consoleIn').value;
+        $.post('/Home/ConsoleStart',
+                {
+                    "consoleText": cmd
+                })
+            .done(function (r) {
+
+                $('#consoleOut').addClass("console-active");
+                updateConsole(r);
+                startRefresh(r);
+            })
+            .fail(function (ee) {
+                document.getElementById('consoleOut').innerHTML = ee;
+            });
+    }
+
+    function updateConsole(cons) {
+        window.location.hash = '#'+cons.handle;
+        document.getElementById('consoleOut').innerHTML = cons.htmlContent;
+    }
+
+    function startRefresh(cons) {
+        setInterval(function () {
+                $.ajax(cons.updateUrl)
+                    .done(function (aa) {
+                        updateConsole(aa);
+                    });
+            },
+            1000);
+    }
+</script>

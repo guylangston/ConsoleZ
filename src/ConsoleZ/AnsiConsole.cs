@@ -15,7 +15,7 @@ namespace ConsoleZ
     {
         private static readonly object locker = new object();
         private static AnsiConsole singleton = null;
-        private AnsiConsole()
+        private AnsiConsole() : base("AnsiConsole", Console.WindowWidth, Console.BufferHeight)
         {
         }
 
@@ -38,25 +38,25 @@ namespace ConsoleZ
             }
         }
        
+        public override void LineChanged(int index, string line, bool updated)
+        {
+            if (updated)
+            {
+                var x = Console.CursorTop;
+                Console.CursorTop = index - DisplayStart;
+                Console.CursorLeft = 0;
 
+                Console.Write(Render(index, line).PadRight(Console.WindowWidth - 1));
 
-        private const int STD_OUTPUT_HANDLE = -11;
-        private const uint ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004;
-        private const uint DISABLE_NEWLINE_AUTO_RETURN = 0x0008;
+                Console.CursorTop = x;
+                Console.CursorLeft = 0;
+            }
+            else
+            {
+                Console.WriteLine(Render(index,  line));
+            }
+        }
 
-        [DllImport("kernel32.dll")]
-        private static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
-
-        [DllImport("kernel32.dll")]
-        private static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern IntPtr GetStdHandle(int nStdHandle);
-
-        [DllImport("kernel32.dll")]
-        public static extern uint GetLastError();
-
-        
 
         public void EnableANSI()
         {
@@ -75,26 +75,22 @@ namespace ConsoleZ
             
         }
 
-        protected override  int AddLine(string s)
-        {
-            var i = base.AddLine(s);
-            Console.WriteLine(Render(i,  s));
-            return i;
-        }
 
-        protected override void EditLine(int line, string txt)
-        {
-            base.EditLine(line, txt);
 
-            var x = Console.CursorTop;
-            Console.CursorTop = line - DisplayStart;
-            Console.CursorLeft = 0;
+        const int STD_OUTPUT_HANDLE = -11;
+        const uint ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004;
+        const uint DISABLE_NEWLINE_AUTO_RETURN = 0x0008;
 
-            Console.Write(Render(line, txt).PadRight(Console.WindowWidth - 1));
+        [DllImport("kernel32.dll")]
+        private static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
 
-            Console.CursorTop = x;
-            Console.CursorLeft = 0;
-        }
+        [DllImport("kernel32.dll")]
+        private static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
 
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern IntPtr GetStdHandle(int nStdHandle);
+
+        [DllImport("kernel32.dll")]
+        public static extern uint GetLastError();
     }
 }
