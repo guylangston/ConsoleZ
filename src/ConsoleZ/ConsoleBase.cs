@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 
 namespace ConsoleZ
 {
-    public abstract class ConsoleBase : IConsole, IFormatProvider, ICustomFormatter
+    public abstract class ConsoleBase : IConsole, IConsoleWithProps, IFormatProvider, ICustomFormatter
     {
         protected List<string> lines = new List<string>();
+        private ConcurrentDictionary<string, string> props = new ConcurrentDictionary<string, string>();
         protected int version;
 
         protected ConsoleBase(string handle, int width, int height)
@@ -35,6 +37,7 @@ namespace ConsoleZ
         }
 
         public string Handle { get;  }
+        public int Version => version;
         
         public int Width { get; protected set; }
         public int Height { get; protected set;}
@@ -115,5 +118,9 @@ namespace ConsoleZ
         }
 
         public string Escape(int clr) => $"\u001b[{clr}m";
+
+
+        public void SetProp(string key, string val) => props[key.ToLowerInvariant()] = val;
+        public bool TryGetProp(string key, out string val) => props.TryGetValue(key.ToLowerInvariant(), out val);
     }
 }

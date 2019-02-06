@@ -3,17 +3,21 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ConsoleZ.Playground.Web.Models;
 using ConsoleZ.Web;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 
 namespace ConsoleZ.Playground.Web.Controllers
 {
     public class HomeController : Controller
     {
+        ConsoleDataBuilder builder = new ConsoleDataBuilder("/Home/ConsoleUpdate/{0}");
+
         public IActionResult Index()
         {
             return View();
@@ -35,20 +39,15 @@ namespace ConsoleZ.Playground.Web.Controllers
         public IActionResult ConsoleStart(string consoleText)
         {
             var cons = StaticVirtualConsoleRepository.Singleton.AddConsole(new VirtualConsole(DateTime.Now.Ticks.ToString(), 80, 30));
-            
-            var ret = new ConsoleData()
-            {
-                Handle = cons.Handle,
-                HtmlContent = "Loading...",
-                UpdateUrl = Url.Action("ConsoleUpdate", new{id=cons.Handle})
-            };
 
-            Task.Run(() =>
+            builder.RunAsync(cons, x =>
             {
-                ConsoleZ.Samples.SlowPlayback.SimpleCounter(cons);
+                ConsoleZ.Samples.SlowPlayback.SimpleCounter(x, int.Parse(consoleText));
+                x.SetProp("DoneUrl", "/Home/Privacy");
             });
+            
 
-            return Json(ret);
+            return Json(builder.ToDto(cons));
         }
 
         
@@ -58,13 +57,7 @@ namespace ConsoleZ.Playground.Web.Controllers
         {
             if (StaticVirtualConsoleRepository.Singleton.TryGetConsole(id, out var cons))
             {
-                return Json(new ConsoleData()
-                {
-                    IsActive = true,
-                    Handle = cons.Handle.ToString(),
-                    HtmlContent = string.Join(Environment.NewLine, cons.GetTextLines()),
-                    Version = cons.Version.ToString()
-                });
+                return Json(builder.ToDto(cons));
             }
             else
             {

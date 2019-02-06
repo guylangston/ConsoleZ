@@ -25,11 +25,11 @@ namespace ConsoleZ
     public interface IVirtualConsoleRepository
     {
         bool TryGetConsole(string handle, out VirtualConsole cons);
-        IConsole AddConsole(VirtualConsole cons);
+        IConsoleWithProps AddConsole(VirtualConsole cons);
     }
 
     /// <summary>
-    /// Do not use in producton.
+    /// Do not use in production.
     /// </summary>
     /// <typeparam name="T">Handle Type</typeparam>
     public sealed class StaticVirtualConsoleRepository : IVirtualConsoleRepository
@@ -42,19 +42,16 @@ namespace ConsoleZ
         }
 
         private static readonly object locker = new object();
-
-
-        private static StaticVirtualConsoleRepository inst = null;
+        private static volatile StaticVirtualConsoleRepository instance = null;
         public static StaticVirtualConsoleRepository Singleton
         {
             get
             {
-                if (inst != null) return inst;
+                if (instance != null) return instance;
                 lock (locker)
                 {
-                    if (inst != null) return inst;
-                    inst = new StaticVirtualConsoleRepository();
-                    return inst;
+                    if (instance != null) return instance;
+                    return instance = new StaticVirtualConsoleRepository();
                 }
             }
         }
@@ -62,7 +59,7 @@ namespace ConsoleZ
 
         public bool TryGetConsole(string handle, out VirtualConsole cons) => consoleList.TryGetValue(handle, out cons);
 
-        public IConsole AddConsole(VirtualConsole cons)
+        public IConsoleWithProps AddConsole(VirtualConsole cons)
         {
             consoleList[cons.Handle] = cons;
             return cons;

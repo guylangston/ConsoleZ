@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 
 namespace ConsoleZ
@@ -12,6 +13,7 @@ namespace ConsoleZ
     public interface IConsole : ITextWriter
     {
         string Handle { get; }
+        int Version { get;  }
 
         int Width { get; }
         int Height { get; }
@@ -20,6 +22,16 @@ namespace ConsoleZ
 
         void UpdateLine(int line, string txt);
         void UpdateFormatted(int line, FormattableString formatted);
+    }
+
+    public interface IConsoleWithProps : IConsole
+    {
+        
+        /// <param name="key">Case Insensitive</param>
+        void SetProp(string key, string val);
+
+        /// <param name="key">Case Insensitive</param>
+        bool TryGetProp(string key, out string val);
     }
 
     public interface IAbsConsole<T>
