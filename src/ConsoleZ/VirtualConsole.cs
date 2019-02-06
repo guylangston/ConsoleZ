@@ -11,6 +11,7 @@ namespace ConsoleZ
             
         }
 
+        public int Version => version;
         
         public override void LineChanged(int index, string line, bool updated)
         {

@@ -34,6 +34,7 @@
 </div>
 <div class="row">
     <div class="console-container" id="consoleOut">~~~</div>
+    <div id="debug"></div>
 </div>
 
 <script>
@@ -57,8 +58,14 @@
     }
 
     function updateConsole(cons) {
-        window.location.hash = '#'+cons.handle;
-        document.getElementById('consoleOut').innerHTML = cons.htmlContent;
+        var v = document.getElementById('consoleOut').getAttribute("data-version");
+        if (v !== cons.version) {
+            window.location.hash = '#'+cons.handle;
+            document.getElementById('consoleOut').innerHTML = cons.htmlContent;
+            document.getElementById('consoleOut').setAttribute("data-version", cons.version);
+            document.getElementById('debug').innerHTML = JSON.stringify(cons);
+        }
+        
     }
 
     function startRefresh(cons) {

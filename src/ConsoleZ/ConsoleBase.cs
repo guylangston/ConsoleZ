@@ -7,12 +7,14 @@ namespace ConsoleZ
     public abstract class ConsoleBase : IConsole, IFormatProvider, ICustomFormatter
     {
         protected List<string> lines = new List<string>();
+        protected int version;
 
         protected ConsoleBase(string handle, int width, int height)
         {
             Handle = handle;
             Width = width;
             Height = height;
+            version = 0;
         }
 
 
@@ -59,6 +61,7 @@ namespace ConsoleZ
         int AddLine(string s)
         {
             var i = lines.Count -1;
+            version++;
             if (s.IndexOf('\n') > 0)
             {
                 // slow
@@ -92,6 +95,7 @@ namespace ConsoleZ
                 throw new NotImplementedException();
             }
             lines[line - DisplayStart] = txt;
+            version++;
             LineChanged(line, txt, true);
         }
 

@@ -16,6 +16,7 @@ namespace ConsoleZ.Web
         // State
         public string HtmlContent { get; set; }
         public string UpdateUrl { get; set; }
+        public string Version { get; set; }
 
         // Navigation
         public string DoneUrl { get; set; }

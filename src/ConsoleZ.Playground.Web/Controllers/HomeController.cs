@@ -43,7 +43,10 @@ namespace ConsoleZ.Playground.Web.Controllers
                 UpdateUrl = Url.Action("ConsoleUpdate", new{id=cons.Handle})
             };
 
-            Task.Run(() => { ConsoleZ.Samples.SlowPlayback.SimpleCounter(cons); });
+            Task.Run(() =>
+            {
+                ConsoleZ.Samples.SlowPlayback.SimpleCounter(cons);
+            });
 
             return Json(ret);
         }
@@ -57,8 +60,10 @@ namespace ConsoleZ.Playground.Web.Controllers
             {
                 return Json(new ConsoleData()
                 {
+                    IsActive = true,
                     Handle = cons.Handle.ToString(),
-                    HtmlContent = string.Join(Environment.NewLine, cons.GetTextLines())
+                    HtmlContent = string.Join(Environment.NewLine, cons.GetTextLines()),
+                    Version = cons.Version.ToString()
                 });
             }
             else
