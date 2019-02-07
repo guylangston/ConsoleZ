@@ -12,11 +12,14 @@ namespace ConsoleZ.DisplayComponents
         private IConsole cons;
         private int line;
         private Stopwatch timer;
+        private long ticks;
+        private long threshold;
 
         public ProgressBar(IConsole cons, string title)
         {
             this.Title = title;
             this.cons = cons;
+            threshold = TimeSpan.FromMilliseconds(300).Ticks;  // roughly 3 times a sec
         }
 
         public int ItemsDone { get; set; }
@@ -46,17 +49,24 @@ namespace ConsoleZ.DisplayComponents
 
             timer = new Stopwatch();
             timer.Start();
+            ticks = timer.ElapsedTicks;
 
-            line = cons.WriteLine("");
+            line = cons.WriteLine("[..........]");
             
             return this;
         }
 
-        public ProgressBar Increment<T>(T item)
+        public ProgressBar Increment(string itemCompleteMessage)
         {
             ItemsDone++;
-            Message = item?.ToString();
-            Update();
+
+            if ( timer.ElapsedTicks -ticks > threshold)
+            {
+                ticks = timer.ElapsedTicks;
+                Message = itemCompleteMessage;
+                Update();
+            }
+            
             return this;
         }
 

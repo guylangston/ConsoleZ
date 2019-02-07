@@ -37,7 +37,7 @@ namespace ConsoleZ.Samples
             cons.WriteLine($"Concurrent Test....");
 
             var a = new ProgressBar(cons, "Counter A").Start(100);
-            var b = new ProgressBar(cons, "Counter A").Start(20);
+            var b = new ProgressBar(cons, "Counter A").Start(500);
             cons.WriteLine($"End Line");
             cons.WriteLine($"");
 
@@ -53,7 +53,7 @@ namespace ConsoleZ.Samples
             {
                 for (int i = 0; i < a.ItemsTotal; i++)
                 {
-                    a.Increment(i);
+                    a.Increment(i.ToString());
                     Thread.Sleep(200);
                 }
                 a.Stop();
@@ -62,8 +62,8 @@ namespace ConsoleZ.Samples
             {
                 for (int i = 0; i < b.ItemsTotal; i++)
                 {
-                    b.Increment(i);
-                    Thread.Sleep(350);
+                    b.Increment(i.ToString());
+                    Thread.Sleep(10);       // Test very fast updates
                 }
                 b.Stop();
             });

@@ -32,7 +32,7 @@ namespace ConsoleZ.Playground
             var a = new ProgressBar(cons, "Test Scrolling").Start(100);
             for (int i = 0; i < a.ItemsTotal; i++)
             {
-                a.Increment(i);
+                a.Increment(i.ToString());
                 Thread.Sleep(200);
             }
             a.Stop();

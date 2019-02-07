@@ -52,42 +52,29 @@ namespace ConsoleZ
             set => Console.Title = value;
         }
     
-
         public override void LineChanged(int index, string line, bool updated)
         {
             if (updated)
             {
-                try
+                var x = Console.CursorTop;
+                Console.CursorTop = index - DisplayStart + (DisplayStart == 0 ? 0 : -1);
+                Console.CursorLeft = 0;
+
+                var rline = RenderLine(this, index, line);
+                if (rline.Length > Console.WindowWidth )
                 {
-                    var x = Console.CursorTop;
-                    Console.CursorTop = index - DisplayStart + 1;
-                    Console.CursorLeft = 0;
-
-                    var rline = RenderLine(this, index, line);
-                    if (rline.Length > Console.WindowWidth )
-                    {
-                        rline = rline.Substring(0, Console.WindowWidth);
-                    }
-
-                    Console.Write(rline.PadRight(Console.WindowWidth - 1));
-
-                    Console.CursorTop = x;
-                    Console.CursorLeft = 0;
+                    rline = rline.Substring(0, Console.WindowWidth);
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    Console.WriteLine(line);
-                }
-                
+
+                Console.Write(rline.PadRight(Console.WindowWidth - 1));
+
+                Console.CursorTop = x;
+                Console.CursorLeft = 0;
             }
             else
             {
-                if (Version > 0)
-                {
-                    Console.WriteLine();
-                }
-                Console.Write(RenderLine(this, index,  line));
+                
+                Console.WriteLine(RenderLine(this, index,  line));
             }
         }
 
