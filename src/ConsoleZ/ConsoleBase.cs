@@ -18,6 +18,7 @@ namespace ConsoleZ
             Width = width;
             Height = height;
             Version = 0;
+            Renderer = new PlainConsoleRenderer();
         }
 
 
@@ -45,6 +46,8 @@ namespace ConsoleZ
 
         public int DisplayStart { get; private set; }
         public int DisplayEnd => lines.Count;
+
+        protected IConsoleRenderer Renderer { get; set; }
 
         public virtual string Title { get; set; }
 

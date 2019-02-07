@@ -21,6 +21,7 @@ namespace ConsoleZ
         private static volatile AnsiConsole singleton = null;
         private AnsiConsole() : base("AnsiConsole", Console.WindowWidth, Console.BufferHeight)
         {
+            Renderer = new AnsiConsoleRenderer();
         }
 
         public static AnsiConsole Singleton
@@ -80,21 +81,7 @@ namespace ConsoleZ
 
         public string RenderLine(IConsole cons, int index, string s)
         {
-            int i, j;
-
-            // Replace colour tokens in the format ^colorName;
-            while((i = s.IndexOf('^')) > 0 && (j = s.IndexOf(';',i)) > 0)
-            {
-                var ss = s.Substring(i+1, j - i - 1);
-                var rep = Escape(0);
-                if (ss.Length > 0)
-                {
-                    rep = EscapeFore(Color.FromName(ss));
-                }
-                
-                s = s.Remove(i, j - i+1).Insert(i, rep);
-
-            }
+            s = Renderer.RenderLine(s);
             return $"{Escape(34)}{index,4} |{Escape(0)} {s}";
         }
 
