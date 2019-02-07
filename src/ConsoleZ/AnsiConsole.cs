@@ -81,7 +81,7 @@ namespace ConsoleZ
 
         public string RenderLine(IConsole cons, int index, string s)
         {
-            s = Renderer.RenderLine(s);
+            s = Renderer.RenderLine(cons, index, s);
             return $"{Escape(34)}{index,4} |{Escape(0)} {s}";
         }
 

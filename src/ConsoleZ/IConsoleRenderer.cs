@@ -9,12 +9,12 @@ namespace ConsoleZ
 {
     public interface IConsoleRenderer
     {
-        string RenderLine(string s);
+        string RenderLine(IConsole cons, int index, string s);
     }
 
     public class AnsiConsoleRenderer : IConsoleRenderer
     {
-        public string RenderLine(string s)
+        public string RenderLine(IConsole cons, int index,  string s)
         {
             int i, j;
 
@@ -37,7 +37,7 @@ namespace ConsoleZ
 
     public class PlainConsoleRenderer : IConsoleRenderer
     {
-        public string RenderLine(string s)
+        public string RenderLine(IConsole cons, int index, string s)
         {
             int i, j;
 
@@ -52,7 +52,7 @@ namespace ConsoleZ
 
     public class HtmlConsoleRenderer : IConsoleRenderer
     {
-        public string RenderLine(string s)
+        public string RenderLine(IConsole cons, int index, string s)
         {
             return s;
         }
