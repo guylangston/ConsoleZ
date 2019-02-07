@@ -121,8 +121,6 @@ namespace ConsoleZ
             }
         }
 
-
-
         public static string Escape(int clr) => $"\u001b[{clr}m";
         public static string EscapeFore(Color c) => $"\u001b[38;2;{c.R};{c.G};{c.B}m"; // https://en.wikipedia.org/wiki/ANSI_escape_code#24-bit
         public static string EscapeBack(Color c) => $"\u001b[48;2;{c.R};{c.G};{c.B}m"; // https://en.wikipedia.org/wiki/ANSI_escape_code#24-bit

@@ -27,6 +27,7 @@ namespace ConsoleZ.DisplayComponents
 
         public string Title { get; set; }
         public string Message { get; set; }
+        public int GraphWidth { get; set; } = 10;
 
         public TimeSpan Elapsed => timer?.Elapsed ?? default(TimeSpan);
 
@@ -51,7 +52,7 @@ namespace ConsoleZ.DisplayComponents
             timer.Start();
             ticks = timer.ElapsedTicks;
 
-            line = cons.WriteLine("[..........]");
+            line = cons.WriteLine(Render());
             
             return this;
         }
@@ -72,21 +73,18 @@ namespace ConsoleZ.DisplayComponents
 
         public string  Render()
         {
-            var l = 20;
-            var a = (int)(Percentage/100d * l);
-            var b = l - a;
+            var a = (int)(Percentage/100d * GraphWidth);
+            var b = GraphWidth - a;
             var graph = new string('#', a) + new string('.', b);
 
             var clr = timer == null
                 ? "purple"
                 : (timer.IsRunning ? "cyan" : "green");
-            var r = $"{Percentage,3:0}% [^{clr};{graph}^;] {ItemsDone,4}/{ItemsTotal} {Title}. {Message} in {Elapsed.ToString("g")}";
+            var r = $"{Percentage,3:0}% [^{clr};{graph}^;] {ItemsDone,4}/{ItemsTotal} {Title}";
             if (r.Length >= cons.Width)
             {
                 return r.Substring(0, cons.Width - 1);
             }
-
-        
             return r;
         }
 

@@ -20,12 +20,8 @@ namespace ConsoleZ.Playground
         private static void RunMarkDownSample()
         {
             var cons = AnsiConsole.Singleton;
-            SampleDocuments.MarkDownBasics(cons);
-
-
-           
-
             
+            SampleDocuments.MarkDownBasics(cons);
             SlowPlayback.LiveElements(cons);
             SampleDocuments.ColourPalette(cons);
 
@@ -37,8 +33,6 @@ namespace ConsoleZ.Playground
             }
             a.Stop();
         }
-
-
 
         private static void RunBenchmark()
         {

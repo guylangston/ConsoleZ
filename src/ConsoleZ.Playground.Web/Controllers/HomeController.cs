@@ -6,8 +6,10 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
+using ConsoleZ.DisplayComponents;
 using Microsoft.AspNetCore.Mvc;
 using ConsoleZ.Playground.Web.Models;
+using ConsoleZ.Samples;
 using ConsoleZ.Web;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
@@ -38,16 +40,29 @@ namespace ConsoleZ.Playground.Web.Controllers
         [HttpPost]
         public IActionResult ConsoleStart(string consoleText)
         {
-            var cons = StaticVirtualConsoleRepository.Singleton.AddConsole(new VirtualConsole(DateTime.Now.Ticks.ToString(), 80, 30));
+            var consx = StaticVirtualConsoleRepository.Singleton.AddConsole(new VirtualConsole(DateTime.Now.Ticks.ToString(), 80, 30));
 
-            builder.RunAsync(cons, x =>
+            builder.RunAsync(consx, cons =>
             {
-                ConsoleZ.Samples.SlowPlayback.SimpleCounter(x, int.Parse(consoleText));
-                x.SetProp("DoneUrl", "/Home/Privacy");
+                cons.WriteLine($"Starting command '{consoleText}'... ");
+
+                SampleDocuments.MarkDownBasics(cons);
+                SlowPlayback.LiveElements(cons);
+                SampleDocuments.ColourPalette(cons);
+
+                var a = new ProgressBar(cons, "Test Scrolling").Start(100);
+                for (int i = 0; i < a.ItemsTotal; i++)
+                {
+                    a.Increment(i.ToString());
+                    Thread.Sleep(200);
+                }
+                a.Stop();
+
+                cons.SetProp("DoneUrl", "/Home/Privacy");
             });
             
 
-            return Json(builder.ToDto(cons));
+            return Json(builder.ToDto(consx));
         }
 
         
