@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ConsoleZ.DisplayComponents;
 
 namespace ConsoleZ.Samples
 {
@@ -35,8 +36,8 @@ namespace ConsoleZ.Samples
             
             cons.WriteLine($"Concurrent Test....");
 
-            var a = cons.WriteLine($"A");
-            var b = cons.WriteLine($"B");
+            var a = new ProgressBar(cons, "Counter A").Start(100);
+            var b = new ProgressBar(cons, "Counter A").Start(20);
             cons.WriteLine($"End Line");
             cons.WriteLine($"");
 
@@ -46,36 +47,41 @@ namespace ConsoleZ.Samples
             cons.WriteLine($"├ List items 2");
             cons.WriteLine($"└ List items 3");
 
-            Task.Run(() =>
+            Thread.Sleep(3500);
+
+            var ta = Task.Run(() =>
             {
-                var p = 20;
-                for (int i = 0; i < p; i++)
+                for (int i = 0; i < a.ItemsTotal; i++)
                 {
-                    cons.UpdateLine(a, $"Percentage: {i * 100 / p}%");
+                    a.Increment(i);
                     Thread.Sleep(200);
                 }
+                a.Stop();
             });
-            Task.Run(() =>
+            var tb = Task.Run(() =>
             {
-                var p = 10;
-                for (int i = 0; i < p; i++)
+                for (int i = 0; i < b.ItemsTotal; i++)
                 {
-                    cons.UpdateLine(b, $"Percentage: {i * 100 / p}%");
-                    Thread.Sleep(200);
+                    b.Increment(i);
+                    Thread.Sleep(350);
                 }
+                b.Stop();
             });
 
             cons.WriteLine($"End Line");
-            cons.WriteLine($"End Line");
-            cons.WriteLine($"End Line");
-
             Thread.Sleep(2000);
-            foreach (var i in Enumerable.Range(0, 200))
-            {
-                cons.WriteLine($"Testing scrolling: {i}");
-                Thread.Sleep(200);
-                cons.UpdateLine(a, $"Off Screen update {i}");
-            }
+            cons.WriteLine($"End Line");
+            cons.WriteLine($"End Line");
+
+            
+            //foreach (var i in Enumerable.Range(0, 200))
+            //{
+            //    cons.WriteLine($"Testing scrolling: {i}");
+            //    Thread.Sleep(200);
+            //    cons.UpdateLine(a, $"Off Screen update {i}");
+            //}
+
+            Task.WaitAll(ta, tb);
         }
 
     }

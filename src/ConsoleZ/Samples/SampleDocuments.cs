@@ -40,6 +40,7 @@ namespace ConsoleZ.Samples
             {
                 console.WriteLine($"{color.Key.Name,12} => ^{color.Key.Name};XXXX...^; reverted.");
             }
+            console.WriteLine($"{"NotAColour",12} => ^NotAColour;XXXX...^; reverted.");
             
 
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 
 namespace ConsoleZ
@@ -9,6 +10,9 @@ namespace ConsoleZ
     ///
     /// Enable in Win10
     /// https://www.jerriepelser.com/blog/using-ansi-color-codes-in-net-console-apps/
+    ///
+    /// Wikipedia: ANSI escape code
+    /// https://en.wikipedia.org/wiki/ANSI_escape_code
     /// 
     /// </summary>
     public sealed class AnsiConsole : ConsoleBase, IConsoleLineRenderer
@@ -30,6 +34,10 @@ namespace ConsoleZ
                     {
                         var t = new AnsiConsole();
                         t.EnableANSI();
+
+                        // Sync the current display
+                        Console.Clear();
+
                         singleton = t;
                     }
 
@@ -49,25 +57,88 @@ namespace ConsoleZ
         {
             if (updated)
             {
-                var x = Console.CursorTop;
-                Console.CursorTop = index - DisplayStart;
-                Console.CursorLeft = 0;
+                try
+                {
+                    var x = Console.CursorTop;
+                    Console.CursorTop = index - DisplayStart + 1;
+                    Console.CursorLeft = 0;
 
-                Console.Write(RenderLine(this, index, line).PadRight(Console.WindowWidth - 1));
+                    var rline = RenderLine(this, index, line);
+                    if (rline.Length > Console.WindowWidth )
+                    {
+                        rline = rline.Substring(0, Console.WindowWidth);
+                    }
 
-                Console.CursorTop = x;
-                Console.CursorLeft = 0;
+                    Console.Write(rline.PadRight(Console.WindowWidth - 1));
+
+                    Console.CursorTop = x;
+                    Console.CursorLeft = 0;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine(line);
+                }
+                
             }
             else
             {
-                Console.WriteLine(RenderLine(this, index,  line));
+                if (Version > 0)
+                {
+                    Console.WriteLine();
+                }
+                Console.Write(RenderLine(this, index,  line));
             }
         }
 
-        
+        public string RenderLine(IConsole cons, int index, string s)
+        {
+            int i, j;
 
-        public string Escape(int clr) => $"\u001b[{clr}m";
+            // Replace colour tokens in the format ^colorName;
+            while((i = s.IndexOf('^')) > 0 && (j = s.IndexOf(';',i)) > 0)
+            {
+                var ss = s.Substring(i+1, j - i - 1);
+                var rep = Escape(0);
+                if (ss.Length > 0)
+                {
+                    rep = EscapeFore(Color.FromName(ss));
+                }
+                
+                s = s.Remove(i, j - i+1).Insert(i, rep);
 
+            }
+            return $"{Escape(34)}{index,4} |{Escape(0)} {s}";
+        }
+
+        protected override void AddLineCheckWrap(string l)
+        {
+            if (l.Length + 6 > Width)
+            {
+                while (l.Length + 6 > Width)
+                {
+                    var front = l.Substring(0, Width - 7 );
+                    AddLineInner(front);
+                    l = l.Remove(0, front.Length);
+                }
+
+                if (l.Length > 0)
+                {
+                    AddLineInner(l);
+                }
+                return;
+            }
+            else
+            {
+                AddLineInner(l);
+            }
+        }
+
+
+
+        public static string Escape(int clr) => $"\u001b[{clr}m";
+        public static string EscapeFore(Color c) => $"\u001b[38;2;{c.R};{c.G};{c.B}m"; // https://en.wikipedia.org/wiki/ANSI_escape_code#24-bit
+        public static string EscapeBack(Color c) => $"\u001b[48;2;{c.R};{c.G};{c.B}m"; // https://en.wikipedia.org/wiki/ANSI_escape_code#24-bit
 
         public void EnableANSI()
         {
@@ -100,24 +171,6 @@ namespace ConsoleZ
         [DllImport("kernel32.dll")]
         public static extern uint GetLastError();
 
-        public string RenderLine(IConsole cons, int index, string s)
-        {
-            int i, j;
-
-            // Replace colour tokens in the format ^colorName;
-            while((i = s.IndexOf('^')) > 0 && (j = s.IndexOf(';',i)) > 0)
-            {
-                var ss = s.Substring(i+1, j - i - 1);
-                var rep = Escape(0);
-                if (ss.Length > 0)
-                {
-                    rep = Escape(33);
-                }
-                
-                s = s.Remove(i, j - i+1).Insert(i, rep);
-
-            }
-            return $"{Escape(34)}{index,4} |{Escape(0)} {s}";
-        }
+       
     }
 }

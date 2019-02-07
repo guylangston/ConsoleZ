@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading;
 using ConsoleZ;
+using ConsoleZ.DisplayComponents;
 using ConsoleZ.Samples;
 using ConsoleZ.Win32;
 
@@ -18,13 +19,23 @@ namespace ConsoleZ.Playground
 
         private static void RunMarkDownSample()
         {
-            SampleDocuments.MarkDownBasics(AnsiConsole.Singleton);
+            var cons = AnsiConsole.Singleton;
+            SampleDocuments.MarkDownBasics(cons);
 
 
-            SampleDocuments.ColourPalette(AnsiConsole.Singleton);
+           
 
             
-            SlowPlayback.LiveElements(AnsiConsole.Singleton);
+            SlowPlayback.LiveElements(cons);
+            SampleDocuments.ColourPalette(cons);
+
+            var a = new ProgressBar(cons, "Test Scrolling").Start(100);
+            for (int i = 0; i < a.ItemsTotal; i++)
+            {
+                a.Increment(i);
+                Thread.Sleep(200);
+            }
+            a.Stop();
         }
 
 

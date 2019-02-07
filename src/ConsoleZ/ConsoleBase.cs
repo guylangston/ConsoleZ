@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using ConsoleZ.Win32;
 
 namespace ConsoleZ
 {
@@ -10,14 +11,13 @@ namespace ConsoleZ
     {
         protected List<string> lines = new List<string>();
         private ConcurrentDictionary<string, string> props = new ConcurrentDictionary<string, string>();
-        protected int version;
 
         protected ConsoleBase(string handle, int width, int height)
         {
             Handle = handle ?? throw new ArgumentNullException(nameof(handle));
             Width = width;
             Height = height;
-            version = 0;
+            Version = 0;
         }
 
 
@@ -25,7 +25,7 @@ namespace ConsoleZ
         {
             lock (this)
             {
-                return AddLine(s);
+                return AddLineCheckLineFeed(s);
             }
         }
 
@@ -33,18 +33,18 @@ namespace ConsoleZ
         {
             lock (this)
             {
-                return AddLine(formatted.ToString(this));
+                return AddLineCheckLineFeed(formatted.ToString(this));
             }
         }
 
         public string Handle { get;  }
-        public int Version => version;
+        public int Version { get; private set; }
         
         public int Width { get; protected set; }
         public int Height { get; protected set;}
 
-        public int DisplayStart { get; }
-        public int DisplayEnd { get; }
+        public int DisplayStart { get; private set; }
+        public int DisplayEnd => lines.Count;
 
         public virtual string Title { get; set; }
 
@@ -64,10 +64,9 @@ namespace ConsoleZ
             }
         }
         
-        int AddLine(string s)
+        int AddLineCheckLineFeed(string s)
         {
-            var i = lines.Count -1;
-            version++;
+            Version++;
             if (s.IndexOf('\n') > 0)
             {
                 // slow
@@ -76,23 +75,61 @@ namespace ConsoleZ
                     string l = null;
                     while ((l = tr.ReadLine()) != null)
                     {
-                        lines.Add(l);
-                        i++;
-                        LineChanged(i, l, false);
+                        AddLineCheckWrap(l);
                     }
                 }
             }
             else
             {
-                lines.Add(s);
-                i++;
-                LineChanged(i, s, false);
+                AddLineCheckWrap(s);
             }
-            
-            return i;
+            return lines.Count - 1;
         }
 
-        
+        protected virtual void AddLineCheckWrap(string l)
+        {
+            if (l.Length > Width)
+            {
+                while (l.Length > Width)
+                {
+                    var front = l.Substring(0, Width);
+                    AddLineInner(front);
+                    l = l.Remove(0, front.Length);
+                }
+
+                if (l.Length > 0)
+                {
+                    AddLineInner(l);
+                }
+                return;
+            }
+            else
+            {
+                AddLineInner(l);
+            }
+        }
+
+        protected void AddLineInner(string l)
+        {
+            lines.Add(l);
+
+            
+            LineChanged(lines.Count -1 , l, false);
+
+            // Check screen up
+            if (lines.Count - DisplayStart > Height)
+            {
+                ScrollUp();
+            }
+        }
+
+      
+
+        protected virtual void ScrollUp()
+        {
+            DisplayStart++;
+        }
+
 
         void EditLine(int line, string txt)
         {
@@ -101,7 +138,7 @@ namespace ConsoleZ
                 throw new NotImplementedException();
             }
             lines[line - DisplayStart] = txt;
-            version++;
+            Version++;
             LineChanged(line, txt, true);
         }
 
