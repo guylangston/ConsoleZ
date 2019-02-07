@@ -5,7 +5,8 @@ using System.IO;
 
 namespace ConsoleZ
 {
-    public abstract class ConsoleBase : IConsole, IConsoleWithProps, IFormatProvider, ICustomFormatter
+    // TODO: MaxLines and off-screen rules.
+    public abstract class ConsoleBase : IConsoleWithProps, IFormatProvider, ICustomFormatter
     {
         protected List<string> lines = new List<string>();
         private ConcurrentDictionary<string, string> props = new ConcurrentDictionary<string, string>();
@@ -13,7 +14,7 @@ namespace ConsoleZ
 
         protected ConsoleBase(string handle, int width, int height)
         {
-            Handle = handle;
+            Handle = handle ?? throw new ArgumentNullException(nameof(handle));
             Width = width;
             Height = height;
             version = 0;
@@ -44,6 +45,8 @@ namespace ConsoleZ
 
         public int DisplayStart { get; }
         public int DisplayEnd { get; }
+
+        public virtual string Title { get; set; }
 
         public void UpdateLine(int line, string txt)
         {
@@ -104,7 +107,6 @@ namespace ConsoleZ
 
         public abstract void LineChanged(int index, string line, bool updated);
         
-
         public object GetFormat(Type formatType) => this;
 
         string ICustomFormatter.Format(string format, object arg, IFormatProvider formatProvider)
@@ -112,14 +114,7 @@ namespace ConsoleZ
             return $"[{arg}]";
         }
 
-        protected virtual string Render(int line, string s)
-        {
-            return $"{Escape(34)}{line,4} |{Escape(0)} {s}";
-        }
-
-        public string Escape(int clr) => $"\u001b[{clr}m";
-
-
+        
         public void SetProp(string key, string val) => props[key.ToLowerInvariant()] = val;
         public bool TryGetProp(string key, out string val) => props.TryGetValue(key.ToLowerInvariant(), out val);
     }

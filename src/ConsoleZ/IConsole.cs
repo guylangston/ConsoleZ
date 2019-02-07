@@ -26,12 +26,18 @@ namespace ConsoleZ
 
     public interface IConsoleWithProps : IConsole
     {
+        string Title { get; set; }
         
         /// <param name="key">Case Insensitive</param>
         void SetProp(string key, string val);
 
         /// <param name="key">Case Insensitive</param>
         bool TryGetProp(string key, out string val);
+    }
+
+    public interface IConsoleLineRenderer
+    {
+        string RenderLine(IConsole cons, int index, string raw);
     }
 
     public interface IAbsConsole<T>

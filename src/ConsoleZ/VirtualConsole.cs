@@ -6,12 +6,11 @@ namespace ConsoleZ
 {
     public class VirtualConsole : ConsoleBase
     {
-        public VirtualConsole(string handle, int width, int height) : base(handle.ToString(), width, height)
+        public VirtualConsole(string handle, int width, int height) : base(handle, width, height)
         {
             
         }
 
-        public int Version => version;
         
         public override void LineChanged(int index, string line, bool updated)
         {

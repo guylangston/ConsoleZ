@@ -103,9 +103,9 @@ namespace ConsoleZ.Win32
         internal COORD dwFontSize;
         internal int FontFamily;
         internal int FontWeight;
-        internal fixed char FaceName[32];
+        internal fixed char FaceName[LF_FACESIZE];
 
-        //public const int LF_FACESIZE = 32;
+        public const int LF_FACESIZE = 32;
     }
 
 

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading;
 using ConsoleZ;
+using ConsoleZ.Samples;
 using ConsoleZ.Win32;
 
 namespace ConsoleZ.Playground
@@ -17,28 +18,15 @@ namespace ConsoleZ.Playground
 
         private static void RunMarkDownSample()
         {
-            WriteSampleDocument(AnsiConsole.Singleton);
-        }
+            SampleDocuments.MarkDownBasics(AnsiConsole.Singleton);
 
-        private static void WriteSampleDocument(IConsole console)
-        {
-            // https://guides.github.com/features/mastering-markdown/
-            console.WriteLine("# Header");
-            console.WriteLine("");
-            console.WriteLine("It's very easy to make some words **bold** and other words *italic* with Markdown. You can even [link to Google!](http://google.com) ");
 
-            console.WriteLine("List:");
-            console.WriteLine("- Item One");
-            console.WriteLine("- Item Two");
-            console.WriteLine("- Item Three");
-
-            console.WriteLine(@"But I have to admit, tasks lists are my favorite:
-
-- [x] This is a complete item
-- [ ] This is an incomplete item");
+            SampleDocuments.ColourPalette(AnsiConsole.Singleton);
 
             
+            SlowPlayback.LiveElements(AnsiConsole.Singleton);
         }
+
 
 
         private static void RunBenchmark()
