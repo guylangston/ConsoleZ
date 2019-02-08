@@ -8,7 +8,7 @@ namespace ConsoleZ.Web
     {
         private string urlTemplate;
         
-        IConsoleRenderer lineRenderer = new PlainConsoleRenderer();
+        IConsoleRenderer lineRenderer = new HtmlConsoleRenderer();
 
         public ConsoleDataBuilder(string urlTemplate)
         {

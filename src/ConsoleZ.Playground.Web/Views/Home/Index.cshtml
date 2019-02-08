@@ -4,23 +4,22 @@
 <style>
     .console-container {
         white-space: pre;
-        font-family: monospace;
-       
+        font-family: Consolas, monospace;
+        font-size: 10pt;
         color: aliceblue;
-        
+        min-height: 50px;
         width: 100%;
         padding: 4px;
-     
+        background: #333;
     }
 
     .console-active {
         border: 4px solid green;
-        background: #333;
+        
     }
 
     .console-error {
         border: 4px solid red;
-        background: #333;
     }
 </style>
 
@@ -67,7 +66,7 @@
     }
 
     function updateConsole(cons) {
-        document.getElementById('debug').innerHTML = JSON.stringify(cons, null, ' ');
+        //document.getElementById('debug').innerHTML = JSON.stringify(cons, null, ' ');
         var v = document.getElementById('consoleOut').getAttribute("data-version");
 
         if (v !== cons.version) {

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ConsoleZ.Internal;
 
 namespace ConsoleZ
 {
@@ -50,11 +51,72 @@ namespace ConsoleZ
         }
     }
 
-    public class HtmlConsoleRenderer : IConsoleRenderer
+    public class MarkUpToken
     {
+        
+    }
+
+    public class HtmlConsoleRenderer : TokenParser<MarkUpToken>, IConsoleRenderer
+    {
+
+        protected override Token<MarkUpToken> CreateToken(string text,int start, int end, bool isLiteral)
+        {
+            var raw = text.Substring(start, end - start + 1);
+            return new Token<MarkUpToken>()
+            {
+                Start = start,
+                End = end,
+                RawText = raw,
+                Text = raw.Trim('^', ';', '*'),
+                IsLiteral = isLiteral
+            };
+        }
+
+        protected override bool IsStart(string text, int index, char c)
+        {
+            if (c == '*' && index < text.Length-1 && text[index + 1] == '*') return true;
+            return c == '^';
+        }
+
+        protected override bool IsEnd(string text, int start, int index, char endC)
+        {
+            if (endC == '*' && text[start] == '*') return true;
+
+            return endC == ';';
+        }
+
+
         public string RenderLine(IConsole cons, int index, string s)
         {
-            return s;
+            if (s.StartsWith("# "))
+            {
+                return $"<h1>{s.Remove(0,2)}</h1>";
+            }
+
+            if (string.IsNullOrWhiteSpace(s))
+            {
+                return "";
+            }
+            
+            Scan(s);
+            return Render((i, t) =>
+            {
+                if (t.IsLiteral) return t.Text;
+
+                if (t.Text == "")
+                {
+                    return $"</span>";
+                }
+
+                if (TryGetPreviousNonLiteral(t, out var pt) && pt.Text != "")
+                {
+                    return $"</span><span style=\"color:{t.Text};\">";
+                }
+
+                return $"<span style=\"color:{t.Text};\">";
+            });
         }
+
+        
     }
 }
