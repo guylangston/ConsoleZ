@@ -75,12 +75,12 @@ namespace ConsoleZ.DisplayComponents
         {
             var a = (int)(Percentage/100d * GraphWidth);
             var b = GraphWidth - a;
-            var graph = new string('#', a) + new string('.', b);
+            var graph = new string(Ascii.Block100, a) + new string(Ascii.DotMiddle, b);
 
             var clr = timer == null
                 ? "purple"
                 : (timer.IsRunning ? "cyan" : "green");
-            var r = $"{Percentage,3:0}% [^{clr};{graph}^;] {ItemsDone,4}/{ItemsTotal} {Title}";
+            var r = $"{Percentage,3:0}% {Ascii.BoxVert}^{clr};{graph}^;{Ascii.BoxVert} {ItemsDone,4}/{ItemsTotal} {Title}";
             if (r.Length >= cons.Width)
             {
                 return r.Substring(0, cons.Width - 1);

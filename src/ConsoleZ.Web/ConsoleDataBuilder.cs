@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -46,7 +48,9 @@ namespace ConsoleZ.Web
                 Version = cons.Version,
                 
                 UpdateUrl = string.Format(urlTemplate, cons.Handle),
-                HtmlContent = DefaultRenderer(cons)
+                HtmlContent = DefaultRenderer(cons),
+
+                
             };
 
             if (cons is IConsoleWithProps consProps)
@@ -59,6 +63,13 @@ namespace ConsoleZ.Web
                 if (consProps.TryGetProp("DoneUrl", out var done)) dto.DoneUrl = done;
                 if (consProps.TryGetProp("BackUrl", out var back)) dto.BackUrl = back;
                 if (consProps.TryGetProp("CancelUrl", out var cancel)) dto.CancelUrl = cancel;
+
+                dto.Props = new Dictionary<string, string>()
+                {
+                    {"title", consProps.Title}
+                };
+
+
             }
 
             return dto;

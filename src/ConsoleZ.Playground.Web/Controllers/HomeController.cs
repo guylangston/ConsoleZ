@@ -40,12 +40,12 @@ namespace ConsoleZ.Playground.Web.Controllers
         [HttpPost]
         public IActionResult ConsoleStart(string consoleText)
         {
-            var consx = StaticVirtualConsoleRepository.Singleton.AddConsole(new VirtualConsole(DateTime.Now.Ticks.ToString(), 80, 30));
+            var consx = StaticVirtualConsoleRepository.Singleton.AddConsole(new VirtualConsole(DateTime.Now.Ticks.ToString(), 80, 40));
+
+            consx.WriteLine($"Starting command '{consoleText}'... ");
 
             builder.RunAsync(consx, cons =>
             {
-                cons.WriteLine($"Starting command '{consoleText}'... ");
-
                 SampleDocuments.MarkDownBasics(cons);
                 SlowPlayback.LiveElements(cons);
                 SampleDocuments.ColourPalette(cons);
@@ -60,9 +60,8 @@ namespace ConsoleZ.Playground.Web.Controllers
 
                 cons.SetProp("DoneUrl", "/Home/Privacy");
             });
-            
 
-            return Json(builder.ToDto(consx));
+            return RedirectToAction("ConsoleHost", new {id = consx.Handle});
         }
 
         
@@ -76,9 +75,22 @@ namespace ConsoleZ.Playground.Web.Controllers
             }
             else
             {
-                return NotFound(id);
+                return NotFound($"Id not found: {id}");
             }
             
+        }
+
+        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult ConsoleHost(string id)
+        {
+            if (StaticVirtualConsoleRepository.Singleton.TryGetConsole(id, out var cons))
+            {
+                return View(Tuple.Create(cons, builder.ToDto(cons)));
+            }
+            else
+            {
+                return NotFound($"Id not found: {id}");
+            }
         }
     }
 }
