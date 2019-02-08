@@ -28,6 +28,30 @@ Key Features (done vs. in-progress):
 ![HTML Console](./assets/WebConsole.png "HTML Console")
 ![Tetris](./assets/Tetris.png "Tetris")
 
+## Key C# interface
+What will I be programming against?
+
+```c#
+public interface ITextWriter
+{
+    int WriteLine(string s);        // We don't use Write, rather update the whole line
+    int WriteFormatted(FormattableString formatted);
+}
+
+public interface IConsole : ITextWriter
+{
+    string Handle { get; }
+    int Version { get;  }
+
+    int Width { get; }
+    int Height { get; }
+    int DisplayStart { get;  }
+    int DisplayEnd { get; }
+
+    void UpdateLine(int line, string txt);
+    void UpdateFormatted(int line, FormattableString formatted);
+}
+```
 
 ## The Idea?
 In my current project we have lots of command logic that output calculation reports to the console. As the functionaliy matures, or reaches a larger audience, the it gets ported to the web.
@@ -35,14 +59,6 @@ In my current project we have lots of command logic that output calculation repo
 Would it not be great if the console and html versions share the same interface and rendering abilities:
 - Console Renders Markdown with ASCII-art and Console standard colours (Find closest Color -< ConsoleColour)
 - Html Renders to a virtual console (thread-safe) and renders HTML Markdown
-
-Interfaces:
- - ITextWriterBasic ( Write + WriteLine )
- - IVirtualConsole : ITextWriterBasic
-    - Token
-    - Title
-    - Width
-    - Height
     
 Features:
 - Markdown is the common format (Rendering to Console or HTML)
@@ -50,11 +66,12 @@ Features:
 - Threadsafe for the web (many IVirtualConsoles at once)
 - Easy inline colours ```"Hello ^red;World^;" <-> string.Format("Hello {0}World{1}", Color.Red, Color.Default)```
 - Updating progress bars ```[###... 50%]```
+- Standard ASP.NET core console terminal
+- Very Fast console update/FPS see: https://github.com/OneLoneCoder/videos/blob/master/olcConsoleGameEngine.h
 
 Stretch:
 - Wolfram-style cell input/output consoles
-- Standard ASP.NET core console terminal (with possible SignalR support)
-- Very Fast console update/FPS see: https://github.com/OneLoneCoder/videos/blob/master/olcConsoleGameEngine.h
+- SignalR polling to update console (vs polling ever sec)
 
 
 ## Research / Related projects
