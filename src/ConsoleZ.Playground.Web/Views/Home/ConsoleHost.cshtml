@@ -13,6 +13,10 @@
     }
 
     .console-active {
+        border: 2px solid cyan;
+    }
+
+    .console-done {
         border: 4px solid green;
     }
 
@@ -38,7 +42,7 @@
 
 
     //            document.getElementById('console-host').appendChild();
-    //            $('#consoleOut').addClass("console-active");
+    //           
     //            updateConsole(r);
     //            startRefresh(r);
     //        })
@@ -63,10 +67,18 @@
         var version = container.getAttribute("data-version");
 
         if (version !== cons.version) {
+            console.log(cons);
 
+            
             document.getElementById('page-title').innerHTML = cons.props["title"];
             container.innerHTML = cons.htmlContent;
             container.setAttribute("data-version", cons.version);
+
+            if (cons.isActive) {
+                container.setAttribute("class", "console-container console-active");
+            } else {
+                container.setAttribute("class", "console-container console-done");
+            }
 
             if (cons.doneUrl != null) {
               

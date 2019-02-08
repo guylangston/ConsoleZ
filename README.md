@@ -2,13 +2,31 @@
 
 > A modern console rendering library
 
-Key Features:
-- [ ] Windows 10 Console: ANSI Escape Codes
-- [ ] Alternative human readble inline colour formatting ```"^red;Error:^; Message"```
-- [ ] Fast full-screen updates. Allows Retro Console games. https://onelonecoder.com/olcconsolegameengine/
-- [ ] Unified ```IConsole``` working with HTML, WinForms, Console
-- [ ] UI Components : Percentage Complete Graph, etc
+Why use this library? What use cases?
+- Want a common interface/experiance across console and web apps? 
+- Want a richer output (colours, progress graphs)?
+- Want to make a retro-console game like Tetris, Snake?
+- Want Markdown in the console?
 
+What this library does NOT do:
+- Console Argument parsing
+- Midnight-Commander like console forms
+
+Key Features (done vs. in-progress):
+- [X] Zero-dependancy
+- [X] Windows 10 Console: ANSI Escape Codes
+- [X] Alternative human readble inline colour formatting ```"^red;Error:^; Message"```
+- [X] Fast full-screen updates. Allows Retro Console games. https://onelonecoder.com/olcconsolegameengine/
+- [X] Unified ```IConsole``` working with HTML, WinForms, Console
+- [X] UI Components : Percentage Complete Graph, etc
+- [ ] ASCII large fonts
+- [ ] Markdown formatting
+
+## Screenshots
+
+![ANSI Colour in Console](./assets/AnsiConsole.png "ANSI Colour in Console")
+![HTML Console](./assets/WebConsole.png "HTML Console")
+![Tetris](./assets/Tetris.png "Tetris")
 
 
 ## The Idea?
