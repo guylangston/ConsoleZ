@@ -21,7 +21,6 @@ namespace ConsoleZ
             Renderer = new PlainConsoleRenderer();
         }
 
-
         public int WriteLine(string s)
         {
             lock (this)

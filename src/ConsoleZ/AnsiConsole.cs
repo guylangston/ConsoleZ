@@ -13,7 +13,6 @@ namespace ConsoleZ
     ///
     /// Wikipedia: ANSI escape code
     /// https://en.wikipedia.org/wiki/ANSI_escape_code
-    /// 
     /// </summary>
     public sealed class AnsiConsole : ConsoleBase, IConsoleLineRenderer
     {
