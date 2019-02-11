@@ -12,11 +12,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleZ.Playground", "ConsoleZ.Playground\ConsoleZ.Playground.csproj", "{0E24D4CD-EAA1-461F-B1D7-7E3165B31C8A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleZ.Playground.Web", "ConsoleZ.Playground.Web\ConsoleZ.Playground.Web.csproj", "{CE312A98-78DA-4AE9-859A-5DA523446CBD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleZ.Playground.Web", "ConsoleZ.Playground.Web\ConsoleZ.Playground.Web.csproj", "{CE312A98-78DA-4AE9-859A-5DA523446CBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleZ.Web", "ConsoleZ.Web\ConsoleZ.Web.csproj", "{91C75530-2DB6-46A1-B7B6-BCC2F56E8BB1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleZ.Test", "ConsoleZ.Test\ConsoleZ.Test.csproj", "{359CDB16-F431-4976-9977-3349605095AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleZ.Test", "ConsoleZ.Test\ConsoleZ.Test.csproj", "{359CDB16-F431-4976-9977-3349605095AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,10 +34,6 @@ Global
 		{CE312A98-78DA-4AE9-859A-5DA523446CBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE312A98-78DA-4AE9-859A-5DA523446CBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE312A98-78DA-4AE9-859A-5DA523446CBD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{91C75530-2DB6-46A1-B7B6-BCC2F56E8BB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{91C75530-2DB6-46A1-B7B6-BCC2F56E8BB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{91C75530-2DB6-46A1-B7B6-BCC2F56E8BB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{91C75530-2DB6-46A1-B7B6-BCC2F56E8BB1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{359CDB16-F431-4976-9977-3349605095AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{359CDB16-F431-4976-9977-3349605095AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{359CDB16-F431-4976-9977-3349605095AA}.Release|Any CPU.ActiveCfg = Release|Any CPU

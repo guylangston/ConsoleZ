@@ -14,7 +14,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ConsoleZ.Web\ConsoleZ.Web.csproj" />
       <ProjectReference Include="..\ConsoleZ\ConsoleZ.csproj" />
     </ItemGroup>
 

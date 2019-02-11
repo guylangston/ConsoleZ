@@ -40,6 +40,7 @@ namespace ConsoleZ.Drawing
     {
         public static bool PixelEquals(float x1, float x2) => System.Math.Abs(x1 - x2) < 0.01;
 
+
         
 
         // https://en.wikipedia.org/wiki/Line_drawing_algorithm
