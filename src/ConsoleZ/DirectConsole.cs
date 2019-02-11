@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using ConsoleZ.Win32;
@@ -133,7 +134,7 @@ namespace ConsoleZ
             }
 
             if (screenHeight > csbi.dwMaximumWindowSize.Y) throw new Exception("Screen Height / Font Height Too Big");
-            if (screenWidth > csbi.dwMaximumWindowSize.X) throw new Exception("Screen Width / Font Width Too Big");
+            if (screenWidth > csbi.dwMaximumWindowSize.X) throw new Exception($"Screen Width / Font Width Too Big {csbi.dwMaximumWindowSize.X}");
 
             // Set Physical Console Window Size
             m_rectWindow = new SMALL_RECT()
@@ -166,6 +167,14 @@ namespace ConsoleZ
         //        Thread.Sleep(frameDelayMs);
         //    }
         //}
+
+        [DllImport("user32.dll")]
+        private static extern bool ShowWindow(System.IntPtr hWnd, int cmdShow);
+
+        public static void MaximizeWindow()
+        {
+            ShowWindow(Process.GetCurrentProcess().MainWindowHandle, 3); //SW_MAXIMIZE = 3
+        }
 
         public static void Fill(char c, ushort clr)
         {
