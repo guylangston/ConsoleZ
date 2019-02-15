@@ -6,6 +6,7 @@ using ConsoleZ.DisplayComponents;
 using Microsoft.AspNetCore.Mvc;
 using ConsoleZ.Playground.Web.Models;
 using ConsoleZ.Samples;
+using Microsoft.AspNetCore.Http;
 
 
 namespace ConsoleZ.Playground.Web.Controllers
@@ -46,6 +47,11 @@ namespace ConsoleZ.Playground.Web.Controllers
                 SlowPlayback.LiveElements(cons);
                 SampleDocuments.ColourPalette(cons);
 
+                if (consoleText == "err")
+                {
+                    throw new Exception("Sample Error");
+                }
+
                 var a = new ProgressBar(cons, "Test Scrolling").Start(100);
                 for (int i = 0; i < a.ItemsTotal; i++)
                 {
@@ -53,6 +59,8 @@ namespace ConsoleZ.Playground.Web.Controllers
                     Thread.Sleep(200);
                 }
                 a.Stop();
+
+               
 
                 cons.SetProp("DoneUrl", "/Home/Privacy");
             });

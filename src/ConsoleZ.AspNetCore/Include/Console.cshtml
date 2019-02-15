@@ -1,0 +1,74 @@
+﻿@model ConsoleZ.Web.ConsoleDataModel
+<style>
+    .console-container {
+        white-space: pre;
+        font-family: Consolas, monospace;
+        font-size: 10pt;
+        line-height: 1; /* Allow line-art to touch */
+        color: aliceblue;
+        min-height: 50px;
+        width: 100%;
+        padding: 4px;
+        background: #333;
+    }
+
+    .console-active {
+        border: 2px solid cyan;
+    }
+
+    .console-done {
+        border: 4px solid green;
+    }
+
+    .console-error {
+        border: 4px solid red;
+    }
+</style>
+<h3 id="page-title">@Model.Data.Title</h3>
+<div class="row" id="console-host">
+    <div class="console-container" id="consoleOut" data-version="-1">@{ WriteLiteral(Model.Data.HtmlContent);}</div>
+    <p class="text-right">
+        <a href="#" class="d-none" id="console-next-bottom">Next</a>
+    </p>
+</div>
+
+<script>
+    function updateConsole(cons, targetId) {
+        var container = document.getElementById(targetId);
+        var version = container.getAttribute("data-version");
+
+        if (version !== cons.version) {
+            console.log(cons);
+
+
+            document.getElementById('page-title').innerHTML = cons.props["title"];
+            container.innerHTML = cons.htmlContent;
+            container.setAttribute("data-version", cons.version);
+
+            if (cons.isActive) {
+                container.setAttribute("class", "console-container console-active");
+            } else {
+                container.setAttribute("class", "console-container console-done");
+            }
+
+            if (cons.doneUrl != null) {
+
+                document.getElementById('console-next-bottom').href = cons.doneUrl;
+                document.getElementById('console-next-bottom').className = 'btn btn-primary';
+            }
+        }
+
+    }
+
+    setInterval(function () {
+            $.ajax('@Model.Data.UpdateUrl')
+                .done(function (aa) {
+                    updateConsole(aa, 'consoleOut');
+                })
+                .fail(function (aa) {
+                    document.getElementById('consoleOut').innerHTML = aa;
+                });;
+        },
+        1000);
+
+</script>
