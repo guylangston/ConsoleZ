@@ -13,6 +13,7 @@
 
 
   <ItemGroup>
+    <ProjectReference Include="..\ConsoleZ.AspNetCore\ConsoleZ.AspNetCore.csproj" />
     <ProjectReference Include="..\ConsoleZ\ConsoleZ.csproj" />
   </ItemGroup>
 

@@ -42,6 +42,7 @@ namespace ConsoleZ.Web
 
             var dto = new ConsoleData()
             {
+
                 Handle = cons.Handle,
                 Width = cons.Width,
                 Height = cons.Height,
@@ -68,8 +69,7 @@ namespace ConsoleZ.Web
                 {
                     {"title", consProps.Title}
                 };
-
-
+                dto.Title = consProps.Title;
             }
 
             return dto;

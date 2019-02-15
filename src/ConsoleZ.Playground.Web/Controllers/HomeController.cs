@@ -1,24 +1,20 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading;
-using System.Threading.Tasks;
+using ConsoleZ.AspNetCore;
 using ConsoleZ.DisplayComponents;
 using Microsoft.AspNetCore.Mvc;
 using ConsoleZ.Playground.Web.Models;
 using ConsoleZ.Samples;
-using ConsoleZ.Web;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 
 namespace ConsoleZ.Playground.Web.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : ConsoleZControllerBase
     {
-        ConsoleDataBuilder builder = new ConsoleDataBuilder("/Home/ConsoleUpdate/{0}");
+        public HomeController() : base("/Home/UpdateConsole/{0}", StaticVirtualConsoleRepository.Singleton)
+        {
+        }
 
         public IActionResult Index()
         {
@@ -61,36 +57,11 @@ namespace ConsoleZ.Playground.Web.Controllers
                 cons.SetProp("DoneUrl", "/Home/Privacy");
             });
 
-            return RedirectToAction("ConsoleHost", new {id = consx.Handle});
+            return Console(consx);
         }
 
         
 
-        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult ConsoleUpdate(string id)
-        {
-            if (StaticVirtualConsoleRepository.Singleton.TryGetConsole(id, out var cons))
-            {
-                return Json(builder.ToDto(cons));
-            }
-            else
-            {
-                return NotFound($"Id not found: {id}");
-            }
-            
-        }
-
-        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult ConsoleHost(string id)
-        {
-            if (StaticVirtualConsoleRepository.Singleton.TryGetConsole(id, out var cons))
-            {
-                return View(Tuple.Create(cons, builder.ToDto(cons)));
-            }
-            else
-            {
-                return NotFound($"Id not found: {id}");
-            }
-        }
+       
     }
 }

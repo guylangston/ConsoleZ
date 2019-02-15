@@ -14,6 +14,7 @@ namespace ConsoleZ.Web
         public int Version { get; set; }
 
         // Output / Render
+        public string Title { get; set; }
         public string HtmlContent { get; set; }
 
         // State
@@ -27,5 +28,17 @@ namespace ConsoleZ.Web
         public string CancelUrl { get; set; }
 
         public Dictionary<string, string> Props { get; set; }
+    }
+
+    public class ConsoleDataModel
+    {
+        public ConsoleDataModel(IConsole console, ConsoleData data)
+        {
+            Console = console;
+            Data = data;
+        }
+
+        public IConsole Console { get; set; }
+        public ConsoleData Data { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model Tuple<ConsoleZ.VirtualConsole, ConsoleZ.Web.ConsoleData>
+﻿@model ConsoleZ.Web.ConsoleDataModel
 <style>
     .console-container {
         white-space: pre;
@@ -24,44 +24,15 @@
         border: 4px solid red;
     }
 </style>
-<h3 id="page-title">@Model.Item1.Title</h3>
+<h3 id="page-title">@Model.Data.Title</h3>
 <div class="row" id="console-host">
-    <div class="console-container" id="consoleOut" data-version="-1">@{ WriteLiteral(Model.Item2.HtmlContent);}</div>
+    <div class="console-container" id="consoleOut" data-version="-1">@{ WriteLiteral(Model.Data.HtmlContent);}</div>
     <p class="text-right">
         <a href="#" class="d-none" id="console-next-bottom">Next</a>
     </p>
 </div>
 
 <script>
-    //function runConsoleCommand(cmd) {
-    //    $.post('/Home/ConsoleStart',
-    //            {
-    //                "consoleText": cmd
-    //            })
-    //        .done(function(r) {
-
-
-    //            document.getElementById('console-host').appendChild();
-    //           
-    //            updateConsole(r);
-    //            startRefresh(r);
-    //        })
-    //        .fail(function(ee) {
-    //            $('#consoleOut').addClass("console-error");
-    //            document.getElementById('consoleOut').innerHTML = ee;
-    //        });
-    //}
-
-    //function startRefresh(cons, consid) {
-    //    setInterval(function() {
-    //            $.ajax(cons.updateUrl)
-    //                .done(function(aa) {
-    //                    updateConsole(aa, consid);
-    //                });
-    //        },
-    //        1000);
-    //}
-
     function updateConsole(cons, targetId) {
         var container = document.getElementById(targetId);
         var version = container.getAttribute("data-version");
@@ -90,7 +61,7 @@
     }
 
     setInterval(function () {
-            $.ajax('@Url.Action("ConsoleUpdate", new {id=Model.Item1.Handle})')
+            $.ajax('@Model.Data.UpdateUrl')
                 .done(function (aa) {
                     updateConsole(aa, 'consoleOut');
                 })
