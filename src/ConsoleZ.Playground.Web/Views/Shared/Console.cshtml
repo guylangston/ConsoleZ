@@ -40,7 +40,7 @@
         if (version !== cons.version) {
             console.log(cons);
 
-            
+
             document.getElementById('page-title').innerHTML = cons.props["title"];
             container.innerHTML = cons.htmlContent;
             container.setAttribute("data-version", cons.version);
@@ -52,7 +52,7 @@
             }
 
             if (cons.doneUrl != null) {
-              
+
                 document.getElementById('console-next-bottom').href = cons.doneUrl;
                 document.getElementById('console-next-bottom').className = 'btn btn-primary';
             }
@@ -69,6 +69,6 @@
                     document.getElementById('consoleOut').innerHTML = aa;
                 });;
         },
-        1000);
-    
+        @Model.RefreshMs);
+
 </script>

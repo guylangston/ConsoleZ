@@ -12,18 +12,14 @@
     <FileVersion>0.1.0.0</FileVersion>
     <Description>Enhanced Console featuring color encoding, fast rendering, markdown, html mapper</Description>
     <Copyright>MIT</Copyright>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <PackageLicenseUrl>https://raw.githubusercontent.com/guylangston/ConsoleZ/master/LICENSE</PackageLicenseUrl>
     <PackageReleaseNotes>Still-In-Development / Experimental. 
 
 Not suitable for production at this time.</PackageReleaseNotes>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Reference Include="Microsoft.EntityFrameworkCore">
-      <HintPath>..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.entityframeworkcore\2.2.0\lib\netstandard2.0\Microsoft.EntityFrameworkCore.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+ 
 
   
 

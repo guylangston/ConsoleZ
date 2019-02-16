@@ -6,14 +6,22 @@ namespace ConsoleZ.AspNetCore
 {
     public abstract class ConsoleZControllerBase : Controller
     {
-        protected readonly ConsoleDataBuilder builder;
-        private readonly IVirtualConsoleRepository consoleRepository;
+        private ConsoleDataBuilder builder;
+        protected IVirtualConsoleRepository ConsoleRepository { get; }
         
-        protected ConsoleZControllerBase(string urlTemplate, IVirtualConsoleRepository consoleRepository)
+        protected ConsoleZControllerBase(IVirtualConsoleRepository consoleRepository)
         {
-            if (urlTemplate == null) throw new ArgumentNullException(nameof(urlTemplate));
-            this.consoleRepository = consoleRepository;
-            builder = new ConsoleDataBuilder(urlTemplate);
+            this.ConsoleRepository = consoleRepository ?? throw new ArgumentNullException(nameof(consoleRepository));
+            
+        }
+
+        protected ConsoleDataBuilder GetBuilder()
+        {
+            if (builder == null)
+            {
+                builder = new ConsoleDataBuilder(Url.Action("UpdateConsole") + "/{0}");
+            }
+            return builder;
         }
 
         protected string ConsoleHostView { get; set; } = "Console";
@@ -21,9 +29,9 @@ namespace ConsoleZ.AspNetCore
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult UpdateConsole(string id)
         {
-            if (consoleRepository.TryGetConsole(id, out var cons))
+            if (ConsoleRepository.TryGetConsole(id, out var cons))
             {
-                return Json(builder.ToDto(cons));
+                return Json(GetBuilder().ToDto(cons));
             }
             else
             {
@@ -35,9 +43,9 @@ namespace ConsoleZ.AspNetCore
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Console(string id)
         {
-            if (consoleRepository.TryGetConsole(id, out var cons))
+            if (ConsoleRepository.TryGetConsole(id, out var cons))
             {
-                return View(ConsoleHostView, new ConsoleDataModel(cons, builder.ToDto(cons)));
+                return View(ConsoleHostView, new ConsoleDataModel(cons, GetBuilder().ToDto(cons)));
             }
             else
             {

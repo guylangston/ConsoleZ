@@ -13,7 +13,7 @@ namespace ConsoleZ.Playground.Web.Controllers
 {
     public class HomeController : ConsoleZControllerBase
     {
-        public HomeController() : base("/Home/UpdateConsole/{0}", StaticVirtualConsoleRepository.Singleton)
+        public HomeController() : base(StaticVirtualConsoleRepository.Singleton)
         {
         }
 
@@ -37,11 +37,11 @@ namespace ConsoleZ.Playground.Web.Controllers
         [HttpPost]
         public IActionResult ConsoleStart(string consoleText)
         {
-            var consx = StaticVirtualConsoleRepository.Singleton.AddConsole(new VirtualConsole(DateTime.Now.Ticks.ToString(), 80, 40));
+            var consx = ConsoleRepository.AddConsole(new VirtualConsole(DateTime.Now.Ticks.ToString(), 80, 40));
 
             consx.WriteLine($"Starting command '{consoleText}'... ");
 
-            builder.RunAsync(consx, cons =>
+            GetBuilder().RunAsync(consx, cons =>
             {
                 SampleDocuments.MarkDownBasics(cons);
                 SlowPlayback.LiveElements(cons);

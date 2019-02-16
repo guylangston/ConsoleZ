@@ -40,5 +40,6 @@ namespace ConsoleZ.Web
 
         public IConsole Console { get; set; }
         public ConsoleData Data { get; set; }
+        public int RefreshMs { get; set; } = 500;
     }
 }
