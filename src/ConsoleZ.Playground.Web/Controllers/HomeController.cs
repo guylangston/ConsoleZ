@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ConsoleZ.Playground.Web.Controllers
 {
+    
     public class HomeController : ConsoleZControllerBase
     {
         public HomeController() : base(StaticVirtualConsoleRepository.Singleton)

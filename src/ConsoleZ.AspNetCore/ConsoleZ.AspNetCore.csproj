@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -11,18 +11,12 @@
     <FileVersion>0.1.0.0</FileVersion>
     <Description>ASP.NET Core Controller for web-console and rendering</Description>
     <Copyright>MIT</Copyright>
-    <Version>0.1.1</Version>
+    <Version>0.1.2</Version>
     <PackageLicenseUrl>https://raw.githubusercontent.com/guylangston/ConsoleZ/master/LICENSE</PackageLicenseUrl>
     <PackageReleaseNotes>Still-In-Development / Experimental.</PackageReleaseNotes>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Include\Console.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Include\Console.cshtml" />
-  </ItemGroup>
+ 
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.2" />
