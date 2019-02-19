@@ -32,5 +32,7 @@ namespace ConsoleZ.Drawing
        };
 
        public static IReadOnlyDictionary<Color, ConsoleColor> ToConsole = ToFullColor.ToDictionary(x => x.Value, x => x.Key);
+
+       public static int WriteLine(this IConsole cons) => cons.WriteLine(null);
     }
 }

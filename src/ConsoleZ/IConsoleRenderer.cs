@@ -20,7 +20,7 @@ namespace ConsoleZ
             int i, j;
 
             // Replace colour tokens in the format ^colorName;
-            while((i = s.IndexOf('^')) > 0 && (j = s.IndexOf(';',i)) > 0)
+            while((i = s.IndexOf('^')) >= 0 && (j = s.IndexOf(';',i)) > 0)
             {
                 var ss = s.Substring(i+1, j - i - 1);
                 var rep = AnsiConsole.Escape(0);

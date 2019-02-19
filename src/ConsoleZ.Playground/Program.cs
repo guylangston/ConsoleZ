@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using ConsoleZ;
@@ -12,9 +13,20 @@ namespace ConsoleZ.Playground
     {
         static void Main(string[] args)
         {
-            //RunBenchmark();
 
-            RunMarkDownSample();
+            RunHeader();
+
+            //RunBenchmark();
+            //RunMarkDownSample();
+        }
+
+        private static void RunHeader()
+        {
+            var cons = AnsiConsole.Singleton;
+            cons.WriteLine($"^cyan;TSDB^; Tools (TSDB: ^yellow;{0.1}^;)");
+            cons.WriteLine(null);
+            cons.WriteLine();
+            cons.WriteLine("Done");
         }
 
         private static void RunMarkDownSample()
