@@ -86,7 +86,7 @@ namespace ConsoleZ
 
         protected override void AddLineCheckWrap(string l)
         {
-            if (l.Length + 6 > Width)
+            if (l != null && l.Length + 6 > Width)
             {
                 while (l.Length + 6 > Width)
                 {

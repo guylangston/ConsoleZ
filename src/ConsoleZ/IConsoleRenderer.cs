@@ -17,6 +17,8 @@ namespace ConsoleZ
     {
         public string RenderLine(IConsole cons, int index,  string s)
         {
+            if (s == null) return null;
+
             int i, j;
 
             // Replace colour tokens in the format ^colorName;
@@ -40,10 +42,11 @@ namespace ConsoleZ
     {
         public string RenderLine(IConsole cons, int index, string s)
         {
+            if (s == null) return null;
             int i, j;
 
             // Replace colour tokens in the format ^colorName;
-            while((i = s.IndexOf('^')) > 0 && (j = s.IndexOf(';',i)) > 0)
+            while((i = s.IndexOf('^')) >= 0 && (j = s.IndexOf(';',i)) > 0)
             {
                 s = s.Remove(i, j - i+1);
             }
@@ -88,6 +91,8 @@ namespace ConsoleZ
 
         public string RenderLine(IConsole cons, int index, string s)
         {
+            if (s == null) return null;
+
             if (s.StartsWith("# "))
             {
                 return $"<h1>{s.Remove(0,2)}</h1>";

@@ -69,7 +69,7 @@ namespace ConsoleZ
         int AddLineCheckLineFeed(string s)
         {
             Version++;
-            if (s.IndexOf('\n') > 0)
+            if (s != null && s.IndexOf('\n') > 0)
             {
                 // slow
                 using (var tr = new StringReader(s))
