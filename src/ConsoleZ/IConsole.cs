@@ -20,6 +20,7 @@ namespace ConsoleZ
         int DisplayStart { get;  }
         int DisplayEnd { get; }
 
+        void Clear();
         void UpdateLine(int line, string txt);
         void UpdateFormatted(int line, FormattableString formatted);
     }

@@ -51,6 +51,11 @@ namespace ConsoleZ
         public int DisplayStart => 0;
         public int DisplayEnd => Console.WindowHeight;
 
+        public void Clear()
+        {
+            System.Console.Clear();
+        }
+
         public void UpdateLine(int line, string txt)
         {
             System.Console.WriteLine(txt);

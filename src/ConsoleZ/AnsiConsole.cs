@@ -49,7 +49,13 @@ namespace ConsoleZ
         }
 
         public bool UsePrefix { get; set; }
-    
+
+        public override void Clear()
+        {
+            base.Clear();
+            Console.Clear();
+        }
+
         public override void LineChanged(int index, string line, bool updated)
         {
             if (updated)

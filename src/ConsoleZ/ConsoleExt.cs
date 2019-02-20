@@ -16,7 +16,7 @@ namespace ConsoleZ
 
         public static int WriteException(this IConsole cons, Exception ex) => cons.WriteFormatted($"{ex}");
 
-        public static int WriteLabel(this IConsole cons, string name, object val) => cons.WriteFormatted($"- {name,20}: {val}");
+        public static int WriteLabel(this IConsole cons, string name, object val) => cons.WriteFormatted($"> {name,15}: {val}");
 
         public static int WriteLabel<T, TP>(this IConsole cons, T item, Expression<Func<T, TP>> exp)
         {

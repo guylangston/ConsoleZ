@@ -57,6 +57,11 @@ namespace ConsoleZ
             }
         }
 
+        public virtual void Clear()
+        {
+            DisplayStart = 0;
+        }
+
         public void UpdateLine(int line, string txt)
         {
             Parent?.UpdateLine(line, txt);
