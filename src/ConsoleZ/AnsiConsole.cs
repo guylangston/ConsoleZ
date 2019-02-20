@@ -34,10 +34,6 @@ namespace ConsoleZ
                     {
                         var t = new AnsiConsole();
                         t.EnableANSI();
-
-                        // Sync the current display
-                        Console.Clear();
-
                         singleton = t;
                     }
 

@@ -84,5 +84,39 @@ namespace ConsoleZ.Samples
             Task.WaitAll(ta, tb);
         }
 
+
+        
+        public static void LiveElementsFast(IConsole cons)
+        {
+            cons.WriteLine($"Well, {1234}...");
+            
+            var a = new ProgressBar(cons, "Counter A").Start(5000);
+            
+            
+
+            var ta = Task.Run(() =>
+            {
+                for (int i = 0; i < a.ItemsTotal; i++)
+                {
+                    a.Increment(i.ToString());
+                    Thread.Sleep(1);
+                }
+                a.Stop();
+            });
+            
+            cons.WriteLine($"End Line");
+
+            
+            //foreach (var i in Enumerable.Range(0, 200))
+            //{
+            //    cons.WriteLine($"Testing scrolling: {i}");
+            //    Thread.Sleep(200);
+            //    cons.UpdateLine(a, $"Off Screen update {i}");
+            //}
+
+            Task.WaitAll(ta);
+            cons.WriteLine($"End Line");
+        }
+
     }
 }

@@ -139,9 +139,14 @@ namespace ConsoleZ
             {
                 throw new NotImplementedException();
             }
-            lines[line - DisplayStart] = txt;
-            Version++;
-            LineChanged(line, txt, true);
+
+            if (line - DisplayStart > 0)
+            {
+                lines[line - DisplayStart] = txt;
+                Version++;
+                LineChanged(line, txt, true);
+            }
+            
         }
 
         public abstract void LineChanged(int index, string line, bool updated);

@@ -27,6 +27,9 @@ namespace ConsoleZ.Playground
             cons.WriteLine(null);
             cons.WriteLine();
             cons.WriteLine("Done");
+
+            RunMarkDownSample();
+            
         }
 
         private static void RunMarkDownSample()
@@ -36,12 +39,14 @@ namespace ConsoleZ.Playground
             SampleDocuments.MarkDownBasics(cons);
             SlowPlayback.LiveElements(cons);
             SampleDocuments.ColourPalette(cons);
+            SlowPlayback.LiveElementsFast(cons);
 
             var a = new ProgressBar(cons, "Test Scrolling").Start(100);
             for (int i = 0; i < a.ItemsTotal; i++)
             {
                 a.Increment(i.ToString());
                 Thread.Sleep(200);
+                cons.WriteLine(i.ToString());
             }
             a.Stop();
         }

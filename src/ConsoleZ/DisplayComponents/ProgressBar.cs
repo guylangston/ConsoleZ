@@ -71,7 +71,7 @@ namespace ConsoleZ.DisplayComponents
             return this;
         }
 
-        public string  Render()
+        public string Render()
         {
             var a = (int)(Percentage/100d * GraphWidth);
             var b = GraphWidth - a;
@@ -80,7 +80,7 @@ namespace ConsoleZ.DisplayComponents
             var clr = timer == null
                 ? "purple"
                 : (timer.IsRunning ? "cyan" : "green");
-            var r = $"{Percentage,3:0}% {Ascii.BoxVert}^{clr};{graph}^;{Ascii.BoxVert} {ItemsDone,4}/{ItemsTotal} {Title}";
+            var r = $"{Percentage,3:0}% {Ascii.BoxVert}^{clr};{graph}^;{Ascii.BoxVert} {ItemsDone,4}/{ItemsTotal} {Title}:{Message}";
             if (r.Length >= cons.Width)
             {
                 return r.Substring(0, cons.Width - 1);

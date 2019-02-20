@@ -1,17 +1,24 @@
+param(
+    [Parameter(Mandatory=$true, Position=0)]
+    [string]$ver
+    )
+
 pushd
-$ver = "0.1.4"
+#$ver = "0.1.6"
 
 cd ConsoleZ
+dotnet build -c Release
 dotnet pack -c Release "-p:PackageVersion=$ver"
 #ls .\bin\Release
-copy ".\bin\Release\ConsoleZ.$ver.nupkg"  "C:\Projects\ConsoleZ\dist\ConsoleZ.$ver.nupkg"
+copy ".\bin\Release\ConsoleZ.$ver.nupkg"  "C:\Projects\LocalNuGet\ConsoleZ.$ver.nupkg"
 
 cd ..
 cd ConsoleZ.AspNetCore
+dotnet build -c Release
 dotnet pack -c Release "-p:PackageVersion=$ver"
 #ls .\bin\Release
-copy ".\bin\Release\ConsoleZ.AspNetCore.$ver.nupkg"  "C:\Projects\ConsoleZ\dist\ConsoleZ.AspNetCore.$ver.nupkg"
+copy ".\bin\Release\ConsoleZ.AspNetCore.$ver.nupkg"  "C:\Projects\LocalNuGet\ConsoleZ.AspNetCore.$ver.nupkg"
 
-ls C:\Projects\ConsoleZ\dist\
+ls C:\Projects\LocalNuGet\
 
 popd
