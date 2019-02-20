@@ -2,15 +2,14 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using ConsoleZ.Win32;
 
 namespace ConsoleZ
 {
     // TODO: MaxLines and off-screen rules.
     public abstract class ConsoleBase : IConsoleWithProps, IFormatProvider, ICustomFormatter
     {
+        private readonly ConcurrentDictionary<string, string> props = new ConcurrentDictionary<string, string>();
         protected List<string> lines = new List<string>();
-        private ConcurrentDictionary<string, string> props = new ConcurrentDictionary<string, string>();
 
         protected ConsoleBase(string handle, int width, int height)
         {
@@ -21,8 +20,24 @@ namespace ConsoleZ
             Renderer = new PlainConsoleRenderer();
         }
 
+        public IConsole Parent { get; set; }
+
+        public IConsoleRenderer Renderer { get; set; }
+        
+        public string Handle { get; }
+        public int Version { get; private set; }
+
+        public int Width { get; protected set; }
+        public int Height { get; protected set; }
+
+        public int DisplayStart { get; private set; }
+        public int DisplayEnd => lines.Count;
+
+        public virtual string Title { get; set; }
+
         public int WriteLine(string s)
         {
+            Parent?.WriteLine(s);
             lock (this)
             {
                 return AddLineCheckLineFeed(s);
@@ -31,27 +46,16 @@ namespace ConsoleZ
 
         public int WriteFormatted(FormattableString formatted)
         {
+            Parent?.WriteFormatted(formatted);
             lock (this)
             {
                 return AddLineCheckLineFeed(formatted.ToString(this));
             }
         }
 
-        public string Handle { get;  }
-        public int Version { get; private set; }
-        
-        public int Width { get; protected set; }
-        public int Height { get; protected set;}
-
-        public int DisplayStart { get; private set; }
-        public int DisplayEnd => lines.Count;
-
-        protected IConsoleRenderer Renderer { get; set; }
-
-        public virtual string Title { get; set; }
-
         public void UpdateLine(int line, string txt)
         {
+            Parent?.UpdateLine(line, txt);
             lock (this)
             {
                 EditLine(line, txt);
@@ -60,31 +64,45 @@ namespace ConsoleZ
 
         public void UpdateFormatted(int line, FormattableString formatted)
         {
+            Parent?.UpdateFormatted(line, formatted);
             lock (this)
             {
                 EditLine(line, formatted.ToString(this));
             }
         }
         
-        int AddLineCheckLineFeed(string s)
+        public void SetProp(string key, string val)
+        {
+            props[key.ToLowerInvariant()] = val;
+        }
+
+        public bool TryGetProp(string key, out string val)
+        {
+            return props.TryGetValue(key.ToLowerInvariant(), out val);
+        }
+
+        string ICustomFormatter.Format(string format, object arg, IFormatProvider formatProvider)
+        {
+            return $"[{arg}]";
+        }
+
+        public object GetFormat(Type formatType)
+        {
+            return this;
+        }
+
+        private int AddLineCheckLineFeed(string s)
         {
             Version++;
             if (s != null && s.IndexOf('\n') > 0)
-            {
-                // slow
                 using (var tr = new StringReader(s))
                 {
                     string l = null;
-                    while ((l = tr.ReadLine()) != null)
-                    {
-                        AddLineCheckWrap(l);
-                    }
+                    while ((l = tr.ReadLine()) != null) AddLineCheckWrap(l);
                 }
-            }
             else
-            {
                 AddLineCheckWrap(s);
-            }
+
             return lines.Count - 1;
         }
 
@@ -99,11 +117,7 @@ namespace ConsoleZ
                     l = l.Remove(0, front.Length);
                 }
 
-                if (l.Length > 0)
-                {
-                    AddLineInner(l);
-                }
-                return;
+                if (l.Length > 0) AddLineInner(l);
             }
             else
             {
@@ -111,21 +125,17 @@ namespace ConsoleZ
             }
         }
 
+
         protected void AddLineInner(string l)
         {
+            // ReSharper disable InconsistentlySynchronizedField
             lines.Add(l);
-
-            
-            LineChanged(lines.Count -1 , l, false);
+            LineChanged(lines.Count - 1, l, false);
 
             // Check screen up
-            if (lines.Count - DisplayStart > Height)
-            {
-                ScrollUp();
-            }
+            if (lines.Count - DisplayStart > Height) ScrollUp();
+            // ReSharper restore InconsistentlySynchronizedField
         }
-
-      
 
         protected virtual void ScrollUp()
         {
@@ -133,33 +143,19 @@ namespace ConsoleZ
         }
 
 
-        void EditLine(int line, string txt)
+        private void EditLine(int line, string txt)
         {
-            if (txt.IndexOf('\n') > 0)
-            {
-                throw new NotImplementedException();
-            }
+            if (txt.IndexOf('\n') > 0) throw new NotImplementedException();
 
-            if (line - DisplayStart > 0)
+            var index = line - DisplayStart;
+            if (index > 0 && lines.Count > index)
             {
-                lines[line - DisplayStart] = txt;
+                lines[index] = txt;
                 Version++;
                 LineChanged(line, txt, true);
             }
-            
         }
 
         public abstract void LineChanged(int index, string line, bool updated);
-        
-        public object GetFormat(Type formatType) => this;
-
-        string ICustomFormatter.Format(string format, object arg, IFormatProvider formatProvider)
-        {
-            return $"[{arg}]";
-        }
-
-        
-        public void SetProp(string key, string val) => props[key.ToLowerInvariant()] = val;
-        public bool TryGetProp(string key, out string val) => props.TryGetValue(key.ToLowerInvariant(), out val);
     }
 }

@@ -39,9 +39,15 @@ namespace ConsoleZ.DisplayComponents
             ? 0
             : timer.Elapsed.TotalSeconds / ItemsDone;
 
-        public TimeSpan EstimatedDuration => ItemsPerSecond > 0
+        public TimeSpan Duration => timer.Elapsed;
+
+        public TimeSpan EstimatedDuration => ItemsDone <= 0
             ? new TimeSpan()
             : TimeSpan.FromSeconds(ItemsPerSecond * ItemsTotal);
+
+        public TimeSpan EstimatedRemaining => ItemsDone <= 0
+            ? new TimeSpan()
+            : EstimatedDuration - Duration;
 
 
         public ProgressBar Start(int targetCount)
@@ -71,7 +77,7 @@ namespace ConsoleZ.DisplayComponents
             return this;
         }
 
-        public string Render()
+        public virtual string Render()
         {
             var a = (int)(Percentage/100d * GraphWidth);
             var b = GraphWidth - a;
@@ -80,7 +86,26 @@ namespace ConsoleZ.DisplayComponents
             var clr = timer == null
                 ? "purple"
                 : (timer.IsRunning ? "cyan" : "green");
-            var r = $"{Percentage,3:0}% {Ascii.BoxVert}^{clr};{graph}^;{Ascii.BoxVert} {ItemsDone,4}/{ItemsTotal} {Title}:{Message}";
+
+            string time = null;
+            if (timer == null || ItemsDone <= 0)
+            {
+                time = "Pending";
+            }
+            else if (timer.IsRunning)
+            {
+                time = $"{Humanize(EstimatedRemaining)} left";
+            }
+            else
+            {
+                time = $"Done in {Humanize(Duration)}";
+            }
+            
+            var r = $"{Percentage,3:0}% {Ascii.BoxVert}^{clr};{graph}^;{Ascii.BoxVert} {ItemsDone,4}/{ItemsTotal}, ^orange;{time,-15}^; | {Title}";
+            if (!string.IsNullOrEmpty(Message))
+            {
+                r += " > " + Message;
+            }
             if (r.Length >= cons.Width)
             {
                 return r.Substring(0, cons.Width - 1);
@@ -103,6 +128,18 @@ namespace ConsoleZ.DisplayComponents
             }
 
             return this;
+        }
+
+        public string Humanize(TimeSpan span)
+        {
+            if (span.TotalSeconds < 1) return $"{span.Milliseconds} ms";
+            if (span.TotalMinutes < 1) return $"{span.Seconds} sec";
+            if (span.TotalHours < 1) return $"{span.Minutes} min";
+            if (span.TotalDays < 1) return $"{span.Hours} hr, {span.Minutes} min";
+            if (span.TotalDays > 365) return $"{(int)span.TotalDays/365} yrs, {(int)span.TotalDays % 365} days"; 
+
+            if (span.Hours == 0) return $"{span.Days} days";
+            return $"{span.Days} days, {span.Hours} hr";
         }
 
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using ConsoleZ;
 using ConsoleZ.DisplayComponents;
@@ -22,11 +23,11 @@ namespace ConsoleZ.Playground
 
         private static void RunHeader()
         {
-            var cons = AnsiConsole.Singleton;
-            cons.WriteLine($"^cyan;TSDB^; Tools (TSDB: ^yellow;{0.1}^;)");
-            cons.WriteLine(null);
-            cons.WriteLine();
-            cons.WriteLine("Done");
+            //var cons = AnsiConsole.Singleton;
+            //cons.WriteLine($"^cyan;TSDB^; Tools (TSDB: ^yellow;{0.1}^;)");
+            //cons.WriteLine(null);
+            //cons.WriteLine();
+            //cons.WriteLine("Done");
 
             RunMarkDownSample();
             
@@ -35,20 +36,42 @@ namespace ConsoleZ.Playground
         private static void RunMarkDownSample()
         {
             var cons = AnsiConsole.Singleton;
-            
-            SampleDocuments.MarkDownBasics(cons);
-            SlowPlayback.LiveElements(cons);
-            SampleDocuments.ColourPalette(cons);
-            SlowPlayback.LiveElementsFast(cons);
-
-            var a = new ProgressBar(cons, "Test Scrolling").Start(100);
-            for (int i = 0; i < a.ItemsTotal; i++)
+            using (var fileTxt =
+                new BufferedFileConsole(File.CreateText("e:\\Scratch\\console.txt"), "file", cons.Width, cons.Height)
+                {
+                    Renderer = new PlainConsoleRenderer()
+                })
             {
-                a.Increment(i.ToString());
-                Thread.Sleep(200);
-                cons.WriteLine(i.ToString());
+
+                using (var fileHtml =
+                    new BufferedFileConsole(File.CreateText("e:\\Scratch\\console.html"), "file", cons.Width,
+                        cons.Height)
+                    {
+                        Renderer = new HtmlConsoleRenderer()
+                    })
+                {
+                    cons.Parent = fileTxt;
+                    fileTxt.Parent = fileHtml;
+
+            
+                    SampleDocuments.MarkDownBasics(cons);
+                    SlowPlayback.LiveElements(cons);
+                    SampleDocuments.ColourPalette(cons);
+                    SlowPlayback.LiveElementsFast(cons);
+
+                    var a = new ProgressBar(cons, "Test Scrolling").Start(100);
+                    for (int i = 0; i < a.ItemsTotal; i++)
+                    {
+                        a.Increment(i.ToString());
+                        Thread.Sleep(200);
+                        cons.WriteLine(i.ToString());
+                    }
+                    a.Stop();
+                }
             }
-            a.Stop();
+            
+
+           
         }
 
         private static void RunBenchmark()
