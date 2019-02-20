@@ -2,6 +2,8 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
+using ConsoleZ.DisplayComponents;
 
 namespace ConsoleZ
 {
@@ -18,10 +20,12 @@ namespace ConsoleZ
             Height = height;
             Version = 0;
             Renderer = new PlainConsoleRenderer();
+            Formatter = this;
         }
 
         public IConsole Parent { get; set; }
 
+        public ICustomFormatter Formatter { get; set; } 
         public IConsoleRenderer Renderer { get; set; }
         
         public string Handle { get; }
@@ -83,7 +87,18 @@ namespace ConsoleZ
 
         string ICustomFormatter.Format(string format, object arg, IFormatProvider formatProvider)
         {
-            return $"[{arg}]";
+            if (arg == null) return null;
+
+            if (arg is DateTime dt)
+            {
+                return dt.ToString("YYYY-mm-dd");
+            }
+            if (arg is TimeSpan sp)
+            {
+                return ProgressBar.Humanize(sp);
+            }
+
+            return arg.ToString();
         }
 
         public object GetFormat(Type formatType)

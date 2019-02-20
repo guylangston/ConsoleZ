@@ -17,10 +17,13 @@ namespace ConsoleZ.DisplayComponents
 
         public ProgressBar(IConsole cons, string title)
         {
+            this.cons = cons ?? throw new ArgumentNullException(nameof(cons));
+
             this.Title = title;
-            this.cons = cons;
             threshold = TimeSpan.FromMilliseconds(300).Ticks;  // roughly 3 times a sec
         }
+
+        public IConsole Console => cons;
 
         public int ItemsDone { get; set; }
         public int ItemsTotal { get; set; }
@@ -87,6 +90,10 @@ namespace ConsoleZ.DisplayComponents
                 ? "purple"
                 : (timer.IsRunning ? "cyan" : "green");
 
+            var clr2 = timer == null
+                ? "purple"
+                : (timer.IsRunning ? "purple" : "yellow");
+
             string time = null;
             if (timer == null || ItemsDone <= 0)
             {
@@ -101,7 +108,7 @@ namespace ConsoleZ.DisplayComponents
                 time = $"Done in {Humanize(Duration)}";
             }
             
-            var r = $"{Percentage,3:0}% {Ascii.BoxVert}^{clr};{graph}^;{Ascii.BoxVert} {ItemsDone,4}/{ItemsTotal}, ^orange;{time,-15}^; | {Title}";
+            var r = $"{Percentage,3:0}% {Ascii.BoxVert}^{clr};{graph}^;{Ascii.BoxVert} {ItemsDone,4}/{ItemsTotal,-4} ^{clr2};{time,-15}^; | {Title}";
             if (!string.IsNullOrEmpty(Message))
             {
                 r += " > " + Message;
@@ -130,7 +137,7 @@ namespace ConsoleZ.DisplayComponents
             return this;
         }
 
-        public string Humanize(TimeSpan span)
+        public static string Humanize(TimeSpan span)
         {
             if (span.TotalSeconds < 1) return $"{span.Milliseconds} ms";
             if (span.TotalMinutes < 1) return $"{span.Seconds} sec";

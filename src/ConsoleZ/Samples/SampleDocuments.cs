@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ConsoleZ.Drawing;
@@ -25,6 +26,10 @@ namespace ConsoleZ.Samples
 
 - [x] This is a complete item
 - [ ] This is an incomplete item");
+
+
+            console.WriteLabel(DateTime.Now, x => x.DayOfWeek);
+            console.WriteLabel(DateTime.Now, x => x.Hour);
 
 
         }

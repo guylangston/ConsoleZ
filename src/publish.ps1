@@ -1,7 +1,12 @@
 param(
-    [Parameter(Mandatory=$true, Position=0)]
-    [string]$ver
+     [string]$ver
     )
+
+ls C:\Projects\LocalNuGet\
+
+if ($ver -eq ""){
+    $ver = Read-Host -Prompt 'Version as "0.1.6"'
+}
 
 pushd
 #$ver = "0.1.6"

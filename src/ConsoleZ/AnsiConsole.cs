@@ -47,6 +47,8 @@ namespace ConsoleZ
             get => Console.Title;
             set => Console.Title = value;
         }
+
+        public bool UsePrefix { get; set; }
     
         public override void LineChanged(int index, string line, bool updated)
         {
@@ -74,10 +76,18 @@ namespace ConsoleZ
             }
         }
 
+        // TODO: This format should be user-controller (func?)
         public string RenderLine(IConsole cons, int index, string s)
         {
             s = Renderer.RenderLine(cons, index, s);
-            return $"{Escape(35)}{index,4} |{Escape(0)} {s}";
+            if (UsePrefix)
+            {
+                return $"{Escape(35)}{index,4} |{Escape(0)} {s}";
+            }
+            else
+            {
+                return s;
+            }
         }
 
         protected override void AddLineCheckWrap(string l)

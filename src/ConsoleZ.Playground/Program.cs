@@ -59,14 +59,14 @@ namespace ConsoleZ.Playground
                     SampleDocuments.ColourPalette(cons);
                     SlowPlayback.LiveElementsFast(cons);
 
-                    var a = new ProgressBar(cons, "Test Scrolling").Start(100);
-                    for (int i = 0; i < a.ItemsTotal; i++)
-                    {
-                        a.Increment(i.ToString());
-                        Thread.Sleep(200);
-                        cons.WriteLine(i.ToString());
-                    }
-                    a.Stop();
+                    //var a = new ProgressBar(cons, "Test Scrolling").Start(100);
+                    //for (int i = 0; i < a.ItemsTotal; i++)
+                    //{
+                    //    a.Increment(i.ToString());
+                    //    Thread.Sleep(200);
+                    //    cons.WriteLine(i.ToString());
+                    //}
+                    //a.Stop();
                 }
             }
             
