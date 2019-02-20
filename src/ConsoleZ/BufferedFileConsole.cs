@@ -35,11 +35,26 @@ namespace ConsoleZ
             }
             else
             {
-                int cc = 0;
-                foreach (var line in base.lines)
+                if (Renderer is IConsoleDocRenderer doc)
                 {
-                    outp.WriteLine(Renderer.RenderLine(this, cc++, line));
+                    outp.WriteLine(doc.RenderHeader());
+                    int cc = 0;
+                    foreach (var line in base.lines)
+                    {
+                        outp.WriteLine(Renderer.RenderLine(this, cc++, line));
+                    }
+                    outp.WriteLine(doc.RenderFooter());
                 }
+                else
+                {
+                    int cc = 0;
+                    foreach (var line in base.lines)
+                    {
+                        outp.WriteLine(Renderer.RenderLine(this, cc++, line));
+                    }
+                }
+
+                
             }
 
             outp.Dispose();

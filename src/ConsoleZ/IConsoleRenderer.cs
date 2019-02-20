@@ -13,6 +13,12 @@ namespace ConsoleZ
         string RenderLine(IConsole cons, int index, string s);
     }
 
+    public interface IConsoleDocRenderer : IConsoleRenderer
+    {
+        string RenderHeader();
+        string RenderFooter();
+    }
+
     public class AnsiConsoleRenderer : IConsoleRenderer
     {
         public string RenderLine(IConsole cons, int index,  string s)
@@ -59,7 +65,7 @@ namespace ConsoleZ
         
     }
 
-    public class HtmlConsoleRenderer : TokenParser<MarkUpToken>, IConsoleRenderer
+    public class HtmlConsoleRenderer : TokenParser<MarkUpToken>, IConsoleRenderer, IConsoleDocRenderer
     {
 
         protected override Token<MarkUpToken> CreateToken(string text,int start, int end, bool isLiteral)
@@ -122,6 +128,15 @@ namespace ConsoleZ
             });
         }
 
-        
+
+        public string RenderHeader()
+        {
+            return "<html><head></head><body><pre>";
+        }
+
+        public string RenderFooter()
+        {
+            return "</pre></body></html>";
+        }
     }
 }
