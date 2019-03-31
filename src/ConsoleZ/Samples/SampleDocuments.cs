@@ -17,6 +17,9 @@ namespace ConsoleZ.Samples
             console.WriteLine(
                 "It's very easy to make some words **bold** and other words *italic* with Markdown. You can even [link to Google!](http://google.com) ");
 
+            console.WriteLine(
+                "Example Paragraph... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam sit amet ligula interdum, placerat turpis nec, volutpat dolor. Nam egestas felis ac malesuada iaculis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sit amet luctus mi. Maecenas et erat tristique, pellentesque mi vel, varius tellus. Duis consectetur vestibulum ipsum eget varius. Etiam tristique neque at est porttitor auctor quis eu purus. Duis vehicula leo ut sem varius, non molestie dolor malesuada. Praesent ut diam et dui interdum semper sed eget magna. Nullam sit amet finibus dolor, sit amet molestie quam. Interdum et malesuada fames ac ante ipsum primis in faucibus. Ut consequat tortor non iaculis gravida. Curabitur tempor erat ut laoreet auctor. ");
+
             console.WriteLine("List:");
             console.WriteLine("- Item One");
             console.WriteLine("- Item Two");
@@ -50,5 +53,13 @@ namespace ConsoleZ.Samples
 
         }
 
+        public static void DescribeConsole(AnsiConsole cons)
+        {
+            cons.WriteLabel("Title", cons.Title);
+            cons.WriteLabel("Width", cons.Width);
+            cons.WriteLabel("Height", cons.Height);
+            cons.WriteLabel("DisplayStart", cons.DisplayStart);
+            cons.WriteLabel("DisplayEnd", cons.DisplayEnd);
+        }
     }
 }

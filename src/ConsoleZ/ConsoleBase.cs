@@ -62,21 +62,21 @@ namespace ConsoleZ
             DisplayStart = 0;
         }
 
-        public void UpdateLine(int line, string txt)
+        public bool UpdateLine(int line, string txt)
         {
             Parent?.UpdateLine(line, txt);
             lock (this)
             {
-                EditLine(line, txt);
+                return EditLine(line, txt);
             }
         }
 
-        public void UpdateFormatted(int line, FormattableString formatted)
+        public bool UpdateFormatted(int line, FormattableString formatted)
         {
             Parent?.UpdateFormatted(line, formatted);
             lock (this)
             {
-                EditLine(line, formatted.ToString(this));
+                return EditLine(line, formatted.ToString(this));
             }
         }
         
@@ -96,7 +96,7 @@ namespace ConsoleZ
 
             if (arg is DateTime dt)
             {
-                return dt.ToString("YYYY-mm-dd");
+                return dt.ToString("yyyy-MM-dd");
             }
             if (arg is TimeSpan sp)
             {
@@ -163,7 +163,7 @@ namespace ConsoleZ
         }
 
 
-        private void EditLine(int line, string txt)
+        private bool EditLine(int line, string txt)
         {
             if (txt.IndexOf('\n') > 0) throw new NotImplementedException();
 
@@ -173,7 +173,10 @@ namespace ConsoleZ
                 lines[index] = txt;
                 Version++;
                 LineChanged(line, txt, true);
+                return true;
             }
+
+            return false;
         }
 
         public abstract void LineChanged(int index, string line, bool updated);

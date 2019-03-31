@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using ConsoleZ;
 using ConsoleZ.DisplayComponents;
+using ConsoleZ.Drawing;
 using ConsoleZ.Samples;
 using ConsoleZ.Win32;
 
@@ -36,6 +38,8 @@ namespace ConsoleZ.Playground
         private static void RunMarkDownSample()
         {
             var cons = AnsiConsole.Singleton;
+            cons.UsePrefix = true;
+
             using (var fileTxt =
                 new BufferedFileConsole(File.CreateText("e:\\Scratch\\console.txt"), "file", cons.Width, cons.Height)
                 {
@@ -47,16 +51,31 @@ namespace ConsoleZ.Playground
                     new BufferedFileConsole(File.CreateText("e:\\Scratch\\console.html"), "file", cons.Width,
                         cons.Height)
                     {
+                        
                         Renderer = new HtmlConsoleRenderer()
                     })
                 {
                     cons.Parent = fileTxt;
+                    
                     fileTxt.Parent = fileHtml;
 
-            
+                    SampleDocuments.DescribeConsole(cons);
+
+                    //foreach (var i in Enumerable.Range(0, 100))
+                    //{
+                    //    cons.WriteLine(i.ToString());
+                    //}
+
+                    //var ok = cons.UpdateLine(1, "XXX");
+                    //cons.WriteLine($"Update -1 => {ok}");
+
                     SampleDocuments.MarkDownBasics(cons);
                     SlowPlayback.LiveElements(cons);
                     SampleDocuments.ColourPalette(cons);
+
+                    
+                   
+
                     SlowPlayback.LiveElementsFast(cons);
 
                     //var a = new ProgressBar(cons, "Test Scrolling").Start(100);

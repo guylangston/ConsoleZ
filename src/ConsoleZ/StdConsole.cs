@@ -56,14 +56,14 @@ namespace ConsoleZ
             System.Console.Clear();
         }
 
-        public void UpdateLine(int line, string txt)
+        public bool UpdateLine(int line, string txt)
         {
-            System.Console.WriteLine(txt);
+            return false;
         }
 
-        public void UpdateFormatted(int line, FormattableString formatted)
+        public bool UpdateFormatted(int line, FormattableString formatted)
         {
-            System.Console.WriteLine(formatted);
+            return false;
         }
     }
 }

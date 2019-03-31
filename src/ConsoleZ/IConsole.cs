@@ -21,8 +21,11 @@ namespace ConsoleZ
         int DisplayEnd { get; }
 
         void Clear();
-        void UpdateLine(int line, string txt);
-        void UpdateFormatted(int line, FormattableString formatted);
+        
+        /// <returns>false - unable to update</returns>
+        bool UpdateLine(int line, string txt);      
+        /// <returns>false - unable to update</returns>
+        bool UpdateFormatted(int line, FormattableString formatted);
     }
 
     public interface IConsoleWithProps : IConsole

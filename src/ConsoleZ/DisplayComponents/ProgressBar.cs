@@ -122,7 +122,13 @@ namespace ConsoleZ.DisplayComponents
 
         public virtual void Update(bool force = false)
         {
-            cons.UpdateLine(line, Render());
+            var txt = Render();
+            var u = cons.UpdateLine(line, txt);
+            if (force && !u)
+            {
+                // Could not update, so write a new line
+                cons.WriteLine(txt);
+            }
         }
 
 
@@ -131,8 +137,8 @@ namespace ConsoleZ.DisplayComponents
             if (timer.IsRunning)
             {
                 timer.Stop();
-                Update(true);
             }
+            Update(true);
 
             return this;
         }
