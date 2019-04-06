@@ -24,6 +24,7 @@ dotnet pack -c Release "-p:PackageVersion=$ver"
 #ls .\bin\Release
 copy ".\bin\Release\ConsoleZ.AspNetCore.$ver.nupkg"  "C:\Projects\LocalNuGet\ConsoleZ.AspNetCore.$ver.nupkg"
 
+echo "C:\Projects\LocalNuGet\"
 ls C:\Projects\LocalNuGet\
 
 popd

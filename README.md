@@ -1,6 +1,6 @@
 # ConsoleZ
 
-> A modern console rendering library
+> A modern multi-target (console/web/gui/tests) console rendering library
 
 Why use this library? What use cases?
 - Want a common interface/experiance across console and web apps? 
@@ -11,6 +11,7 @@ Why use this library? What use cases?
 What this library does NOT do:
 - Console Argument parsing
 - Midnight-Commander like console forms
+- Unix support (Windows-only at this stage)
 
 Key Features (done vs. in-progress):
 - [X] Zero-dependancy
@@ -21,6 +22,14 @@ Key Features (done vs. in-progress):
 - [X] UI Components : Percentage Complete Graph, etc
 - [ ] ASCII large fonts
 - [ ] Markdown formatting
+- [ ] Safe Chaining (write to file)
+
+## Status
+
+This library is ALPHA status. Meaning core interfaces and algorityms may change. 
+At present this library is not ready for production.
+
+Please create a github issue for any features/bugs.
 
 ## Screenshots
 
@@ -73,6 +82,20 @@ Stretch:
 - Wolfram-style cell input/output consoles
 - SignalR polling to update console (vs polling ever sec)
 
+## Getting started
+
+You can start with a normal console app then:
+```c#
+static void Main(string[] args)
+{
+    var cons = AnsiConsole.Singleton;
+    cons.WriteLine("Hello World");
+    cons.WriteLine("Have a ^red;wonderful^; day!");
+    var idx = cons.WriteLine("Replace me");
+    cons.UpdateLine(ids, "I was replaced. ;-)");
+}
+```
+![Hello World](./assets/HelloWorld.png "Hello World")
 
 ## Research / Related projects
 - https://github.com/tomakita/Colorful.Console
