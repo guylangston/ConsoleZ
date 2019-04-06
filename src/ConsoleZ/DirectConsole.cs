@@ -99,7 +99,7 @@ namespace ConsoleZ
             if (!SetCurrentConsoleFontEx(m_hConsole, false, &cfi))
                 return Error(L"SetCurrentConsoleFontEx");
             */
-            int TMPF_TRUETYPE = 4;
+            //int TMPF_TRUETYPE = 4;
 
             // https://social.msdn.microsoft.com/Forums/vstudio/en-US/c276b9ae-dc4c-484a-9a59-1ee66cf0f1cc/c-changing-console-font-programmatically?forum=csharpgeneral
             unsafe

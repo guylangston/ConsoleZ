@@ -78,6 +78,8 @@ namespace ConsoleZ.Playground
 
                     SlowPlayback.LiveElementsFast(cons);
 
+
+                    SampleDocuments.DescribeConsole(cons);
                     //var a = new ProgressBar(cons, "Test Scrolling").Start(100);
                     //for (int i = 0; i < a.ItemsTotal; i++)
                     //{

@@ -16,7 +16,7 @@ namespace ConsoleZ
             this.outp = outp ?? throw new ArgumentNullException(nameof(outp));
         }
 
-        public override void LineChanged(int index, string line, bool updated)
+        public override void LineChanged(int i, int index, string line, bool updated)
         {
             // Nothing, wait to the end
 

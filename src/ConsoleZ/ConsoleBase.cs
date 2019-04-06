@@ -12,6 +12,8 @@ namespace ConsoleZ
     {
         private readonly ConcurrentDictionary<string, string> props = new ConcurrentDictionary<string, string>();
         protected List<string> lines = new List<string>();
+        protected int linesRemoved;
+        protected int count;
 
         protected ConsoleBase(string handle, int width, int height)
         {
@@ -34,7 +36,7 @@ namespace ConsoleZ
         public int Width { get; protected set; }
         public int Height { get; protected set; }
 
-        public int DisplayStart { get; private set; }
+        public int DisplayStart => lines.Count < Height ? 0 : lines.Count - Height;
         public int DisplayEnd => lines.Count;
 
         public virtual string Title { get; set; }
@@ -59,11 +61,15 @@ namespace ConsoleZ
 
         public virtual void Clear()
         {
-            DisplayStart = 0;
+            lines.Clear();
         }
 
         public bool UpdateLine(int line, string txt)
         {
+            if (line < linesRemoved)
+            {
+                return false;
+            }
             Parent?.UpdateLine(line, txt);
             lock (this)
             {
@@ -73,6 +79,10 @@ namespace ConsoleZ
 
         public bool UpdateFormatted(int line, FormattableString formatted)
         {
+            if (line < linesRemoved)
+            {
+                return false;
+            }
             Parent?.UpdateFormatted(line, formatted);
             lock (this)
             {
@@ -113,72 +123,99 @@ namespace ConsoleZ
 
         private int AddLineCheckLineFeed(string s)
         {
-            Version++;
             if (s != null && s.IndexOf('\n') > 0)
+            {
+                int last = 0;
                 using (var tr = new StringReader(s))
                 {
                     string l = null;
-                    while ((l = tr.ReadLine()) != null) AddLineCheckWrap(l);
+                    while ((l = tr.ReadLine()) != null)
+                    {
+                        last = AddLineCheckWrap(l);
+                    }
                 }
-            else
-                AddLineCheckWrap(s);
 
-            return lines.Count - 1;
+                return last;
+            }
+            else
+            {
+                return AddLineCheckWrap(s);
+            }
+                
+
+            
         }
 
-        protected virtual void AddLineCheckWrap(string l)
+        protected virtual int AddLineCheckWrap(string l)
         {
+            if (l == null)
+            {
+                return AddLineInner("");
+            }
             if (l.Length > Width)
             {
+                int last = 0;
                 while (l.Length > Width)
                 {
                     var front = l.Substring(0, Width);
-                    AddLineInner(front);
+                    last = AddLineInner(front);
                     l = l.Remove(0, front.Length);
                 }
 
-                if (l.Length > 0) AddLineInner(l);
+                if (l.Length > 0)
+                {
+                    last = AddLineInner(l);
+                }
+
+                return last;
             }
             else
             {
-                AddLineInner(l);
+                return AddLineInner(l);
             }
         }
 
-
-        protected void AddLineInner(string l)
+        /// <summary>
+        /// Add to the internal buffer. Track/update DisplayStart
+        /// </summary>
+        /// <param name="l"></param>
+        protected int AddLineInner(string l)
         {
-            // ReSharper disable InconsistentlySynchronizedField
+            var indexAbs = count++;
             lines.Add(l);
-            LineChanged(lines.Count - 1, l, false);
-
             // Check screen up
-            if (lines.Count - DisplayStart > Height) ScrollUp();
-            // ReSharper restore InconsistentlySynchronizedField
+            if (lines.Count > Height)
+            {
+                lines.RemoveAt(0);
+                linesRemoved++;
+            }
+
+            var indexRel = indexAbs - linesRemoved;
+            LineChanged(indexAbs, indexRel, l,false);
+
+            Version++;
+
+            return indexAbs;
         }
 
-        protected virtual void ScrollUp()
-        {
-            DisplayStart++;
-        }
 
 
-        private bool EditLine(int line, string txt)
+        private bool EditLine(int indexAbs, string txt)
         {
             if (txt.IndexOf('\n') > 0) throw new NotImplementedException();
 
-            var index = line - DisplayStart;
-            if (index > 0 && lines.Count > index)
+            var indexRel = indexAbs - linesRemoved;
+            if (indexRel > 0 && lines.Count > indexRel)
             {
-                lines[index] = txt;
+                lines[indexRel] = txt;
                 Version++;
-                LineChanged(line, txt, true);
+                LineChanged(indexAbs, indexRel, txt, true);
                 return true;
             }
 
             return false;
         }
 
-        public abstract void LineChanged(int index, string line, bool updated);
+        public abstract void LineChanged(int indexAbs, int indexRel, string line, bool updated);
     }
 }

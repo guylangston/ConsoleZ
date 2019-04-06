@@ -60,6 +60,9 @@ namespace ConsoleZ.Samples
             cons.WriteLabel("Height", cons.Height);
             cons.WriteLabel("DisplayStart", cons.DisplayStart);
             cons.WriteLabel("DisplayEnd", cons.DisplayEnd);
+            cons.WriteLabel("Console", $"Buffer:{Console.BufferWidth}x{Console.BufferHeight}, " +
+                                       $"Window:{Console.WindowWidth}x{Console.WindowHeight} @ {Console.WindowLeft}x{Console.WindowTop}, " +
+                                       $"Buffer:{Console.BufferWidth}, Cursor:{Console.CursorLeft}x{Console.CursorTop}");
         }
     }
 }

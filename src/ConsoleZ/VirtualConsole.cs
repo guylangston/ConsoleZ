@@ -12,7 +12,7 @@ namespace ConsoleZ
         }
 
         
-        public override void LineChanged(int index, string line, bool updated)
+        public override void LineChanged(int i, int index, string line, bool updated)
         {
             // Nothing
             Console.WriteLine(Renderer.RenderLine(this, index, line));

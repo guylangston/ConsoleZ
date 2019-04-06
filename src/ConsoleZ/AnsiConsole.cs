@@ -18,8 +18,22 @@ namespace ConsoleZ
     {
         private static readonly object locker = new object();
         private static volatile AnsiConsole singleton = null;
-        private AnsiConsole() : base("AnsiConsole", Console.WindowWidth, Console.BufferHeight)
+        private AnsiConsole() : base("AnsiConsole", Console.BufferWidth, Console.BufferHeight)
         {
+            // Attempt to sync the current screen and our buffer
+
+            // Start on a clean line
+            if (Console.CursorLeft != 0) Console.WriteLine();
+            if (Console.CursorTop != 0)
+            {
+                for (int cc = 0; cc < Console.CursorTop; cc++)
+                {
+                    lines.Add("");
+                }
+
+                count = Console.CursorTop;
+            }
+            
             Renderer = new AnsiConsoleRenderer();
         }
 
@@ -34,6 +48,7 @@ namespace ConsoleZ
                     {
                         var t = new AnsiConsole();
                         t.EnableANSI();
+                       
                         singleton = t;
                     }
 
@@ -56,15 +71,15 @@ namespace ConsoleZ
             Console.Clear();
         }
 
-        public override void LineChanged(int index, string line, bool updated)
+        public override void LineChanged(int indexAbs, int indexRel, string line, bool updated)
         {
             if (updated)
             {
                 var x = Console.CursorTop;
-                Console.CursorTop = index - DisplayStart + (DisplayStart == 0 ? 0 : -1);
-                Console.CursorLeft = 0;
 
-                var rline = RenderLine(this, index, line);
+                Console.SetCursorPosition(0, indexRel);
+
+                var rline = RenderLine(this, indexAbs, line);
                 if (rline.Length > Console.WindowWidth )
                 {
                     rline = rline.Substring(0, Console.WindowWidth);
@@ -78,17 +93,17 @@ namespace ConsoleZ
             else
             {
                 
-                Console.WriteLine(RenderLine(this, index,  line));
+                Console.WriteLine(RenderLine(this, indexAbs,  line));
             }
         }
 
         // TODO: This format should be user-controller (func?)
-        public string RenderLine(IConsole cons, int index, string s)
+        public string RenderLine(IConsole cons, int indexAbs, string s)
         {
-            s = Renderer.RenderLine(cons, index, s);
+            s = Renderer.RenderLine(cons, indexAbs, s);
             if (UsePrefix)
             {
-                return $"{Escape(35)}{index,4} |{Escape(0)} {s}";
+                return $"{Escape(35)}{indexAbs,4} |{Escape(0)} {s}";
             }
             else
             {
@@ -96,14 +111,15 @@ namespace ConsoleZ
             }
         }
 
-        protected override void AddLineCheckWrap(string l)
+        protected override int AddLineCheckWrap(string l)
         {
             if (l != null && l.Length + 6 > Width)
             {
+                var last = 0;
                 while (l.Length + 6 > Width)
                 {
                     var front = l.Substring(0, Width - 7 );
-                    AddLineInner(front);
+                    last = AddLineInner(front);
                     l = l.Remove(0, front.Length);
                 }
 
@@ -111,11 +127,11 @@ namespace ConsoleZ
                 {
                     AddLineInner(l);
                 }
-                return;
+                return last;
             }
             else
             {
-                AddLineInner(l);
+                return AddLineInner(l);
             }
         }
 

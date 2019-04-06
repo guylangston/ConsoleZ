@@ -1,16 +1,20 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
-using System.Xml.Linq;
 
 namespace ConsoleZ
 {
-    public interface ITextWriter
+    public interface IConsoleWriter
     {
-        int WriteLine(string s);        // We don't use Write, rather update the same line
+        /// <remarks> We don't use Write, rather update the same line</remarks>
+        /// <returns>Absolute line index</returns>
+        int WriteLine(string s);        
+
+        /// <summary>Keep the input params for letter interrogation/formatting</summary>
+        /// <returns>Absolute line index</returns>
         int WriteFormatted(FormattableString formatted);
     }
 
-    public interface IConsole : ITextWriter
+
+    public interface IConsole : IConsoleWriter
     {
         string Handle { get; }
         int Version { get;  }
@@ -23,9 +27,10 @@ namespace ConsoleZ
         void Clear();
         
         /// <returns>false - unable to update</returns>
-        bool UpdateLine(int line, string txt);      
+        bool UpdateLine(int lineAbsIndex, string txt);      
+
         /// <returns>false - unable to update</returns>
-        bool UpdateFormatted(int line, FormattableString formatted);
+        bool UpdateFormatted(int lineAbsIndex, FormattableString formatted);
     }
 
     public interface IConsoleWithProps : IConsole
@@ -41,7 +46,7 @@ namespace ConsoleZ
 
     public interface IConsoleLineRenderer
     {
-        string RenderLine(IConsole cons, int index, string raw);
+        string RenderLine(IConsole cons, int indexAbs, string raw);
     }
 
     public interface IAbsConsole<T>
