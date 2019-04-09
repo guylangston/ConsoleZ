@@ -17,6 +17,7 @@
     <PackageReleaseNotes>Still-In-Development / Experimental. 
 
 Not suitable for production at this time.</PackageReleaseNotes>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
  

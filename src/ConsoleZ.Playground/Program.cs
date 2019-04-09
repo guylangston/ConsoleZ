@@ -15,23 +15,23 @@ namespace ConsoleZ.Playground
     class Program
     {
 
-        static void Main(string[] args)
-        {
-            var cons = AnsiConsole.Singleton;
-            cons.WriteLine("Hello World");
-            cons.WriteLine("Have a ^red;wonderful^; day!");
-            var idx = cons.WriteLine("Replace me");
-            cons.UpdateLine(idx, "I was replaced. ;-)");
-        }
-
         //static void Main(string[] args)
         //{
-
-        //    RunHeader();
-
-        //    //RunBenchmark();
-        //    //RunMarkDownSample();
+        //    var cons = AnsiConsole.Singleton;
+        //    cons.WriteLine("Hello World");
+        //    cons.WriteLine("Have a ^red;wonderful^; day!");
+        //    var idx = cons.WriteLine("Replace me");
+        //    cons.UpdateLine(idx, "I was replaced. ;-)");
         //}
+
+        static void Main(string[] args)
+        {
+
+            RunHeader();
+
+            //RunBenchmark();
+            //RunMarkDownSample();
+        }
 
         private static void RunHeader()
         {

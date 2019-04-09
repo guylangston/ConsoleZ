@@ -35,7 +35,10 @@ namespace ConsoleZ
             }
             
             Renderer = new AnsiConsoleRenderer();
+            Plain = new PlainConsoleRenderer();
         }
+
+        public PlainConsoleRenderer Plain { get; set; }
 
         public static AnsiConsole Singleton
         {
@@ -80,13 +83,15 @@ namespace ConsoleZ
                 Console.SetCursorPosition(0, indexRel);
 
                 var rline = RenderLine(this, indexAbs, line);
-                if (rline.Length > Console.WindowWidth )
+                var pline = Plain.RenderLine(this, indexAbs, line);
+                if (pline.Length > Width)
                 {
-                    rline = rline.Substring(0, Console.WindowWidth);
+                    Console.Write(pline.Substring(0, Width));
                 }
-
-                Console.Write(rline.PadRight(Console.WindowWidth - 1));
-
+                else
+                {
+                    Console.Write(rline + StringRepeat(' ', Width - pline.Length));
+                }
                 Console.CursorTop = x;
                 Console.CursorLeft = 0;
             }
@@ -95,6 +100,17 @@ namespace ConsoleZ
                 
                 Console.WriteLine(RenderLine(this, indexAbs,  line));
             }
+        }
+
+        private static string StringRepeat(char c, int len)
+        {
+            var arr = new char[len];
+            for (int x = 0; x < len; x++)
+            {
+                arr[x] = c;
+            }
+
+            return new string(arr);
         }
 
         // TODO: This format should be user-controller (func?)

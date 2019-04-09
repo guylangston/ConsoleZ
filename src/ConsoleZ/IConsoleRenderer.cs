@@ -31,10 +31,16 @@ namespace ConsoleZ
             while((i = s.IndexOf('^')) >= 0 && (j = s.IndexOf(';',i)) > 0)
             {
                 var ss = s.Substring(i+1, j - i - 1);
-                var rep = AnsiConsole.Escape(0);
+                var rep = ss.Length == 0 
+                    ? AnsiConsole.Escape(0)
+                    : AnsiConsole.Escape(37); ;
                 if (ss.Length > 0)
                 {
-                    rep = AnsiConsole.EscapeFore(Color.FromName(ss));
+                    var clr = Color.FromName(ss);
+                    if (clr != default)
+                    {
+                        rep = AnsiConsole.EscapeFore(clr);
+                    }
                 }
                 
                 s = s.Remove(i, j - i+1).Insert(i, rep);

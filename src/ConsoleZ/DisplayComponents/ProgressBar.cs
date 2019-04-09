@@ -14,6 +14,7 @@ namespace ConsoleZ.DisplayComponents
         private Stopwatch timer;
         private long ticks;
         private long threshold;
+        PlainConsoleRenderer plain = new PlainConsoleRenderer();
 
         public ProgressBar(IConsole cons, string title)
         {
@@ -27,6 +28,7 @@ namespace ConsoleZ.DisplayComponents
 
         public int ItemsDone { get; set; }
         public int ItemsTotal { get; set; }
+        public int ErrorCount { get; set; }
 
         public string Title { get; set; }
         public string Message { get; set; }
@@ -70,13 +72,30 @@ namespace ConsoleZ.DisplayComponents
         {
             ItemsDone++;
 
-            if ( timer.ElapsedTicks -ticks > threshold)
+            // Don't refresh too often (slow down the console unnecessarily)
+            if (timer.ElapsedTicks - ticks > threshold)
             {
                 ticks = timer.ElapsedTicks;
                 Message = itemCompleteMessage;
                 Update();
             }
             
+            return this;
+        }
+
+        public ProgressBar IncrementError(string itemCompleteMessage)
+        {
+            ItemsDone++;
+            ErrorCount++;
+
+            // Don't refresh too often (slow down the console unnecessarily)
+            if (timer.ElapsedTicks - ticks > threshold)
+            {
+                ticks = timer.ElapsedTicks;
+                Message = itemCompleteMessage;
+                Update();
+            }
+
             return this;
         }
 
@@ -107,17 +126,30 @@ namespace ConsoleZ.DisplayComponents
             {
                 time = $"Done in {Humanize(Duration)}";
             }
+
+            string error = null;
+            if (ErrorCount > 0)
+            {
+                error = $" Err:^red;{ErrorCount}^;";
+            }
+
+            var w = ItemsTotal.ToString().Length;
             
-            var r = $"{Percentage,3:0}% {Ascii.BoxVert}^{clr};{graph}^;{Ascii.BoxVert} {ItemsDone,4}/{ItemsTotal,-4} ^{clr2};{time,-15}^; | {Title}";
+            var r = $"{Percentage,3:0}% {Ascii.BoxVert}^{clr};{graph}^;{Ascii.BoxVert}{error} {ItemsDone.ToString().PadLeft(w)}/{ItemsTotal.ToString().PadLeft(w)} ^{clr2};{time,-15}^; | {Title}";
             if (!string.IsNullOrEmpty(Message))
             {
-                r += " > " + Message;
+                r += $" : ^gray;{Message}^;.";
             }
-            if (r.Length >= cons.Width)
+
+            var rr = plain.RenderLine(Console, this.line, r);
+            if (rr.Length >= cons.Width)
             {
-                return r.Substring(0, cons.Width - 1);
+                return rr.PadRight(cons.Width - 1);
             }
-            return r;
+            else
+            {
+                return r;
+            }
         }
 
         public virtual void Update(bool force = false)
@@ -132,8 +164,9 @@ namespace ConsoleZ.DisplayComponents
         }
 
 
-        public ProgressBar Stop()
+        public ProgressBar Stop(bool safe = true)
         {
+            if (safe) ItemsDone = ItemsTotal;
             if (timer.IsRunning)
             {
                 timer.Stop();
