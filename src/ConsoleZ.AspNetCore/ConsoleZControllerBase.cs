@@ -41,7 +41,7 @@ namespace ConsoleZ.AspNetCore
         }
 
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Console(string id)
+        public IActionResult Console(string id, string src)
         {
             if (ConsoleRepository.TryGetConsole(id, out var cons))
             {
@@ -49,13 +49,17 @@ namespace ConsoleZ.AspNetCore
             }
             else
             {
+                if (src != null)
+                {
+                    return Redirect(src);
+                }
                 return NotFound($"Id not found: {id}");
             }
         }
 
-        protected IActionResult Console(IConsole console)
+        protected IActionResult Console(IConsole console, string src = null)
         {
-            return RedirectToAction("Console", new {id = console.Handle});
+            return RedirectToAction("Console", new {id = console.Handle, src});
         }
     }
 }

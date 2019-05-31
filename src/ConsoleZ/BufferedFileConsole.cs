@@ -20,6 +20,7 @@ namespace ConsoleZ
         {
             // Nothing, wait to the end
 
+            // TODO: Drop TextWriter and use direct file path, with allows rewrites
             // TODO: Every 5min, write everything?
         }
 
@@ -53,10 +54,7 @@ namespace ConsoleZ
                         outp.WriteLine(Renderer.RenderLine(this, cc++, line));
                     }
                 }
-
-                
             }
-
             outp.Dispose();
         }
     }

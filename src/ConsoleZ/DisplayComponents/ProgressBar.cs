@@ -35,6 +35,7 @@ namespace ConsoleZ.DisplayComponents
         public int GraphWidth { get; set; } = 10;
 
         public TimeSpan Elapsed => timer?.Elapsed ?? default(TimeSpan);
+        public TimeSpan Duration => Elapsed;
 
         public double Percentage => timer == null || ItemsTotal == 0 || ItemsDone == 0
             ? 0
@@ -42,21 +43,46 @@ namespace ConsoleZ.DisplayComponents
 
         public double ItemsPerSecond => timer == null || ItemsTotal == 0 || ItemsDone == 0
             ? 0
-            : timer.Elapsed.TotalSeconds / ItemsDone;
+            : (double)ItemsDone / Elapsed.TotalSeconds;
 
-        public TimeSpan Duration => timer.Elapsed;
+        public double SecondsPerItems => timer == null || ItemsTotal == 0 || ItemsDone == 0
+            ? 0
+            :  Elapsed.TotalSeconds / (double)ItemsDone ;
+
+        public string Speed
+        {
+            get
+            {
+                if (ItemsPerSecond == 0) return "";
+                if (ItemsPerSecond < 1) return $"{1/ItemsPerSecond:0.0} sec/item";
+                return $"{ItemsPerSecond:0.0} items/sec";
+            }
+        }
 
         public TimeSpan EstimatedDuration => ItemsDone <= 0
             ? new TimeSpan()
-            : TimeSpan.FromSeconds(ItemsPerSecond * ItemsTotal);
+            : TimeSpan.FromSeconds(SecondsPerItems * (double)ItemsTotal);
 
-        public TimeSpan EstimatedRemaining => ItemsDone <= 0
-            ? new TimeSpan()
-            : EstimatedDuration - Duration;
+        public TimeSpan EstimatedRemaining
+        {
+            get
+            {
+                if (ItemsDone > 0)
+                {
+                    return EstimatedDuration - Duration;
+                }
+                else
+                {
+                    return new TimeSpan();
+                }
+            }
+        }
 
 
         public ProgressBar Start(int targetCount)
         {
+            ItemsDone = 0;
+            ErrorCount = 0;
             ItemsTotal = targetCount;
 
             timer = new Stopwatch();
@@ -110,8 +136,8 @@ namespace ConsoleZ.DisplayComponents
                 : (timer.IsRunning ? "cyan" : "green");
 
             var clr2 = timer == null
-                ? "purple"
-                : (timer.IsRunning ? "purple" : "yellow");
+                ? "cyan"
+                : (timer.IsRunning ? "cyan" : "yellow");
 
             string time = null;
             if (timer == null || ItemsDone <= 0)
@@ -120,11 +146,11 @@ namespace ConsoleZ.DisplayComponents
             }
             else if (timer.IsRunning)
             {
-                time = $"{Humanize(EstimatedRemaining)} left";
+                time = $"{Humanize(Duration)} @ {Speed} -> {Humanize(EstimatedRemaining)} rem. )";
             }
             else
             {
-                time = $"Done in {Humanize(Duration)}";
+                time = $"Done in {Humanize(Duration)} @ {Speed}";
             }
 
             string error = null;
@@ -180,7 +206,7 @@ namespace ConsoleZ.DisplayComponents
         {
             if (span.TotalSeconds < 1) return $"{span.Milliseconds} ms";
             if (span.TotalMinutes < 1) return $"{span.Seconds} sec";
-            if (span.TotalHours < 1) return $"{span.Minutes} min";
+            if (span.TotalHours < 1) return $"{span.Minutes} min, {span.Seconds} sec.";
             if (span.TotalDays < 1) return $"{span.Hours} hr, {span.Minutes} min";
             if (span.TotalDays > 365) return $"{(int)span.TotalDays/365} yrs, {(int)span.TotalDays % 365} days"; 
 
