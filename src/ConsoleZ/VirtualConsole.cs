@@ -15,7 +15,6 @@ namespace ConsoleZ
         public override void LineChanged(int i, int index, string line, bool updated)
         {
             // Nothing
-            Console.WriteLine(Renderer.RenderLine(this, index, line));
         }
 
         public IReadOnlyList<string> GetTextLines() => base.lines;
