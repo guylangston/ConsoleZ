@@ -137,7 +137,7 @@ namespace ConsoleZ
 
         public string RenderHeader()
         {
-            return "<html><head></head><body><pre>";
+            return "<html><head></head><body style='background: #333; color: #eee;'><pre>";
         }
 
         public string RenderFooter()

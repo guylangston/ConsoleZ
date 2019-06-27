@@ -146,7 +146,7 @@ namespace ConsoleZ.DisplayComponents
             }
             else if (timer.IsRunning)
             {
-                time = $"{Humanize(Duration)} @ {Speed} -> {Humanize(EstimatedRemaining)} rem. )";
+                time = $"{Humanize(Duration)} @ {Speed} ({Humanize(EstimatedRemaining)} remaining)";
             }
             else
             {
