@@ -12,10 +12,9 @@ namespace ConsoleZ.AspNetCore
         protected ConsoleZControllerBase(IVirtualConsoleRepository consoleRepository)
         {
             this.ConsoleRepository = consoleRepository ?? throw new ArgumentNullException(nameof(consoleRepository));
-            
         }
 
-        protected ConsoleDataBuilder GetBuilder()
+        protected virtual ConsoleDataBuilder GetBuilder()
         {
             if (builder == null)
             {
@@ -27,7 +26,7 @@ namespace ConsoleZ.AspNetCore
         protected string ConsoleHostView { get; set; } = "Console";
         
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult UpdateConsole(string id)
+        public virtual  IActionResult UpdateConsole(string id)
         {
             if (ConsoleRepository.TryGetConsole(id, out var cons))
             {
@@ -41,7 +40,7 @@ namespace ConsoleZ.AspNetCore
         }
 
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Console(string id, string src)
+        public virtual IActionResult Console(string id, string src)
         {
             if (ConsoleRepository.TryGetConsole(id, out var cons))
             {
@@ -57,7 +56,7 @@ namespace ConsoleZ.AspNetCore
             }
         }
 
-        protected IActionResult Console(IConsole console, string src = null)
+        protected virtual  IActionResult Console(IConsole console, string src = null)
         {
             return RedirectToAction("Console", new {id = console.Handle, src});
         }
