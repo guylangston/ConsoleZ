@@ -48,11 +48,16 @@ namespace ConsoleZ.AspNetCore
             }
             else
             {
-                if (src != null)
-                {
-                    return Redirect(src);
-                }
-                return NotFound($"Id not found: {id}");
+                return View(ConsoleHostView, new ConsoleDataModel(
+                    null, 
+                    new ConsoleData()
+                    {
+                        Title = $"Not Found: {id}",
+                        BackUrl = src,
+                        IsActive = false,
+                        Version = 1,
+                        HtmlContent = $"Console Not Found: {id}"
+                    }));
             }
         }
 

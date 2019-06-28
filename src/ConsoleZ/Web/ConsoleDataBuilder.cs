@@ -42,16 +42,13 @@ namespace ConsoleZ.Web
 
             var dto = new ConsoleData()
             {
-
                 Handle = cons.Handle,
                 Width = cons.Width,
                 Height = cons.Height,
                 Version = cons.Version,
                 
                 UpdateUrl = string.Format(urlTemplate, cons.Handle),
-                HtmlContent = DefaultRenderer(cons),
-
-                
+                HtmlContent = DefaultRenderer(cons)
             };
 
             if (cons is IConsoleWithProps consProps)
@@ -69,6 +66,7 @@ namespace ConsoleZ.Web
                 {
                     {"title", consProps.Title}
                 };
+                
                 dto.Title = consProps.Title;
             }
 
