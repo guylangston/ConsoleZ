@@ -18,6 +18,8 @@ namespace ConsoleZ
 
         public static int WriteLabel(this IConsole cons, string name, object val) => cons.WriteFormatted($"^yellow;{name,30}^; ^orange;|^; {val}");
 
+        public static int WriteWarning(this IConsole cons, string lbl, string txt) => cons.WriteFormatted($"^red;WARNING:^orange;{lbl}.^; {txt}");
+
         public static int WriteLabel<T, TP>(this IConsole cons, T item, Expression<Func<T, TP>> exp)
         {
             var comp = exp.Compile();

@@ -22,8 +22,10 @@ namespace ConsoleZ
 
     public interface IVirtualConsoleRepository
     {
-        bool TryGetConsole(string handle, out VirtualConsole cons);
-        IConsoleWithProps AddConsole(VirtualConsole cons);
+        bool TryGetConsole(string handle, out IConsoleWithProps cons);
+        void AddConsole(IConsoleWithProps cons);
+
+        IConsoleWithProps CreateConsole(string handle = null /* auto assign */);
     }
 
     /// <summary>
@@ -32,11 +34,11 @@ namespace ConsoleZ
     /// <typeparam name="T">Handle Type</typeparam>
     public sealed class StaticVirtualConsoleRepository : IVirtualConsoleRepository
     {
-        private readonly ConcurrentDictionary<string, VirtualConsole> consoleList;
+        private readonly ConcurrentDictionary<string, IConsoleWithProps> consoleList;
 
         private StaticVirtualConsoleRepository()
         {
-            consoleList = new ConcurrentDictionary<string, VirtualConsole>();
+            consoleList = new ConcurrentDictionary<string, IConsoleWithProps>();
         }
 
         private static readonly object locker = new object();
@@ -55,12 +57,16 @@ namespace ConsoleZ
         }
         
 
-        public bool TryGetConsole(string handle, out VirtualConsole cons) => consoleList.TryGetValue(handle, out cons);
+        public bool TryGetConsole(string handle, out IConsoleWithProps cons) => consoleList.TryGetValue(handle, out cons);
 
-        public IConsoleWithProps AddConsole(VirtualConsole cons)
+        public void AddConsole(IConsoleWithProps cons)
         {
             consoleList[cons.Handle] = cons;
-            return cons;
-        } 
+        }
+
+        public  IConsoleWithProps CreateConsole(string handle = null)
+        {
+            return new VirtualConsole(DateTime.Now.Ticks.ToString(), 300, 100);
+        }
     }
 }

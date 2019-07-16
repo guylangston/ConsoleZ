@@ -217,5 +217,10 @@ namespace ConsoleZ
         }
 
         public abstract void LineChanged(int indexAbs, int indexRel, string line, bool updated);
+
+        public virtual void Dispose()
+        {
+            if (Parent is IDisposable d) d.Dispose();
+        }
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleZ
 {
-    public class BufferedFileConsole : ConsoleBase, IDisposable
+    public class BufferedFileConsole : ConsoleBase
     {
         private readonly TextWriter outp;
 
@@ -25,36 +25,54 @@ namespace ConsoleZ
         }
 
 
-        public void Dispose()
+        public override void Dispose()
         {
-            if (Renderer == null)
+            base.Dispose();
+
+            if (outp is StreamWriter sw && sw.BaseStream != null && !sw.BaseStream.CanWrite)
             {
-                foreach (var line in base.lines)
-                {
-                    outp.WriteLine(line);
-                }
+                sw.Dispose();
+                return;
             }
-            else
+
+            try
             {
-                if (Renderer is IConsoleDocRenderer doc)
+                if (Renderer == null)
                 {
-                    outp.WriteLine(doc.RenderHeader());
-                    int cc = 0;
                     foreach (var line in base.lines)
                     {
-                        outp.WriteLine(Renderer.RenderLine(this, cc++, line));
+                        outp.WriteLine(line);
                     }
-                    outp.WriteLine(doc.RenderFooter());
                 }
                 else
                 {
-                    int cc = 0;
-                    foreach (var line in base.lines)
+                    if (Renderer is IConsoleDocRenderer doc)
                     {
-                        outp.WriteLine(Renderer.RenderLine(this, cc++, line));
+                        outp.WriteLine(doc.RenderHeader());
+                        int cc = 0;
+                        foreach (var line in base.lines)
+                        {
+                            outp.WriteLine(Renderer.RenderLine(this, cc++, line));
+                        }
+                        outp.WriteLine(doc.RenderFooter());
+                    }
+                    else
+                    {
+                        int cc = 0;
+                        foreach (var line in base.lines)
+                        {
+                            outp.WriteLine(Renderer.RenderLine(this, cc++, line));
+                        }
                     }
                 }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+
+                // Don't throw Write
+            }
+            
             outp.Dispose();
         }
     }

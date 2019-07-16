@@ -38,7 +38,7 @@ namespace ConsoleZ.Playground.Web.Controllers
         [HttpPost]
         public IActionResult ConsoleStart(string consoleText)
         {
-            var consx = ConsoleRepository.AddConsole(new VirtualConsole(DateTime.Now.Ticks.ToString(), 80, 40));
+            var consx = ConsoleRepository.CreateConsole();
 
             consx.WriteLine($"Starting command '{consoleText}'... ");
 
