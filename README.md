@@ -24,6 +24,11 @@ Key Features (done vs. in-progress):
 - [ ] Markdown formatting
 - [ ] Safe Chaining (write to file)
 
+## NuGet Packages
+
+https://www.nuget.org/packages/ConsoleZ/
+https://www.nuget.org/packages/ConsoleZ.AspNetCore/
+
 ## Status
 
 This library is ALPHA status. Meaning core interfaces and algorityms may change. 
