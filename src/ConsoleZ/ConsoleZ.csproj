@@ -17,8 +17,14 @@
     <PackageReleaseNotes>Still-In-Development / Experimental. 
 
 Not suitable for production at this time.</PackageReleaseNotes>
-    <LangVersion>latest</LangVersion>
+    
+    <LangVersion>8</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\VectorInt\VectorInt.csproj" />
+  </ItemGroup>
 
  
 

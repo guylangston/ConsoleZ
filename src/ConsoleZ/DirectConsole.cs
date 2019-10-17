@@ -35,7 +35,12 @@ namespace ConsoleZ
             public CHAR_INFO this[int x, int y]
             {
                 get => m_bufScreen[y * ScreenWidth + x];
-                set => m_bufScreen[y * ScreenWidth + x] = value;
+                set
+                {
+                    if (x < 0 || y < 0) return;
+                    if (x >= Width || y >= Height) return;
+                    m_bufScreen[y * ScreenWidth + x] = value;
+                }
             }
 
             public void Fill(CHAR_INFO fill) => DirectConsole.Fill(fill.UnicodeChar, fill.Attributes);
@@ -45,8 +50,18 @@ namespace ConsoleZ
         /// <summary>
         /// Provides a common interface to program against and/or test
         /// </summary>
-        public static readonly IBufferedAbsConsole<CHAR_INFO> Singleton = new AbsConsole();
-        
+        public static  IBufferedAbsConsole<CHAR_INFO> Singleton
+        {
+            get
+            {
+                if (m_bufScreen == null) throw new InvalidOperationException("Call Setup first");
+                if (_singleton != null) return _singleton;
+                _singleton = new AbsConsole();
+                return _singleton;
+            }
+        }
+
+        private static AbsConsole _singleton;
 
         /// <summary>
         /// Setup screen size and direct-access buffer
@@ -99,7 +114,7 @@ namespace ConsoleZ
             if (!SetCurrentConsoleFontEx(m_hConsole, false, &cfi))
                 return Error(L"SetCurrentConsoleFontEx");
             */
-            //int TMPF_TRUETYPE = 4;
+            int TMPF_TRUETYPE = 4;
 
             // https://social.msdn.microsoft.com/Forums/vstudio/en-US/c276b9ae-dc4c-484a-9a59-1ee66cf0f1cc/c-changing-console-font-programmatically?forum=csharpgeneral
             unsafe
@@ -112,7 +127,7 @@ namespace ConsoleZ
                         X = (short)fontWidth,
                         Y = (short)fontHeight
                     },
-                    FontFamily = FF_DONTCARE,// TMPF_TRUETYPE, ,
+                    FontFamily = FF_DONTCARE, // FF_DONTCARE,// TMPF_TRUETYPE, ,
                     FontWeight = FW_NORMAL,
                 };
 
@@ -188,8 +203,8 @@ namespace ConsoleZ
         public static int ScreenWidth => screenSize.X;
         public static int ScreenHeight => screenSize.Y;
 
-        public static void Set(int x, int y, char c, byte clr) =>
-            m_bufScreen[y * ScreenWidth + x] = new CHAR_INFO(c, clr);
+        public static void Set(int x, int y, char c, byte clr) => m_bufScreen[y * ScreenWidth + x] = new CHAR_INFO(c, clr);
+        public static void Set(int x, int y, char c, CHAR_INFO_Attr attr) => m_bufScreen[y * ScreenWidth + x] = new CHAR_INFO(c, attr);
 
         public static (char c, byte clr) Get(int x, int y, char c, byte clr)
         {

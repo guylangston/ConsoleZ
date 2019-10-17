@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ConsoleZ.Win32;
+using VectorInt;
 
 namespace ConsoleZ.Drawing
 {
@@ -26,9 +28,12 @@ namespace ConsoleZ.Drawing
     {
         int Height { get; }
         int Width { get; }
+        
+        RectInt Geometry { get; }
 
         void Fill(TPixel p);
         TPixel this[int x, int y] { get; set; } // Get/Set Pixel
+        TPixel this[VectorInt2 p] { get; set; } // Get/Set Pixel
         TPixel this[float x, float y] { get; set; } // Get/Set Pixel
 
         void DrawText(int x, int y, string txt, TPixel style);
@@ -36,46 +41,59 @@ namespace ConsoleZ.Drawing
         void Update();
     }
 
-    public static class RendererExt
+    public  abstract class ConsoleRenderer<TPixel> : IRenderer<TPixel>
     {
-        public static bool PixelEquals(float x1, float x2) => System.Math.Abs(x1 - x2) < 0.01;
+        private readonly IBufferedAbsConsole<TPixel> console;
 
-
-        
-
-        // https://en.wikipedia.org/wiki/Line_drawing_algorithm
-        public static void DrawLine<T>(this IRenderer<T> rr, float x1, float y1, float x2, float y2, T pixel)
+        protected ConsoleRenderer(IBufferedAbsConsole<TPixel> console)
         {
-            if (x1 > x2)
-            {
-                var p = x1;
-                x1 = x2;
-                x2 = p;
-            }
-            
-            if (y1 > y2)
-            {
-                var p = y1;
-                y1 = y2;
-                y2 = p;
-            }
+            this.console = console;
+            this.Geometry = new RectInt(0, 0, console.Width, console.Height);
+        }
 
-            if (PixelEquals(x1, x2))  // x1 == x2
+        public int Height => console.Height;
+        public int Width => console.Width;
+        public RectInt Geometry { get; }
+
+        public string Handle => console.Handle;
+
+        public void Fill(TPixel p) => console.Fill(p);
+
+        public TPixel this[int x, int y]
+        {
+            get => console[x,y];
+            set => console[x, y] = value;
+        }
+
+        public TPixel this[VectorInt2 p]
+        {
+            get => console[p.X, p.Y];
+            set => console[p.X, p.Y] = value;
+        }
+
+        public TPixel this[float x, float y]
+        {
+            get => console[(int)x, (int)y];
+            set => console[(int)x, (int)y] = value;
+        }
+
+        public abstract void DrawText(int x, int y, string txt, TPixel style);
+
+        public void Update() => console.Update();
+    }
+
+    public class ConsoleRendererCHAR_INFO : ConsoleRenderer<CHAR_INFO>
+    {
+        public ConsoleRendererCHAR_INFO(IBufferedAbsConsole<CHAR_INFO> bufferedAbsConsole) : base(bufferedAbsConsole)
+        {
+        }
+
+        public override void DrawText(int x, int y, string txt, CHAR_INFO style)
+        {
+            var c = x;
+            foreach (var chr in txt)
             {
-                for (var y = y1; y < y2; y++)
-                {
-                    rr[x1, y] = pixel;
-                }
-            }
-            else
-            {
-                var dx = x2 - x1;
-                var dy = y2 - y1;
-                for (var x = x1; x < x2; x++)
-                {
-                    var y = y1 + dy * (x - x1) / dx;
-                    rr[x, y] = pixel;
-                }
+                this[c++, y] = new CHAR_INFO(chr, style.Attributes);
             }
         }
     }
