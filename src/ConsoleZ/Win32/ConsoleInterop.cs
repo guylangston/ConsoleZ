@@ -522,7 +522,7 @@ namespace ConsoleZ.Win32
             int nStdHandle
         );
 
-        // http://pinvoke.net/default.aspx/kernel32/PeekConsoleInput.html
+    // http://pinvoke.net/default.aspx/kernel32/PeekConsoleInput.html
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool PeekConsoleInput(
             IntPtr hConsoleInput,

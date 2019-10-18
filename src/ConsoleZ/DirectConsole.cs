@@ -247,12 +247,13 @@ namespace ConsoleZ
             uint mode = 0;
             ConsoleInterop.GetConsoleMode(inputHandle, out mode);
             mode &= ~ENABLE_QUICK_EDIT_MODE; //disable
-            mode |= ENABLE_WINDOW_INPUT; //enable (if you want)
+            //mode |= ENABLE_WINDOW_INPUT; //enable (if you want)
             mode |= ENABLE_MOUSE_INPUT; //enable
             ConsoleInterop.SetConsoleMode(inputHandle, mode);
-            
         }
 
+        
+        // WARNING: This blocks/disrupts the normal keyboard input messages
         public static VectorInt2 GetMousePosition()
         {
             var inputHandle = GetSTD_INPUT_HANDLE;
