@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using ConsoleZ;
 using ConsoleZ.DisplayComponents;
@@ -24,11 +25,73 @@ namespace ConsoleZ.Playground
         //    cons.UpdateLine(idx, "I was replaced. ;-)");
         //}
 
+        private static void Palette()
+        {
+            System.Console.OutputEncoding = Encoding.Unicode;
+            DirectConsole.Setup(80, 25, 7*2, 14*2, "Consolas");
+            DirectConsole.MaximizeWindow();
+            DirectConsole.Fill(' ',  0);
+
+
+            var console = DirectConsole.Singleton;
+            var renderer = new ConsoleRendererCHAR_INFO(console);
+
+            ushort seed = 0xff00; 
+            
+            
+            for (int x = 0; x < 16; x++)
+            {
+                console[x + 2, 0] = new CHAR_INFO(Convert.ToString(x, 16)[0], CHAR_INFO_Attr.FOREGROUND_GRAY);
+                
+                for(int y=0; y<16; y++)
+                {
+                    console[0, y + 2] = new CHAR_INFO(Convert.ToString(y, 16)[0], CHAR_INFO_Attr.FOREGROUND_GRAY);
+                    console[1, y + 2] = new CHAR_INFO('x', CHAR_INFO_Attr.FOREGROUND_GRAY);
+
+                    
+                    console[x + 2, y + 2] = new CHAR_INFO('X', (ushort)(x + (16*y) + seed));
+                }
+            }
+
+            for (int x = 0; x < 16; x++)
+            {
+                console[x + 22, 0] = new CHAR_INFO(Convert.ToString(x, 16)[0], CHAR_INFO_Attr.FOREGROUND_GRAY);
+                
+                for(int y=0; y<16; y++)
+                {
+                    console[20, y + 2] = new CHAR_INFO(Convert.ToString(y, 16)[0], CHAR_INFO_Attr.FOREGROUND_GRAY);
+                    console[21, y + 2] = new CHAR_INFO('x', CHAR_INFO_Attr.FOREGROUND_GRAY);
+
+                    
+                    console[x + 22 , y + 2] = new CHAR_INFO()
+                    { 
+                        UnicodeNum = (ushort)(x + y*16 + seed) ,
+                        AttributesEnum = CHAR_INFO_Attr.FOREGROUND_GRAY
+                    };
+                }
+            }
+            console.Update();
+
+            Console.CursorTop = 20;
+            Console.WriteLine("Hello World: " + (char)0xB1);
+            Console.WriteLine("Done. Enter to exit...");
+
+            Console.ReadLine();
+        }
+
         static void Main(string[] args)
         {
+            var cmd = args.Length > 0 ? args[0] : "default";
 
-            RunHeader();
-
+            switch (cmd)
+            {
+                default:
+                case "palette":
+                    Palette();
+                    break;
+            }
+            
+            //RunHeader();
             //RunBenchmark();
             //RunMarkDownSample();
         }

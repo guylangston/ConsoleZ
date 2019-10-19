@@ -1,4 +1,5 @@
-﻿using VectorInt;
+﻿using ConsoleZ.Win32;
+using VectorInt;
 
 namespace ConsoleZ.Drawing
 {
@@ -52,14 +53,44 @@ namespace ConsoleZ.Drawing
                 rr[p.X, p.Y] = pixel;
             }
         }
-        
-        public static void Box<T>(this IRenderer<T> rr, IRectInt rect, T pixel)
+
+        public static void Box<T>(this IRenderer<T> rr, IRectInt rect, T[] pixel)
         {
-            rr.DrawLine(rect.TL, rect.TR, pixel);
-            rr.DrawLine(rect.TL, rect.BL, pixel);
-            rr.DrawLine(rect.TR, rect.BR, pixel);
-            rr.DrawLine(rect.BL, rect.BR, pixel);
+            rr.DrawLine(rect.TL, rect.TR, pixel[1]);
+            rr[rect.TL] = pixel[0];
+            rr[rect.TR] = pixel[2];
+
+            rr.DrawLine(rect.TL, rect.BL, pixel[3]);
+            rr.Fill(rect.Inset(1,1,1,1), pixel[4]);
+            rr.DrawLine(rect.TR, rect.BR, pixel[5]);
+            
+            rr.DrawLine(rect.BL, rect.BR, pixel[7]);
+
+            rr[rect.TL] = pixel[0];
+            rr[rect.TR] = pixel[2];
+            rr[rect.BL] = pixel[6];
+            rr[rect.BR] = pixel[8];
+
         }
-        
+
+        public static CHAR_INFO[] AsciiBox = new[]
+        {
+            
+            new CHAR_INFO(0xda, CHAR_INFO_Attr.FOREGROUND_GRAY),
+            new CHAR_INFO(0xc4, CHAR_INFO_Attr.FOREGROUND_GRAY),
+            new CHAR_INFO(0xbf, CHAR_INFO_Attr.FOREGROUND_GRAY),
+            
+            
+            new CHAR_INFO(0xb3, CHAR_INFO_Attr.FOREGROUND_GRAY),
+            new CHAR_INFO(' ', CHAR_INFO_Attr.FOREGROUND_GRAY),
+            new CHAR_INFO(0xb3, CHAR_INFO_Attr.FOREGROUND_GRAY),
+
+
+            new CHAR_INFO(0xc0, CHAR_INFO_Attr.FOREGROUND_GRAY),
+            new CHAR_INFO(0xc4, CHAR_INFO_Attr.FOREGROUND_GRAY),
+            new CHAR_INFO(0xd9, CHAR_INFO_Attr.FOREGROUND_GRAY),
+
+
+        };
     }
 }

@@ -47,7 +47,7 @@ namespace ConsoleZ
                 }
             }
 
-            public void Fill(CHAR_INFO fill) => DirectConsole.Fill(fill.UnicodeChar, fill.Attributes);
+            public void Fill(CHAR_INFO fill) => DirectConsole.Fill((char)fill.UnicodeChar, fill.Attributes);
             public void Update() => DirectConsole.Update();
         }
 
@@ -70,11 +70,7 @@ namespace ConsoleZ
         /// <summary>
         /// Setup screen size and direct-access buffer
         /// </summary>
-        /// <param name="screenWidth"></param>
-        /// <param name="screenHeight"></param>
-        /// <param name="fontWidth"></param>
-        /// <param name="fontHeight"></param>
-        public static void Setup(int screenWidth, int screenHeight, int fontWidth, int fontHeight, string font)
+        public static IBufferedAbsConsole<CHAR_INFO> Setup(int screenWidth, int screenHeight, int fontWidth, int fontHeight, string font)
         {
             //var m_hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
             m_hConsole = GetSTD_OUTPUT_HANDLE;
@@ -104,45 +100,49 @@ namespace ConsoleZ
                 throw new Exception("SetConsoleActiveScreenBuffer");
             }
 
-            // Set the font size now that the screen buffer has been assigned to the console
-            /*
-            CONSOLE_FONT_INFOEX cfi;
-            cfi.cbSize = sizeof(cfi);
-            cfi.nFont = 0;
-            cfi.dwFontSize.X = fontw;
-            cfi.dwFontSize.Y = fonth;
-            cfi.FontFamily = FF_DONTCARE;
-            cfi.FontWeight = FW_NORMAL;
-                                  
-            wcscpy_s(cfi.FaceName, L"Consolas");
-            if (!SetCurrentConsoleFontEx(m_hConsole, false, &cfi))
-                return Error(L"SetCurrentConsoleFontEx");
-            */
-            int TMPF_TRUETYPE = 4;
+           
 
             // https://social.msdn.microsoft.com/Forums/vstudio/en-US/c276b9ae-dc4c-484a-9a59-1ee66cf0f1cc/c-changing-console-font-programmatically?forum=csharpgeneral
-            unsafe
+            if (true)
             {
-                var cfi = new CONSOLE_FONT_INFO_EX()
+                // Set the font size now that the screen buffer has been assigned to the console
+                /*
+                CONSOLE_FONT_INFOEX cfi;
+                cfi.cbSize = sizeof(cfi);
+                cfi.nFont = 0;
+                cfi.dwFontSize.X = fontw;
+                cfi.dwFontSize.Y = fonth;
+                cfi.FontFamily = FF_DONTCARE;
+                cfi.FontWeight = FW_NORMAL;
+                                      
+                wcscpy_s(cfi.FaceName, L"Consolas");
+                if (!SetCurrentConsoleFontEx(m_hConsole, false, &cfi))
+                    return Error(L"SetCurrentConsoleFontEx");
+                */
+                int TMPF_TRUETYPE = 4;
+                unsafe
                 {
-                    nFont = 0,
-                    dwFontSize = new COORD()
+                    var cfi = new CONSOLE_FONT_INFO_EX()
                     {
-                        X = (short)fontWidth,
-                        Y = (short)fontHeight
-                    },
-                    FontFamily = FF_DONTCARE, // FF_DONTCARE,// TMPF_TRUETYPE, ,
-                    FontWeight = FW_NORMAL,
-                };
+                        nFont = 0,
+                        dwFontSize = new COORD()
+                        {
+                            X = (short)fontWidth,
+                            Y = (short)fontHeight
+                        },
+                        FontFamily = FF_DONTCARE, // FF_DONTCARE,// TMPF_TRUETYPE, ,
+                        FontWeight = FW_NORMAL,
+                    };
 
-                IntPtr ptr = new IntPtr(cfi.FaceName);
-                Marshal.Copy(font.ToCharArray(), 0, ptr, font.Length);
+                    IntPtr ptr = new IntPtr(cfi.FaceName);
+                    Marshal.Copy(font.ToCharArray(), 0, ptr, font.Length);
 
-                cfi.cbSize = (ushort)Marshal.SizeOf(cfi);
-                if (!ConsoleInterop.SetCurrentConsoleFontEx(m_hConsole, false, ref cfi))
-                {
-                    var msg = "SetConsoleActiveScreenBuffer:" + Marshal.GetLastWin32Error();
-                    throw new Exception(msg);
+                    cfi.cbSize = (ushort)Marshal.SizeOf(cfi);
+                    if (!ConsoleInterop.SetCurrentConsoleFontEx(m_hConsole, false, ref cfi))
+                    {
+                        var msg = "SetConsoleActiveScreenBuffer:" + Marshal.GetLastWin32Error();
+                        throw new Exception(msg);
+                    }
                 }
             }
 
@@ -170,6 +170,8 @@ namespace ConsoleZ
 
             // Allocate memory for screen buffer
             m_bufScreen = new CHAR_INFO[screenWidth * screenHeight];
+
+            return Singleton;
         }
 
         public static CHAR_INFO[] ScreenBuffer => m_bufScreen;
@@ -212,12 +214,7 @@ namespace ConsoleZ
 
         public static void Set(int x, int y, char c, CHAR_INFO_Attr attr) => m_bufScreen[y * ScreenWidth + x] = new CHAR_INFO(c, attr);
 
-        public static (char c, byte clr) Get(int x, int y, char c, byte clr)
-        {
-            var v = m_bufScreen[y * ScreenWidth + x];
-            return (v.UnicodeChar, (byte)v.Attributes);
-        }
-
+        
         public static void Update()
         {
             if (!ConsoleInterop.WriteConsoleOutput(m_hConsole,

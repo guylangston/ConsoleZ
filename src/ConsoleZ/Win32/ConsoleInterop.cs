@@ -186,9 +186,11 @@ namespace ConsoleZ.Win32
     /// CHAR_INFO struct, which was a union in the old days
     /// so we want to use LayoutKind.Explicit to mimic it as closely
     /// as we can</remarks>
-    [StructLayout(LayoutKind.Explicit)]
+    [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Auto)]
     public struct CHAR_INFO
     {
+        
+
         public CHAR_INFO(char unicodeChar, ushort attributes) : this()
         {
             UnicodeChar = unicodeChar;
@@ -199,19 +201,39 @@ namespace ConsoleZ.Win32
         {
             UnicodeChar = unicodeChar;
             Attributes = (ushort)attributes;
-        } 
+        }
+        
+        public CHAR_INFO(ushort unicodeChar, CHAR_INFO_Attr attributes) : this()
+        {
+            UnicodeNum = unicodeChar;
+            Attributes = (ushort)attributes;
+        }
         
         public CHAR_INFO(char unicodeChar) : this()
         {
             UnicodeChar = unicodeChar;
             Attributes = (ushort)CHAR_INFO_Attr.FOREGROUND_GRAY;
-        } 
+        }
 
-        [FieldOffset(0)] public readonly char UnicodeChar;
-        [FieldOffset(0)] public readonly char AsciiChar;
+        [FieldOffset(0)] 
+        public ushort UnicodeNum;
+        
+        [FieldOffset(0)] 
+        public char UnicodeChar;
 
-        [FieldOffset(2)] //2 bytes seems to work properly; this is the colour
-        public readonly ushort Attributes;
+        [FieldOffset(0)] 
+        public byte AsciiChar;
+
+
+        [FieldOffset(2)] 
+        public ushort Attributes;
+
+
+        public CHAR_INFO_Attr AttributesEnum
+        {
+            get => (CHAR_INFO_Attr) Attributes;
+            set => Attributes = (ushort) value;
+        }
     }
 
     /// <summary>
