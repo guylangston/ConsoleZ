@@ -35,10 +35,7 @@ namespace ConsoleZ.Test
                 }, 
                 parser.Tokens.Select(x=>x.Text).ToArray()
             );
-
-            
         }
-
         
         [Fact]
         public void CanRenderRaw()
@@ -51,8 +48,6 @@ namespace ConsoleZ.Test
             var raw = parser.Render((i, t) => t.RawText);
             Assert.Equal(imp, raw);
         }
-
-
         
         [Fact]
         public void CanRenderBasic()

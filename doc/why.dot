@@ -1,0 +1,23 @@
+digraph g {
+    a[label="Why?"];
+    b[label="Fast buffered updates"];
+    c[label="DirectConsole.Singleton" shape=rect ];
+
+    d[label="More Colours?"]
+    e[label="Inline escaping?"]
+    f[label="Web console?"]
+
+    v[label="VirtualConsole" shape=rect ];
+
+    a -> d;
+    a -> e;
+    a -> f;
+
+    d -> v;
+    e -> v;
+    f -> v;
+
+    a->b->c
+
+    
+}

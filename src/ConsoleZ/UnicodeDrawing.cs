@@ -13,7 +13,7 @@ namespace ConsoleZ
     /// Wiki Box chars
     /// https://en.wikipedia.org/wiki/Box-drawing_character
     /// </summary>
-    public static class Ascii
+    public static class UnicodeDrawing
     {
         // https://en.wikipedia.org/wiki/Block_Elements
         public const char Block100 = '█';

@@ -29,7 +29,7 @@ namespace ConsoleZ.Playground
         {
             System.Console.OutputEncoding = Encoding.Unicode;
             DirectConsole.Setup(80, 25, 7*2, 14*2, "Consolas");
-            DirectConsole.MaximizeWindow();
+            //DirectConsole.MaximizeWindow();
             DirectConsole.Fill(' ',  0);
 
 

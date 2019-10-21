@@ -129,7 +129,7 @@ namespace ConsoleZ.DisplayComponents
         {
             var a = (int)(Percentage/100d * GraphWidth);
             var b = GraphWidth - a;
-            var graph = new string(Ascii.Block100, a) + new string(Ascii.DotMiddle, b);
+            var graph = new string(UnicodeDrawing.Block100, a) + new string(UnicodeDrawing.DotMiddle, b);
 
             var clr = timer == null
                 ? "purple"
@@ -161,7 +161,7 @@ namespace ConsoleZ.DisplayComponents
 
             var w = ItemsTotal.ToString().Length;
             
-            var r = $"{Percentage,3:0}% {Ascii.BoxVert}^{clr};{graph}^;{Ascii.BoxVert}{error} {ItemsDone.ToString().PadLeft(w)}/{ItemsTotal.ToString().PadLeft(w)} ^{clr2};{time,-15}^; | {Title}";
+            var r = $"{Percentage,3:0}% {UnicodeDrawing.BoxVert}^{clr};{graph}^;{UnicodeDrawing.BoxVert}{error} {ItemsDone.ToString().PadLeft(w)}/{ItemsTotal.ToString().PadLeft(w)} ^{clr2};{time,-15}^; | {Title}";
             if (!string.IsNullOrEmpty(Message))
             {
                 r += $" : ^gray;{Message}^;.";
