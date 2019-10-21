@@ -54,6 +54,18 @@ namespace ConsoleZ.Drawing
             }
         }
 
+        public static void DrawText<T>(this IRenderer<T> rr, VectorInt2 pos, string text, T style, bool isLeft = true)
+        {
+            if (isLeft)
+            {
+                rr.DrawText(pos.X, pos.Y, text, style);
+            }
+            else
+            {
+                rr.DrawText(pos.X - text.Length, pos.Y, text, style);
+            }
+        }
+
         public static void Box<T>(this IRenderer<T> rr, IRectInt rect, T[] pixel)
         {
             rr.DrawLine(rect.TL, rect.TR, pixel[1]);

@@ -13,21 +13,15 @@
     <Description>Enhanced Console featuring color encoding, fast rendering, markdown, html mapper</Description>
     <Copyright>MIT</Copyright>
     <Version>0.1.3</Version>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/guylangston/ConsoleZ/master/LICENSE</PackageLicenseUrl>
-    <PackageReleaseNotes>Still-In-Development / Experimental. 
-
-Not suitable for production at this time.</PackageReleaseNotes>
-    
+    <PackageReleaseNotes>Still-In-Development / Experimental. Not suitable for production at this time.</PackageReleaseNotes>
     <LangVersion>8</LangVersion>
     <Nullable>enable</Nullable>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\VectorInt\VectorInt.csproj" />
+    <PackageReference Include="VectorInt" Version="0.0.1" />
   </ItemGroup>
 
- 
-
   
-
 </Project>

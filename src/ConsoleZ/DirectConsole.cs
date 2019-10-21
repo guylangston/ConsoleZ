@@ -14,12 +14,7 @@ namespace ConsoleZ
     public static class DirectConsole
     {
 
-        // https://pinvoke.net/default.aspx/kernel32/GetStdHandle.html
-        const int STD_OUTPUT_HANDLE = -11;
-        const int STD_INPUT_HANDLE =  -10;
-        
-        private static IntPtr GetSTD_OUTPUT_HANDLE => ConsoleInterop.GetStdHandle(STD_OUTPUT_HANDLE);
-        private static IntPtr GetSTD_INPUT_HANDLE => ConsoleInterop.GetStdHandle(STD_INPUT_HANDLE);
+     
         
         private static CHAR_INFO[] m_bufScreen;
         private static IntPtr m_hConsole;
@@ -73,7 +68,7 @@ namespace ConsoleZ
         public static IBufferedAbsConsole<CHAR_INFO> Setup(int screenWidth, int screenHeight, int fontWidth, int fontHeight, string font)
         {
             //var m_hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-            m_hConsole = GetSTD_OUTPUT_HANDLE;
+            m_hConsole = ConsoleInteropHelper.Get_STD_OUTPUT_HANDLE;
 
             m_rectWindow = new SMALL_RECT() { Left = 0, Top = 0, Right = 1, Bottom = 1 };
             ConsoleInterop.SetConsoleWindowInfo(m_hConsole, true, ref m_rectWindow);
@@ -231,43 +226,9 @@ namespace ConsoleZ
             }
         }
 
-        public static void EnableMouseSupport()
-        {
-            const uint ENABLE_MOUSE_INPUT = 0x0010,
-                ENABLE_QUICK_EDIT_MODE = 0x0040,
-                ENABLE_EXTENDED_FLAGS = 0x0080,
-                ENABLE_ECHO_INPUT = 0x0004,
-                ENABLE_WINDOW_INPUT = 0x0008; //more
-            
-            // https://stackoverflow.com/questions/1944481/console-app-mouse-click-x-y-coordinate-detection-comparison
-            var inputHandle = GetSTD_INPUT_HANDLE;
-            uint mode = 0;
-            ConsoleInterop.GetConsoleMode(inputHandle, out mode);
-            mode &= ~ENABLE_QUICK_EDIT_MODE; //disable
-            //mode |= ENABLE_WINDOW_INPUT; //enable (if you want)
-            mode |= ENABLE_MOUSE_INPUT; //enable
-            ConsoleInterop.SetConsoleMode(inputHandle, mode);
-        }
+     
 
         
-        // WARNING: This blocks/disrupts the normal keyboard input messages
-        public static VectorInt2 GetMousePosition()
-        {
-            var inputHandle = GetSTD_INPUT_HANDLE;
-
-            uint numRead = 0;
-            var record = new INPUT_RECORD[1];
-            record[0] = new INPUT_RECORD();
-            ConsoleInterop.ReadConsoleInput(inputHandle, record, 1, out numRead);
-            if (numRead == 0) return new VectorInt2(-1);
-
-            if (record[0].EventType == 2)
-            {
-                return new VectorInt2(record[0].MouseEvent.dwMousePosition.X, record[0].MouseEvent.dwMousePosition.Y);
-            }
-
-            return new VectorInt2(-2);            
-            
-        }
+       
     }
 }
