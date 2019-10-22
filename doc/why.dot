@@ -2,6 +2,8 @@ digraph g {
     a[label="Why?"];
     b[label="Fast buffered updates"];
     c[label="DirectConsole.Singleton" shape=rect ];
+    g[label="Want a multi-platform GUI"];
+    gg[label="Use GUI.cs" shape="house" href="https://www.nuget.org/packages/Terminal.Gui/"];
 
     d[label="More Colours?"]
     e[label="Inline escaping?"]
@@ -18,6 +20,8 @@ digraph g {
     f -> v;
 
     a->b->c
+
+    a->g->gg;
 
     
 }
