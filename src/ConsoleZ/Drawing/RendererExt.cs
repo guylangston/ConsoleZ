@@ -3,6 +3,13 @@ using VectorInt;
 
 namespace ConsoleZ.Drawing
 {
+    public enum TextAlign
+    {
+        Left,
+        Middle,
+        Right
+    }
+    
     public static class RendererExt
     {
         public static bool PixelEquals(float x1, float x2) => System.Math.Abs(x1 - x2) < 0.01;
@@ -54,17 +61,25 @@ namespace ConsoleZ.Drawing
             }
         }
 
-        public static void DrawText<T>(this IRenderer<T> rr, VectorInt2 pos, string text, T style, bool isLeft = true)
+        public static void DrawText<T>(this IRenderer<T> rr, VectorInt2 pos, string text, T style, TextAlign align = TextAlign.Left)
         {
-            if (isLeft)
+            if (align == TextAlign.Left)
             {
                 rr.DrawText(pos.X, pos.Y, text, style);
             }
-            else
+            else if (align == TextAlign.Right)
             {
                 rr.DrawText(pos.X - text.Length, pos.Y, text, style);
             }
+            else if (align == TextAlign.Middle)
+            {
+                rr.DrawText(pos.X - text.Length/2, pos.Y, text, style);
+            }
+            
         }
+
+        public static void Box(this IRenderer<CHAR_INFO> rr, IRectInt rect, CHAR_INFO[] pixel = null) 
+            => RendererExt.Box<CHAR_INFO>(rr, rect, pixel ?? DrawingHelper.AsciiBox);
 
         public static void Box<T>(this IRenderer<T> rr, IRectInt rect, T[] pixel)
         {
@@ -85,24 +100,6 @@ namespace ConsoleZ.Drawing
 
         }
 
-        public static CHAR_INFO[] AsciiBox = new[]
-        {
-            
-            new CHAR_INFO(0xda, CHAR_INFO_Attr.FOREGROUND_GRAY),
-            new CHAR_INFO(0xc4, CHAR_INFO_Attr.FOREGROUND_GRAY),
-            new CHAR_INFO(0xbf, CHAR_INFO_Attr.FOREGROUND_GRAY),
-            
-            
-            new CHAR_INFO(0xb3, CHAR_INFO_Attr.FOREGROUND_GRAY),
-            new CHAR_INFO(' ', CHAR_INFO_Attr.FOREGROUND_GRAY),
-            new CHAR_INFO(0xb3, CHAR_INFO_Attr.FOREGROUND_GRAY),
-
-
-            new CHAR_INFO(0xc0, CHAR_INFO_Attr.FOREGROUND_GRAY),
-            new CHAR_INFO(0xc4, CHAR_INFO_Attr.FOREGROUND_GRAY),
-            new CHAR_INFO(0xd9, CHAR_INFO_Attr.FOREGROUND_GRAY),
-
-
-        };
+     
     }
 }

@@ -19,9 +19,9 @@ namespace ConsoleZ.Win32
         public CancellationToken CancellationToken { get; }
 
         // TODO: Mouse Interaction https://stackoverflow.com/questions/1944481/console-app-mouse-click-x-y-coordinate-detection-comparison
-        public bool EnableMouse
+        public bool IsMouseEnabled
         {
-            get => enableMouse;
+            get => isMouseEnabled;
             set
             {
                 if (value)
@@ -32,16 +32,19 @@ namespace ConsoleZ.Win32
                 {
                     MousePosition = new VectorInt2(-1);
                 }
-                enableMouse = value;
+                isMouseEnabled = value;
             }
         }
 
         public VectorInt2 MousePosition { get; set; }  = new VectorInt2(-1);
-        
+        public bool IsMouseClick => MouseLeftClick > 254;
+
         public bool IsKeyPressed(ConsoleKey key) => KeyDown[(byte) key] > 254;
         
         public int[] KeyDown  = new int[256];
-        private bool enableMouse;
+        public int MouseLeftClick { get; set; }
+        
+        private bool isMouseEnabled;
 
         private void ProcessMessagesLoop()
         {
@@ -56,9 +59,13 @@ namespace ConsoleZ.Win32
                 {
                     foreach (var rec in inputRecords)
                     {
-                        if (rec.EventType == INPUT_RECORD.MOUSE_EVENT && enableMouse)
+                        if (rec.EventType == INPUT_RECORD.MOUSE_EVENT && isMouseEnabled)
                         {
                             MousePosition = new VectorInt2(rec.MouseEvent.dwMousePosition.X, rec.MouseEvent.dwMousePosition.Y);
+                            if ((rec.MouseEvent.dwButtonState & 1) > 0)
+                            {
+                                MouseLeftClick = 255;
+                            }
                         }
                         else if (rec.EventType == INPUT_RECORD.KEY_EVENT)
                         {
@@ -74,6 +81,7 @@ namespace ConsoleZ.Win32
 
         
 
+
         public void Dispose()
         {
             background.Dispose();
@@ -84,6 +92,8 @@ namespace ConsoleZ.Win32
             for(var i=0; i<KeyDown.Length; i++)
                 if (KeyDown[i] > 0)
                     KeyDown[i]--;
+
+            if (MouseLeftClick > 0) MouseLeftClick--;
         }
     }
 }

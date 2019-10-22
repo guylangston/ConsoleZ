@@ -127,6 +127,12 @@ namespace ConsoleZ.Win32
         public const ushort KEY_EVENT = 0x0001,
             MOUSE_EVENT = 0x0002,
             WINDOW_BUFFER_SIZE_EVENT = 0x0004; //m
+        
+        public const uint FROM_LEFT_1ST_BUTTON_PRESSED = 0x0001,
+            FROM_LEFT_2ND_BUTTON_PRESSED = 0x0004,
+            FROM_LEFT_3RD_BUTTON_PRESSED = 0x0008,
+            FROM_LEFT_4TH_BUTTON_PRESSED = 0x0010,
+            RIGHTMOST_BUTTON_PRESSED = 0x0002;
     }
 
     [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Unicode)]

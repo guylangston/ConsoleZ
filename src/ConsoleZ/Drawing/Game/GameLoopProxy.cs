@@ -40,4 +40,13 @@ namespace ConsoleZ.Drawing.Game
         
         public abstract void Dispose();
     }
+
+    public abstract class GameLoopProxy<T> : GameLoopProxy where T : GameLoopBase
+    {
+        protected new T Parent => (T) base.Parent;
+
+        protected GameLoopProxy(T parent) : base(parent)
+        {
+        }
+    }
 }
