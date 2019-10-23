@@ -1,11 +1,13 @@
 digraph g {
     a[label="Why?"];
-    b[label="Fast buffered updates"];
+    b[label="Fast buffered updates\nGames or animated GUI"];
     c[label="DirectConsole.Singleton" shape=rect ];
+    g[label="Want a multi-platform GUI\nWith Form Controls"];
+    gg[label="Use GUI.cs" shape="component" href="https://www.nuget.org/packages/Terminal.Gui/"];
 
     d[label="More Colours?"]
-    e[label="Inline escaping?"]
-    f[label="Web console?"]
+    e[label="Inline escaping?\n Updating progress bars and reports"]
+    f[label="Web console?\nAll using the same interface"]
 
     v[label="VirtualConsole" shape=rect ];
 
@@ -18,6 +20,8 @@ digraph g {
     f -> v;
 
     a->b->c
+
+    a->g->gg;
 
     
 }

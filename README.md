@@ -3,18 +3,21 @@
 > A modern multi-target (console/web/gui/tests) console rendering library
 
 Why use this library? What use cases?
+
 - Want a common interface/experiance across console and web apps? 
 - Want a richer output (colours, progress graphs)?
 - Want to make a retro-console game like Tetris, Snake?
 - Want Markdown in the console?
 
 What this library does NOT do:
+
 - Console Argument parsing
-- Midnight-Commander like console forms
+- Midnight-Commander like console forms. Rather use the wonderful [GUI.cs](https://www.nuget.org/packages/Terminal.Gui)
 - Unix support (Windows-only at this stage)
 
+![Why?](./doc/why.svg "What do you want?")
+
 Key Features (done vs. in-progress):
-- [X] Zero-dependancy
 - [X] Windows 10 Console: ANSI Escape Codes
 - [X] Alternative human readble inline colour formatting ```"^red;Error:^; Message"```
 - [X] Fast full-screen updates. Allows Retro Console games. https://onelonecoder.com/olcconsolegameengine/
@@ -26,12 +29,12 @@ Key Features (done vs. in-progress):
 
 ## NuGet Packages
 
-https://www.nuget.org/packages/ConsoleZ/
-https://www.nuget.org/packages/ConsoleZ.AspNetCore/
+- [ConsoleZ Terminal](https://www.nuget.org/packages/ConsoleZ/)
+- [ASP.NET Core](https://www.nuget.org/packages/ConsoleZ.AspNetCore/)
 
 ## Status
 
-This library is ALPHA status. Meaning core interfaces and algorityms may change. 
+This library is ALPHA status. Meaning core interfaces may change. 
 At present this library is not ready for production.
 
 Please create a github issue for any features/bugs.
