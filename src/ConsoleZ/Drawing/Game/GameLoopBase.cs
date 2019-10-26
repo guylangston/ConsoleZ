@@ -5,6 +5,11 @@ namespace ConsoleZ.Drawing.Game
 {
     public abstract class GameLoopBase : IGameLoop, IDisposable
     {
+        protected GameLoopBase()
+        {
+            SetGoalFPS(60);
+        }
+
         public bool IsActive{ get; protected set; }
 
         public int FrameCount { get; private set; }
@@ -15,7 +20,10 @@ namespace ConsoleZ.Drawing.Game
         public DateTime GameStarted { get; private set; }
         public TimeSpan Elapsed => DateTime.Now - GameStarted;
 
-        public float MinInterval { get; set; } = 1/60f;
+        public float MinInterval { get; set; } 
+
+        public void SetDefaultInterval() => SetGoalFPS(60);
+        public void SetGoalFPS(int framePerSec) => MinInterval = 1f / (float)framePerSec;
 
         public float FramesPerSecond => (float) FrameCount / (float) Elapsed.TotalSeconds;
 

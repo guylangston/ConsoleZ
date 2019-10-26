@@ -61,7 +61,7 @@ namespace ConsoleZ.Drawing
             }
         }
 
-        public static void DrawText<T>(this IRenderer<T> rr, VectorInt2 pos, string text, T style, TextAlign align = TextAlign.Left)
+        public static VectorInt2 DrawText<T>(this IRenderer<T> rr, VectorInt2 pos, string text, T style, TextAlign align = TextAlign.Left)
         {
             if (align == TextAlign.Left)
             {
@@ -75,11 +75,19 @@ namespace ConsoleZ.Drawing
             {
                 rr.DrawText(pos.X - text.Length/2, pos.Y, text, style);
             }
-            
+
+            return pos + (0, 1);
         }
 
         public static void Box(this IRenderer<CHAR_INFO> rr, IRectInt rect, CHAR_INFO[] pixel = null) 
             => RendererExt.Box<CHAR_INFO>(rr, rect, pixel ?? DrawingHelper.AsciiBox);
+
+        public static void TitleBox(this IRenderer<CHAR_INFO> rr, IRectInt rect, string text, CHAR_INFO[] pixel = null)
+        {
+            pixel ??= DrawingHelper.AsciiBox;
+            Box(rr, rect, pixel);
+            rr.DrawText(rect.TM, $"[ {text} ]", pixel[0], TextAlign.Middle);
+        }
 
         public static void Box<T>(this IRenderer<T> rr, IRectInt rect, T[] pixel)
         {

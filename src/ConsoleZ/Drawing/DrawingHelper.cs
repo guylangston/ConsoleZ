@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using ConsoleZ.Win32;
 using VectorInt;
+using VectorInt.Collections;
 
 namespace ConsoleZ.Drawing
 {
     public static class DrawingHelper
     {
-        public static void DrawByteMatrix<TPixel>(IRenderer<TPixel> render, VectorInt2 pos, Func<byte, TPixel> getPixel)
+        public static void DrawByteMatrix<TPixel>(this IRenderer<TPixel> render, VectorInt2 pos, Func<byte, TPixel> getPixel)
         {
             for (int x = 0; x < 16; x++)
             {
@@ -19,6 +20,28 @@ namespace ConsoleZ.Drawing
                     render[pos.X +x , pos.Y + y] = getPixel((byte)(x + (16*y)));
                 }
             }
+        }
+        
+        public static void DrawMap<TPixel, TCell>(this IRenderer<TPixel> renderer, 
+            IReadOnlyCartesianMap<TCell> map, 
+            VectorInt2 pos,
+            Func<TCell, TPixel> toPixel)
+        {
+            foreach (var (cellPos, cell) in map)
+            {
+                renderer[pos + cellPos] = toPixel(cell);
+            }   
+        }
+        
+        public static void DrawMapWithPosition<TPixel, TCell>(this IRenderer<TPixel> renderer, 
+            IReadOnlyCartesianMap<TCell>                                 map, 
+            VectorInt2                                                   pos,
+            Func<VectorInt2, TCell, TPixel>                                          toPixel)
+        {
+            foreach (var (cellPos, cell) in map)
+            {
+                renderer[pos + cellPos] = toPixel(cellPos, cell);
+            }   
         }
         
         public static CHAR_INFO[] AsciiBox = new[]
