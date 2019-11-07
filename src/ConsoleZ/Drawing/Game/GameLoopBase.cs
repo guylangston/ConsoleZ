@@ -10,22 +10,19 @@ namespace ConsoleZ.Drawing.Game
             SetGoalFPS(60);
         }
 
-        public bool IsActive{ get; protected set; }
-
-        public int FrameCount { get; private set; }
-
-        public DateTime EndFrame { get; private set; }
-        public DateTime StartFrame { get; private set; }
-
-        public DateTime GameStarted { get; private set; }
+        public bool IsActive { get; protected set; }
+        public int FrameCount { get; protected set; }
+        public DateTime EndFrame { get; protected set; }
+        public DateTime StartFrame { get; protected set; }
+        public DateTime GameStarted { get; protected set; }
         public TimeSpan Elapsed => DateTime.Now - GameStarted;
-
-        public float MinInterval { get; set; } 
-
-        public void SetDefaultInterval() => SetGoalFPS(60);
-        public void SetGoalFPS(int framePerSec) => MinInterval = 1f / (float)framePerSec;
-
+        public float MinIntervalSec { get; set; }
+        public TimeSpan MinIntervalTimeSpan => TimeSpan.FromSeconds(MinIntervalSec);
         public float FramesPerSecond => (float) FrameCount / (float) Elapsed.TotalSeconds;
+        
+        public void SetDefaultInterval() => SetGoalFPS(60);
+        public void SetGoalFPS(int framePerSec) => MinIntervalSec = 1f / (float)framePerSec;
+        
 
         public abstract void Init();
 
@@ -34,7 +31,7 @@ namespace ConsoleZ.Drawing.Game
 
         }
 
-        public void Start()
+        public virtual void Start()
         {
             GameStarted = DateTime.Now;
 
@@ -45,10 +42,10 @@ namespace ConsoleZ.Drawing.Game
                 Draw();
                 EndFrame = DateTime.Now;
                 var elapse = (float)(EndFrame - StartFrame).TotalSeconds;
-                if (elapse < MinInterval)
+                if (elapse < MinIntervalSec)
                 {
-                    Thread.Sleep((int)((MinInterval - elapse)*1000f));
-                    elapse = MinInterval;
+                    Thread.Sleep((int)((MinIntervalSec - elapse)*1000f));
+                    elapse = MinIntervalSec;
                 }
 
                 Step(elapse);

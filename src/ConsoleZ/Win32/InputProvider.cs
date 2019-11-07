@@ -79,9 +79,6 @@ namespace ConsoleZ.Win32
             }
         }
 
-        
-
-
         public void Dispose()
         {
             background.Dispose();
