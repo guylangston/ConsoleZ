@@ -10,7 +10,7 @@ using VectorInt;
 
 namespace ConsoleZ.Samples
 {
-    public class SampleScene : GameLoopProxy
+    public class SampleScene : GameScene
     {
         readonly IRenderer<ConsolePixel> renderer;
         Random        random   = new Random();

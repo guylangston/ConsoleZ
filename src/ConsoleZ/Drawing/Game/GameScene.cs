@@ -2,9 +2,9 @@ using System;
 
 namespace ConsoleZ.Drawing.Game
 {
-    public abstract class GameLoopProxy : IGameLoop, IDisposable
+    public abstract class GameScene : IGameLoop, IDisposable
     {
-        protected GameLoopProxy(GameLoopBase parent)
+        protected GameScene(GameLoopBase parent)
         {
             Parent = parent ?? throw new NullReferenceException(nameof(parent));
         }
@@ -25,11 +25,11 @@ namespace ConsoleZ.Drawing.Game
         public abstract void Dispose();
     }
 
-    public abstract class GameLoopProxy<T> : GameLoopProxy where T : GameLoopBase
+    public abstract class GameScene<T> : GameScene where T : GameLoopBase
     {
         protected new T Parent => (T) base.Parent;
 
-        protected GameLoopProxy(T parent) : base(parent)
+        protected GameScene(T parent) : base(parent)
         {
         }
     }

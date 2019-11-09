@@ -13,8 +13,6 @@ namespace ConsoleZ.Win32
     [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Auto)]
     public struct CHAR_INFO
     {
-        
-
         public CHAR_INFO(char unicodeChar, ushort attributes) : this()
         {
             UnicodeChar = unicodeChar;
