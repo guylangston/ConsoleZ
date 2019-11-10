@@ -8,7 +8,7 @@ namespace ConsoleZ.Drawing.Game
     {
         protected GameLoopBase()
         {
-            SetGoalFPS(60);
+            SetDefaultInterval();
         }
 
         public bool  IsActive          { get; protected set; }
@@ -16,9 +16,9 @@ namespace ConsoleZ.Drawing.Game
         public float Elapsed           { get; protected set; }
         public float FrameIntervalGoal { get; protected set; }
         public float FramesPerSecond   { get; protected set; }
-//       
-        public void SetDefaultInterval() => SetGoalFPS(60);
-        public void SetGoalFPS(int framePerSec) => FrameIntervalGoal = 1f / (float)framePerSec;
+        
+        public void SetDefaultInterval() => SetGoalFramesPerSecond(60);
+        public void SetGoalFramesPerSecond(int framePerSec) => FrameIntervalGoal = 1f / (float)framePerSec;
         
         public abstract void Init();
 
@@ -36,10 +36,10 @@ namespace ConsoleZ.Drawing.Game
 
     public abstract class RenderingGameLoopBase<T> : GameLoopBase, IRenderingGameLoop<T>
     {
-        public InputProvider Input { get; }
+        public IInputProvider Input { get; }
         public IRenderer<T> Renderer { get; protected set; }
 
-        protected RenderingGameLoopBase(InputProvider inputProvider, IRenderer<T> renderer)
+        protected RenderingGameLoopBase(IInputProvider inputProvider, IRenderer<T> renderer)
         {
             Input = inputProvider;
             Renderer = renderer;

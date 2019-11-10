@@ -6,7 +6,21 @@ using VectorInt;
 
 namespace ConsoleZ.Win32
 {
-    public class InputProvider : IDisposable
+    public interface IInputProvider : IDisposable
+    {
+        bool       IsMouseEnabled { get; set; }
+        VectorInt2 MousePosition  { get; set; }
+        bool       IsMouseClick   { get; }
+
+        bool IsKeyDown(ConsoleKey key);
+        bool IsKeyPressed();
+        bool IsKeyPressed(ConsoleKey key);
+        void Step(float elapsed);
+    }
+    
+    
+
+    public class InputProvider : IInputProvider
     {
         private Task background;
 
@@ -39,10 +53,10 @@ namespace ConsoleZ.Win32
         public VectorInt2 MousePosition { get; set; }  = new VectorInt2(-1);
         public bool IsMouseClick => MouseLeftClick > 0;
 
-        public bool IsKeyPressed(ConsoleKey key) => KeyDown[(byte) key] > 0;
+        public bool IsKeyDown(ConsoleKey key) => KeyDown[(byte) key] > 0;
         public bool IsKeyPressed() => KeyDown.Any(x=>x >  0);
         
-        public bool IsKeyPressedOnce(ConsoleKey key)
+        public bool IsKeyPressed(ConsoleKey key)
         {
             if (KeyDown[(byte) key] > 0)
             {

@@ -12,7 +12,6 @@ namespace ConsoleZ.Samples
 {
     public class SampleScene : GameScene<IRenderingGameLoop<ConsolePixel>, ConsolePixel>
     {
-        readonly IRenderer<ConsolePixel> renderer;
         Random        random   = new Random();
         List<Element> elements = new List<Element>();
         
@@ -31,9 +30,9 @@ namespace ConsoleZ.Samples
                     Position = new Vector2(0, Position.Y);
                     Speed = new Vector2(Speed.X * -1, Speed.Y);
                 }
-                if (Position.X > Parent.renderer.Width)
+                if (Position.X > Parent.Renderer.Width)
                 {
-                    Position = new Vector2(Parent.renderer.Width, Position.Y);
+                    Position = new Vector2(Parent.Renderer.Width, Position.Y);
                     Speed    = new Vector2(Speed.X * -1, Speed.Y);
                 }
                 if (Position.Y < 0)
@@ -41,9 +40,9 @@ namespace ConsoleZ.Samples
                     Position = new Vector2(Position.X, 0);
                     Speed    = new Vector2(Speed.X, Speed.Y * -1);
                 }
-                if (Position.Y > Parent.renderer.Height)
+                if (Position.Y > Parent.Renderer.Height)
                 {
-                    Position = new Vector2(Position.X, Parent.renderer.Height);
+                    Position = new Vector2(Position.X, Parent.Renderer.Height);
                     Speed    = new Vector2(Speed.X, Speed.Y * -1);
                 }
                 
@@ -52,7 +51,6 @@ namespace ConsoleZ.Samples
         
         public SampleScene(IRenderingGameLoop<ConsolePixel> parent) : base(parent)
         {
-            this.renderer = renderer ?? throw new NullReferenceException(nameof(renderer));
         }
         
         public override void Init()
@@ -63,7 +61,7 @@ namespace ConsoleZ.Samples
                 elements.Add(new Element()
                 {
                     Parent = this,
-                    Position = RandomInside(renderer.Geometry),
+                    Position = RandomInside(Renderer.Geometry),
                     Speed = new Vector2(random.Next(-100, 100) / 100f, random.Next(-100, 100) / 100f),
                     Pixel = new ConsolePixel((char)('A' + i), RandomColour(), RandomColour())
                 });
@@ -91,7 +89,7 @@ namespace ConsoleZ.Samples
         {
             foreach (var element in elements)
             {
-                renderer[element.Position] = element.Pixel;
+                Renderer[element.Position] = element.Pixel;
             }
         }
 

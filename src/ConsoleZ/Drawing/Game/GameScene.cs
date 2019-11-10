@@ -16,7 +16,7 @@ namespace ConsoleZ.Drawing.Game
         public    float             Elapsed           => Parent.Elapsed;
         public    float             FrameIntervalGoal => Parent.FrameIntervalGoal;
         public    float             FramesPerSecond   => Parent.FramesPerSecond;
-        public    InputProvider     Input     => Parent.Input;
+        public    IInputProvider    Input             => Parent.Input;
         public    IRenderer<TPixel> Renderer          => Parent.Renderer;
 
         public abstract void Init();

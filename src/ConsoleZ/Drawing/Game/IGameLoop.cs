@@ -18,7 +18,7 @@ namespace ConsoleZ.Drawing.Game
 
     public interface IRenderingGameLoop<T> : IGameLoop
     {
-        InputProvider Input { get; }
+        IInputProvider Input { get; }
         IRenderer<T> Renderer { get; }
     }
 }
