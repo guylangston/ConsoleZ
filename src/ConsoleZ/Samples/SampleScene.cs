@@ -10,7 +10,7 @@ using VectorInt;
 
 namespace ConsoleZ.Samples
 {
-    public class SampleScene : GameScene
+    public class SampleScene : GameScene<IRenderingGameLoop<ConsolePixel>, ConsolePixel>
     {
         readonly IRenderer<ConsolePixel> renderer;
         Random        random   = new Random();
@@ -50,12 +50,11 @@ namespace ConsoleZ.Samples
             }
         }
         
-        public SampleScene(GameLoopBase parent, IRenderer<ConsolePixel> renderer) : base(parent)
+        public SampleScene(IRenderingGameLoop<ConsolePixel> parent) : base(parent)
         {
             this.renderer = renderer ?? throw new NullReferenceException(nameof(renderer));
         }
         
-
         public override void Init()
         {
             elements.Clear();

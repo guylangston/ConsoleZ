@@ -37,12 +37,23 @@ namespace ConsoleZ.Win32
         }
 
         public VectorInt2 MousePosition { get; set; }  = new VectorInt2(-1);
-        public bool IsMouseClick => MouseLeftClick > 254;
+        public bool IsMouseClick => MouseLeftClick > 0;
 
-        public bool IsKeyPressed(ConsoleKey key) => KeyDown[(byte) key] > 254;
+        public bool IsKeyPressed(ConsoleKey key) => KeyDown[(byte) key] > 0;
+        public bool IsKeyPressed() => KeyDown.Any(x=>x >  0);
         
-        public int[] KeyDown  = new int[256];
-        public int MouseLeftClick { get; set; }
+        public bool IsKeyPressedOnce(ConsoleKey key)
+        {
+            if (KeyDown[(byte) key] > 0)
+            {
+                KeyDown[(byte) key] = 0;
+                return true;
+            }
+            return false;
+        }
+
+        public float[] KeyDown  = new float[256];
+        public float MouseLeftClick { get; set; }
         
         private bool isMouseEnabled;
 
@@ -64,14 +75,23 @@ namespace ConsoleZ.Win32
                             MousePosition = new VectorInt2(rec.MouseEvent.dwMousePosition.X, rec.MouseEvent.dwMousePosition.Y);
                             if ((rec.MouseEvent.dwButtonState & 1) > 0)
                             {
-                                MouseLeftClick = 255;
+                                MouseLeftClick = 0.0001f;
                             }
                         }
                         else if (rec.EventType == INPUT_RECORD.KEY_EVENT)
                         {
                             if (rec.KeyEvent.wVirtualKeyCode < KeyDown.Length)
                             {
-                                KeyDown[rec.KeyEvent.wVirtualKeyCode] = rec.KeyEvent.bKeyDown ? 255 : 0;
+                                if (rec.KeyEvent.bKeyDown)
+                                {
+                                    KeyDown[rec.KeyEvent.wVirtualKeyCode] = 0.0001f;
+                                }
+                                else
+                                {
+                                    // up
+                                    KeyDown[rec.KeyEvent.wVirtualKeyCode] = 0;    
+                                }
+                                
                             }
                         }
                     } 
@@ -84,13 +104,13 @@ namespace ConsoleZ.Win32
             background.Dispose();
         }
 
-        public void Step()
+        public void Step(float elapsed)
         {
             for(var i=0; i<KeyDown.Length; i++)
                 if (KeyDown[i] > 0)
-                    KeyDown[i]--;
+                    KeyDown[i] += elapsed;
 
-            if (MouseLeftClick > 0) MouseLeftClick--;
+            if (MouseLeftClick > 0) MouseLeftClick+=elapsed;
         }
     }
 }
