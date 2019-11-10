@@ -11,8 +11,24 @@ namespace ConsoleZ.Drawing
             Back = back;
         }
 
-        public char  Char { get; set; }
-        public Color Fore { get; set; }
-        public Color Back { get; set; }
+        public char  Char { get; }
+        public Color Fore { get; }
+        public Color Back { get; }
+    }
+
+    public struct ConsolePixel<T>    // no inheritance for c# structs; but this is the idea
+    {
+        public ConsolePixel(char c, Color fore, Color back, T ext)
+        {
+            Char = c;
+            Fore = fore;
+            Back = back;
+            Ext = ext;
+        }
+
+        public char  Char { get; }
+        public Color Fore { get; }
+        public Color Back { get; }
+        public T     Ext  { get; }
     }
 }
