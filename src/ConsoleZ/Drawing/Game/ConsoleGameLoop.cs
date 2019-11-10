@@ -42,8 +42,9 @@ namespace ConsoleZ.Drawing.Game
 
         public override void Step(float elapsedSec)
         {
-            Input.Step(elapsedSec);
             Scene?.Step(elapsedSec);
+            
+            Input.Step(elapsedSec); // this clears input; so do this last
         }
 
         public override void Draw()
