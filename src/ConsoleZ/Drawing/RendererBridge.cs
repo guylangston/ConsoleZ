@@ -1,3 +1,4 @@
+using System;
 using VectorInt;
 
 namespace ConsoleZ.Drawing
@@ -8,7 +9,7 @@ namespace ConsoleZ.Drawing
 
         protected RendererBridge(IRenderer<TB> target)
         {
-            this.target = target;
+            this.target = target ?? throw new NullReferenceException(nameof(target));
         }
 
         public int     Height   => target.Height;

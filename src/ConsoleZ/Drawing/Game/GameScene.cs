@@ -24,6 +24,7 @@ namespace ConsoleZ.Drawing.Game
         public abstract void Step(float elapsedSec);
         public abstract void Draw();
         public abstract void Dispose();
-        
     }
+    
+    
 }

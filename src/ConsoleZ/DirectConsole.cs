@@ -8,14 +8,10 @@ using VectorInt;
 
 namespace ConsoleZ
 {
- 
     // https://github.com/dotnet/corefx/tree/master/src/System.Console
     // https://github.com/dotnet/corefx/blob/master/src/System.Console/src/System/ConsolePal.Windows.cs
     public static class DirectConsole
     {
-
-     
-        
         private static CHAR_INFO[] m_bufScreen;
         private static IntPtr m_hConsole;
         private static SMALL_RECT m_rectWindow;
