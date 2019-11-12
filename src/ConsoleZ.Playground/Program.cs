@@ -89,11 +89,24 @@ namespace ConsoleZ.Playground
                 case "palette":
                     Palette();
                     break;
+                    
+                case "simple":
+                    Simple();
+                    break;
             }
             
             //RunHeader();
             //RunBenchmark();
             //RunMarkDownSample();
+        }
+
+        private static void Simple()
+        {
+            var cons = AnsiConsole.Singleton;
+            SampleDocuments.DescribeConsole(cons); 
+            SampleDocuments.MarkDownBasics(cons);
+            SlowPlayback.LiveElements(cons);
+            SampleDocuments.ColourPalette(cons);
         }
 
         private static void RunHeader()

@@ -60,11 +60,13 @@ namespace ConsoleZ
             }
         }
 
+        #if WINDOWS
         public override string Title
         {
             get => Console.Title;
             set => Console.Title = value;
         }
+        #endif
 
         public bool UsePrefix { get; set; }
 
@@ -157,6 +159,7 @@ namespace ConsoleZ
 
         public void EnableANSI()
         {
+            #if WINDOWS 
             var iStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
             if (!GetConsoleMode(iStdOut, out uint outConsoleMode))
             {
@@ -168,6 +171,7 @@ namespace ConsoleZ
             {
                 throw new Exception($"failed to set output console mode, error code: {GetLastError()}");
             }
+            #endif
         }
 
         const int STD_OUTPUT_HANDLE = -11;
