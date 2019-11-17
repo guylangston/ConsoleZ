@@ -12,11 +12,7 @@ namespace ConsoleZ
             Init();    
         }
         
-
-        
-
         private static BasicDirectConsole singleton = new BasicDirectConsole();
-
         public static BasicDirectConsole Singleton => singleton;
 
         public void Init()
