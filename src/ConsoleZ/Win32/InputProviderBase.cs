@@ -29,8 +29,8 @@ namespace ConsoleZ.Win32
         
         public virtual void Step(float elapsed)
         {
-            Array.Fill(perFrameKeys, false);
-            Array.Fill(perFrameMouseClick, false);
+            ArrayHelper.Fill(perFrameKeys, false);
+            ArrayHelper.Fill(perFrameMouseClick, false);
         }
 
         public virtual void Dispose()

@@ -34,7 +34,7 @@ namespace ConsoleZ.Win32
         public void Add(TA                   key, TB value) => this[key] = value;
         public void Add(KeyValuePair<TA, TB> item) => this[item.Key] = item.Value;
 
-        public void Clear() => Array.Fill(indexedLookup, valueOfNotAssigned);
+        public void Clear() => ArrayHelper.Fill(indexedLookup, valueOfNotAssigned);
 
         public bool Contains(KeyValuePair<TA, TB> item) => isEqual.Equals(this[item.Key], item.Value);
 

@@ -18,6 +18,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleZ.Test", "ConsoleZ.T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleZ.AspNetCore", "ConsoleZ.AspNetCore\ConsoleZ.AspNetCore.csproj", "{06CD36CC-CDCF-462A-AEDE-F18F050508F6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VectorInt", "..\..\VectorInt\VectorInt.csproj", "{523E7B4E-A85A-410A-8C05-257C62955758}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,10 @@ Global
 		{06CD36CC-CDCF-462A-AEDE-F18F050508F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06CD36CC-CDCF-462A-AEDE-F18F050508F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06CD36CC-CDCF-462A-AEDE-F18F050508F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{523E7B4E-A85A-410A-8C05-257C62955758}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{523E7B4E-A85A-410A-8C05-257C62955758}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{523E7B4E-A85A-410A-8C05-257C62955758}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{523E7B4E-A85A-410A-8C05-257C62955758}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -12,7 +12,7 @@ namespace ConsoleZ.Drawing
         int Width { get; }
         int Height { get; }
 
-        RectInt Geometry => new RectInt(0, 0, Width, Height);
+        RectInt Geometry { get; } // new RectInt(0, 0, Width, Height);
 
         void Fill(TPixel p);
         TPixel this[int x, int y] { get; set; }   // Get/Set Pixel

@@ -82,14 +82,17 @@ namespace ConsoleZ.Playground
         static void Main(string[] args)
         {
             var cmd = args.Length > 0 ? args[0] : "default";
+            
+            Console.WriteLine($"Buffer: {Console.BufferWidth}x{Console.BufferHeight}. Window: {Console.WindowWidth}x{Console.WindowHeight}" );
 
             switch (cmd)
             {
-                default:
+                
                 case "palette":
                     Palette();
                     break;
-                    
+                
+                default:
                 case "simple":
                     Simple();
                     break;
@@ -98,6 +101,9 @@ namespace ConsoleZ.Playground
             //RunHeader();
             //RunBenchmark();
             //RunMarkDownSample();
+            
+            
+            Console.WriteLine($"Buffer: {Console.BufferWidth}x{Console.BufferHeight}. Window: {Console.WindowWidth}x{Console.WindowHeight}" );
         }
 
         private static void Simple()
