@@ -1,10 +1,6 @@
-﻿#define WINDOWS
-
-using System;
+﻿using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
-
-
 
 namespace ConsoleZ
 {
@@ -163,7 +159,8 @@ namespace ConsoleZ
 
         public void EnableANSI()
         {
-            #if WINDOWS 
+            if (!Environment.OSVersion.VersionString.Contains("Windows")) return;
+            
             var iStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
             if (!GetConsoleMode(iStdOut, out uint outConsoleMode))
             {
@@ -175,7 +172,6 @@ namespace ConsoleZ
             {
                 throw new Exception($"failed to set output console mode, error code: {GetLastError()}");
             }
-            #endif
         }
 
         const int STD_OUTPUT_HANDLE = -11;
