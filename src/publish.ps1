@@ -15,16 +15,26 @@ $confirmation = Read-Host "Does the version look correct? y/n"
 if ($confirmation -eq 'y') {
     pushd
     
+    cd ConsoleZ
     dotnet build -c Release --no-incremental "-p:PackageVersion=$ver"
     dotnet pack -c Release "-p:PackageVersion=$ver"
-    
-    
-    copy ".\ConsoleZ\bin\Release\$name.$ver.nupkg"  "C:\Projects\LocalNuGet\$name.$ver.nupkg"
+
+    copy ".\bin\Release\$name.$ver.nupkg"  "C:\Projects\LocalNuGet\$name.$ver.nupkg"
     echo " ==> C:\Projects\LocalNuGet\$name.$ver.nupkg"
+    cd ..
+    
+    
+    cd ConsoleZ.AspNetCore
+    dotnet build -c Release --no-incremental "-p:PackageVersion=$ver"
+    dotnet pack -c Release "-p:PackageVersion=$ver"
+
+    copy ".\bin\Release\$name.AspNetCore.$ver.nupkg"  "C:\Projects\LocalNuGet\$name.AspNetCore.$ver.nupkg"
+    echo " ==> C:\Projects\LocalNuGet\$name.AspNetCore.$ver.nupkg"
+    cd ..
+    
     
 
-    copy ".\ConsoleZ.AspNetCore\bin\Release\$name.AspNetCore.$ver.nupkg"  "C:\Projects\LocalNuGet\$name.AspNetCore.$ver.nupkg"
-    echo " ==> C:\Projects\LocalNuGet\$name.AspNetCore.$ver.nupkg"
+ 
     
     
     popd
