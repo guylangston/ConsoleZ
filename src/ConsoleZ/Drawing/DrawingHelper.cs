@@ -27,7 +27,7 @@ namespace ConsoleZ.Drawing
             VectorInt2 pos,
             Func<TCell, TPixel> toPixel)
         {
-            foreach (var (cellPos, cell) in map)
+            foreach (var (cellPos, cell) in map.ForEach())
             {
                 renderer[pos + cellPos] = toPixel(cell);
             }   
@@ -38,7 +38,7 @@ namespace ConsoleZ.Drawing
             VectorInt2                                                   pos,
             Func<VectorInt2, TCell, TPixel>                                          toPixel)
         {
-            foreach (var (cellPos, cell) in map)
+            foreach (var (cellPos, cell) in map.ForEach())
             {
                 renderer[pos + cellPos] = toPixel(cellPos, cell);
             }   

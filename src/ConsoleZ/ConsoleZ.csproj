@@ -1,29 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net47</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Authors>Guy Langston</Authors>
-    <PackageProjectUrl>https://github.com/guylangston/ConsoleZ</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/guylangston/ConsoleZ</RepositoryUrl>
-    <AssemblyVersion>0.1.0.0</AssemblyVersion>
-    <FileVersion>0.1.0.0</FileVersion>
-    <Description>Enhanced Console featuring color encoding, fast rendering, markdown, html mapper</Description>
-    <Copyright>MIT</Copyright>
-    <Version>0.1.3</Version>
-    <PackageReleaseNotes>Still-In-Development / Experimental. Not suitable for production at this time.</PackageReleaseNotes>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    
     <LangVersion>8</LangVersion>
     <Nullable>enable</Nullable>
     
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Authors>Guy Langston</Authors>
+    <PackageProjectUrl>https://github.com/guylangston/ConsoleZ</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/guylangston/ConsoleZ</RepositoryUrl>
+    <Description>Enhanced Console featuring color encoding, fast rendering, markdown, html mapper</Description>
+    <Copyright>MIT</Copyright>
+    <PackageReleaseNotes>Still-In-Development / Experimental. Not suitable for production at this time.</PackageReleaseNotes>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
-
   
   <ItemGroup>
-    <PackageReference Include="VectorInt" Version="0.0.3" />
+    <PackageReference Include="VectorInt" Version="0.1.4" />
   </ItemGroup>
 
   
