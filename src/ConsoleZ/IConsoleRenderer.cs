@@ -120,6 +120,18 @@ namespace ConsoleZ
             {
                 if (t.IsLiteral) return t.Text;
 
+                if (t.RawText == "**")
+                {
+                    if (TryGetPreviousNonLiteral(t, out var ptb) && ptb.RawText == "**")
+                    {
+                        return "</b>";
+                    }
+                    else
+                    {
+                        return "<b>";
+                    }
+                }
+
                 if (t.Text == "")
                 {
                     return $"</span>";
