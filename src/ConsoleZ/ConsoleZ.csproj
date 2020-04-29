@@ -1,24 +1,35 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- PKG or PRJ -->
+    <PackOrProj Condition=" '$(PackOrProj)'==''">PKG</PackOrProj>
+  </PropertyGroup>
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net47</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>8</LangVersion>
     <Nullable>enable</Nullable>
-    
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Authors>Guy Langston</Authors>
-    <PackageProjectUrl>https://github.com/guylangston/ConsoleZ</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/guylangston/ConsoleZ</RepositoryUrl>
-    <Description>Enhanced Console featuring color encoding, fast rendering, markdown, html mapper</Description>
-    <Copyright>MIT</Copyright>
-    <PackageReleaseNotes>Still-In-Development / Experimental. Not suitable for production at this time.</PackageReleaseNotes>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
-  
   <ItemGroup>
-    <PackageReference Include="VectorInt" Version="0.1.5" />
+    <PackageReference Include="VectorInt" Version="0.1.6" />
   </ItemGroup>
-
-  
+  <Choose>
+    <When Condition=" '$(PackOrProj)'=='PKG' ">
+      <PropertyGroup>
+        <Description>Enhanced Console featuring color encoding, fast rendering, markdown, html mapper</Description>
+        <Copyright>MIT</Copyright>
+        <PackageReleaseNotes>updated build/pack</PackageReleaseNotes>
+        <Authors>Guy Langston</Authors>
+        <PackageProjectUrl>https://github.com/guylangston/ConsoleZ</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/guylangston/ConsoleZ</RepositoryUrl>
+        <Copyright>MIT</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <!-- Versioning -->
+        <PackageVersion>0.4.3</PackageVersion>
+        <Version>0.4.3</Version>
+        <AssemblyVersion>0.4.3</AssemblyVersion>
+        <FileVersion>0.4.3</FileVersion>
+      </PropertyGroup>
+    </When>
+  </Choose>
 </Project>

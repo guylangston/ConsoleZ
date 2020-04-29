@@ -1,28 +1,38 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
-
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <!-- PKG or PRJ -->
+    <PackOrProj Condition=" '$(PackOrProj)'==''">PKG</PackOrProj>
+  </PropertyGroup>
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-
-    <Authors>Guy Langston</Authors>
-    <PackageProjectUrl>https://github.com/guylangston/ConsoleZ</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/guylangston/ConsoleZ</RepositoryUrl>
-    <Description>ASP.NET Core Controller for web-console and rendering</Description>
-    <Copyright>MIT</Copyright>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/guylangston/ConsoleZ/master/LICENSE</PackageLicenseUrl>
-    <PackageReleaseNotes>Still-In-Development / Experimental.</PackageReleaseNotes>
-    
   </PropertyGroup>
-
- 
-
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\ConsoleZ\ConsoleZ.csproj" />
-  </ItemGroup>
-
-  
-
+  <Choose>
+    <When Condition=" '$(PackOrProj)'=='PKG' ">
+      <PropertyGroup>
+        <Authors>Guy Langston</Authors>
+        <PackageProjectUrl>https://github.com/guylangston/ConsoleZ</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/guylangston/ConsoleZ</RepositoryUrl>
+        <Description>ASP.NET Core Controller for web-console and rendering</Description>
+        <Copyright>MIT</Copyright>
+        <PackageReleaseNotes>updated build/pack</PackageReleaseNotes>
+        <!-- Versioning -->
+        <PackageVersion>0.4.4</PackageVersion>
+        <Version>0.4.4</Version>
+        <AssemblyVersion>0.4.4</AssemblyVersion>
+        <FileVersion>0.4.4</FileVersion>
+      </PropertyGroup>
+      <ItemGroup>
+        <!-- TODO: This version number should batch  PackageVersion above-->
+        <PackageReference Include="ConsoleZ" Version="0.4.3" />
+      </ItemGroup>
+    </When>
+    <When Condition=" '$(PackOrProj)'=='PRJ' ">
+      <ItemGroup>
+        <ProjectReference Include="..\ConsoleZ\ConsoleZ.csproj" />
+      </ItemGroup>
+    </When>
+  </Choose>
 </Project>
