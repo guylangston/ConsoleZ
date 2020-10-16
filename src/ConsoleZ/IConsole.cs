@@ -33,6 +33,11 @@ namespace ConsoleZ
         bool UpdateFormatted(int lineAbsIndex, FormattableString formatted);
     }
 
+    public interface IConsoleStream : IConsoleWriter
+    {
+        void Flush();
+    }
+
     public interface IConsoleWithProps : IConsole, IDisposable
     {
         string Title { get; set; }

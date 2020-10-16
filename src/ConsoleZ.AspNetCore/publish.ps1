@@ -46,7 +46,7 @@ if ($confirmation -eq 'y') {
         # Do this last in case of error
         echo "[Tagging]"
         & git tag -a $ver -m "$tag"
-        if ($LASTEXITCODE -ne 0) {throw $LASTEXITCODE}
+        if ($LASTEXITCODE -ne 0) { echo "DUP Tag ok, may be a shared proj"}
         
         
         $outFile = "$outFolder\$name.$ver.nupkg";

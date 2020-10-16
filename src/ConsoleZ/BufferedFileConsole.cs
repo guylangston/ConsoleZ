@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleZ
 {
-    public class BufferedFileConsole : ConsoleBase
+    public class BufferedFileConsole : ConsoleBase, IConsoleStream
     {
         private readonly TextWriter outp;
 
@@ -74,6 +74,11 @@ namespace ConsoleZ
             }
             
             outp.Dispose();
+        }
+
+        public void Flush()
+        {
+            outp.Flush();
         }
     }
 }
