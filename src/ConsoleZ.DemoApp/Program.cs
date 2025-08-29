@@ -1,10 +1,12 @@
-﻿internal class Program
+﻿using ConsoleZ.Core.DemoApp;
+
+internal class Program
 {
     private static int Main(string[] args)
     {
         Dictionary<string, Action> demos = new();
 
-        demos["box-amin"] = ()=>
+        demos["bounce"] = ()=>
         {
             var scene = new BouncingBoxScene();
             var app = new ReservedLinesConsoleApp(10, scene);
@@ -20,7 +22,6 @@
             host.Run();
         };
 
-
         if (args.Length > 0 && demos.TryGetValue(args.First(), out var action))
         {
             action();
@@ -29,15 +30,12 @@
         else
         {
             // Help
-            Console.Error.Write("Demo not found");
+            Console.Error.WriteLine("ERR: Demo not found");
             foreach(var key in demos.Keys)
             {
-                Console.Write($"--> {key}");
+                Console.WriteLine($" --> {key}");
             }
             return 1;
         }
-
-
-
     }
 }
