@@ -1,3 +1,6 @@
 <Solution>
   <Project Path="ConsoleZ.Core/ConsoleZ.Core.csproj" />
+  <Project Path="ConsoleZ.DemoApp/ConsoleZ.DemoApp.csproj" />
+  <Project Path="ConsoleZ.Playground/ConsoleZ.Playground.csproj" />
+  <Project Path="ConsoleZ.Tests/ConsoleZ.Tests.csproj" />
 </Solution>
