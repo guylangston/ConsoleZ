@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>ConsoleZ.Core</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="System.Text" />
+
+  </ItemGroup>
+
+</Project>
