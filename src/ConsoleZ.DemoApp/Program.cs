@@ -2,38 +2,45 @@
 
 internal class Program
 {
+    record Demo(string Name, string Desc, Action RunAction);
+
     private static int Main(string[] args)
     {
-        Dictionary<string, Action> demos = new();
+        Dictionary<string, Demo> demos = new();
 
-        demos["bounce"] = ()=>
+        void AddDemo(string name, string desc, Action runner)
+        {
+            demos[name] = new Demo(name, desc, runner);
+        }
+
+        AddDemo("bounce", "Random coloured boxses bouncing around",  ()=>
         {
             var scene = new BouncingBoxScene();
             var app = new ReservedLinesConsoleApp(10, scene);
             var host = new TextApplicationHost(args, app, 10);
             host.Run();
-        };
+        });
 
-        demos["demo-app"] = ()=>
+        AddDemo("app", "Sample Country List Browser app (Header, Body, Footer)", ()=>
         {
             var scene = new CountryListScene();
             var app = new ReservedLinesConsoleApp(10, scene);
             var host = new TextApplicationHost(args, app, 10);
             host.Run();
-        };
+        });
 
-        if (args.Length > 0 && demos.TryGetValue(args.First(), out var action))
+        if (args.Length > 0 && demos.TryGetValue(args.First(), out var demo))
         {
-            action();
+            demo.RunAction();
             return 0;
         }
         else
         {
             // Help
             Console.Error.WriteLine("ERR: Demo not found");
-            foreach(var key in demos.Keys)
+            foreach(var item in demos.Values)
             {
-                Console.WriteLine($" --> {key}");
+                Console.WriteLine($" {item.Name,20} - '{item.Desc}'");
             }
             return 1;
         }
