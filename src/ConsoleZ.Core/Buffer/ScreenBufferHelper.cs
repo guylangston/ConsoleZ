@@ -77,9 +77,9 @@ public static class ScreenBufferHelper
         }
     }
 
-    public static ScreenBufferRichWriter<TClr, string> CreateWriter<TClr>(this IScreenBuffer<TClr> buffer, TClr fg, TClr bg, string style = "")
+    public static RichWriterScreenBuffer<TClr, string> CreateWriter<TClr>(this IScreenBuffer<TClr> buffer, TClr fg, TClr bg, string style = "")
     {
-        var fwriter = new ScreenBufferRichWriter<TClr, string>(buffer, fg, bg, style);
+        var fwriter = new RichWriterScreenBuffer<TClr, string>(buffer, fg, bg, style);
         return fwriter;
     }
 }

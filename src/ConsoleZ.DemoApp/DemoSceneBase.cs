@@ -35,7 +35,7 @@ public abstract class DemoSceneBase : ITextScene<ScreenBuffer, ConsoleKeyInfo>
         var header = WindowBuffer.FromBuffer(canvas, 0, 0, canvas.Width, 1);
         header.Fill(Style.Header.Fg, Style.Header.Bg, ' ');
 
-        var writer = new ScreenBufferRichWriter<ConsoleColor, string>(header, Style.Header.Fg,  Style.HeaderSegment.Bg, "");
+        var writer = new RichWriterScreenBuffer<ConsoleColor, string>(header, Style.Header.Fg,  Style.HeaderSegment.Bg, "");
         writer.Write("--<< ");
         writer.Write(Style.HeaderSegment.Fg, GetType().Name);
         writer.Write(" >>--");
@@ -60,7 +60,7 @@ public abstract class DemoSceneBase : ITextScene<ScreenBuffer, ConsoleKeyInfo>
         var footer = WindowBuffer.FromBuffer(canvas, 0, canvas.Height-1, canvas.Width, 1);
         footer.Fill(Style.Footer.Fg, Style.Footer.Bg, ' ');
         footer.Write(0,0, Style.Footer.Fg, Style.Footer.Bg, $"Time: {DateTime.Now} -- [Q]uit or <ESC>   {Host.Timer.FPS:0}fps");
-        var fwriter = new ScreenBufferRichWriter<ConsoleColor, string>(footer, Style.Footer.Fg,  Style.HeaderSegment.Bg, "");
+        var fwriter = new RichWriterScreenBuffer<ConsoleColor, string>(footer, Style.Footer.Fg,  Style.HeaderSegment.Bg, "");
         fwriter.Write(" ");
         fwriter.Write(Style.HeaderSegment.Fg, DateTime.Now.ToString());
         fwriter.Write(" | ");

@@ -2,13 +2,13 @@ using ConsoleZ.Core.Buffer;
 
 namespace ConsoleZ.Core.TUI;
 
-public sealed class ReservedLinesConsoleApp : ITextApplication, ITextApplicationInput<ConsoleKeyInfo>
+public sealed class TextApplicationReservedLines : ITextApplication, ITextApplicationInput<ConsoleKeyInfo>
 {
     ScreenBuffer buffer;
     ITextApplicationHost? host;
     ITextScene<ScreenBuffer, ConsoleKeyInfo> scene;
 
-    public ReservedLinesConsoleApp(int reservedLines, ITextScene<ScreenBuffer, ConsoleKeyInfo> scene)
+    public TextApplicationReservedLines(int reservedLines, ITextScene<ScreenBuffer, ConsoleKeyInfo> scene)
     {
         ReservedLines = reservedLines;
         this.buffer = new ScreenBuffer(Console.WindowWidth, ReservedLines);

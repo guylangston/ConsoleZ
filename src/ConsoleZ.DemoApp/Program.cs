@@ -16,7 +16,7 @@ internal class Program
         AddDemo("bounce", "Random coloured boxses bouncing around",  ()=>
         {
             var scene = new BouncingBoxScene();
-            var app = new ReservedLinesConsoleApp(10, scene);
+            var app = new TextApplicationReservedLines(10, scene);
             var host = new TextApplicationHost(args, app, 10);
             host.Run();
         });
@@ -24,9 +24,28 @@ internal class Program
         AddDemo("app", "Sample Country List Browser app (Header, Body, Footer)", ()=>
         {
             var scene = new CountryListScene();
-            var app = new ReservedLinesConsoleApp(10, scene);
+            var app = new TextApplicationReservedLines(10, scene);
             var host = new TextApplicationHost(args, app, 10);
             host.Run();
+        });
+
+        AddDemo("style", "list all styles", () => 
+        {
+           var style = StyleProviderTemplates.CreateStdConsole();
+           var writer = new RichWriterConsole("");
+           var cc = 0;
+           foreach(var item in style.StyleToColour)
+           {
+               writer.Write($"{cc,3} - {item.Key,-12} ");
+               writer.Write(item.Value, "Foreground");
+               writer.Write(" ");
+               writer.Write(ConsoleColor.Black, item.Value, " Background ");
+               writer.Write(" ");
+               writer.Write(ConsoleColor.White, item.Value, " Background ");
+               writer.WriteLine();
+
+               cc++;
+           }
         });
 
         if (args.Length > 0 && demos.TryGetValue(args.First(), out var demo))

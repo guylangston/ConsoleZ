@@ -2,12 +2,12 @@ using ConsoleZ.Core.Buffer;
 
 namespace ConsoleZ.Core.TUI;
 
-public class ScreenBufferRichWriter<TClr, TStyle> : RichWriter<TClr, TStyle>
+public class RichWriterScreenBuffer<TClr, TStyle> : RichWriter<TClr, TStyle>
 {
     int x, y;
     IScreenBuffer<TClr> buffer;
 
-    public ScreenBufferRichWriter(IScreenBuffer<TClr> buffer, TClr fore, TClr back, TStyle style) : base(fore, back, style)
+    public RichWriterScreenBuffer(IScreenBuffer<TClr> buffer, TClr fore, TClr back, TStyle style) : base(fore, back, style)
     {
         this.buffer = buffer;
     }

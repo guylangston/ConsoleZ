@@ -145,7 +145,7 @@ public class CountryListScene : DemoSceneBase
                 var data = item.Data;
 
                 var (fg, bg) = item.IsCurrent ? Style.Selected : Style.Body;
-                var writer = new ScreenBufferRichWriter<ConsoleColor, string>(inner, fg, bg, "");
+                var writer = new RichWriterScreenBuffer<ConsoleColor, string>(inner, fg, bg, "");
                 inner.Fill(fg, bg, ' ');
                 writer.Write($"#{itemIndex} ");
                 writer.Write(Style.Highlight, data.Code);
@@ -157,7 +157,7 @@ public class CountryListScene : DemoSceneBase
                 if (item.IsCurrent)
                 {
                     ScreenBufferHelper.DrawBox(detailArea, Style.Body.Fg, Style.Body.Bg, Glyphs.Single);
-                    var det = new ScreenBufferRichWriter<ConsoleColor, string>(detailArea.Inset(2, 1), Style.Body.Fg, Style.Body.Bg, "");
+                    var det = new RichWriterScreenBuffer<ConsoleColor, string>(detailArea.Inset(2, 1), Style.Body.Fg, Style.Body.Bg, "");
                     WriteProp("Name", data.Name);
                     WriteProp("Code", data.Code);
                     WriteProp("Population", data.Population);

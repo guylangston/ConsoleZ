@@ -1,6 +1,10 @@
 # ConsoleZ - Create multi-platform Text-based UI
 
-> The Lowest-Common-Demoninator --- build text applications for multiple hosts
+> The Lowest-Common-Demoninator --- build text applications for multiple hosts: Console, TUI, GUI, Web
+
+# PROJECT STATUS : UNSTABLE
+
+Subject to interface changes
 
 ## Key Types
 

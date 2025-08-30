@@ -45,6 +45,26 @@ public interface ITextScene<TCanvas, TKey> : ITextScene<TCanvas>, ITextApplicati
 {
 }
 
+public abstract class TextScene<TCanvas, TKey> : ITextScene<TCanvas, TKey>
+{
+    private ITextApplication? app;
+    protected ITextApplication App => app ?? throw new NullReferenceException("Had Init been called?");
+    protected ITextApplicationHost Host => App.Host;
+    protected int InitialWidth { get; private set; }
+    protected int InitialHeight { get; private set; }
+
+    public virtual void Init(ITextApplication app, int width, int height)
+    {
+        this.app = app;
+        InitialWidth = width;
+        InitialHeight = height;
+    }
+
+    public abstract void Draw(TCanvas canvas);
+    public abstract void HandleKey(HandleKey type, TKey key);
+    public abstract void Step();
+}
+
 // TODO
 // Keep a queue of key events and allow query for keys, combos (concurrent presses), coords (presses in sequence within some timeframe)
 // public interface ITextInputAbstraction
