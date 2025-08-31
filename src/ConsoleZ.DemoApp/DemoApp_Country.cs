@@ -35,8 +35,6 @@ public class CountryListScene : DemoSceneBase
         }
     }
 
-    void MoveLeft() => view?.MoveLeft();
-
     protected override void DrawBody(IScreenBuffer<ConsoleColor> body)
     {
         var (listArea, detailArea) = body.SplitVert();
@@ -51,14 +49,15 @@ public class CountryListScene : DemoSceneBase
             commands.Map(ConsoleKey.Q, quit);
             commands.Map(ConsoleKey.Escape, quit);
 
-            commands.RegisterAndMap(ConsoleKey.LeftArrow , "MoveLeft" , ()=>view.MoveLeft());
-            commands.RegisterAndMap(ConsoleKey.RightArrow, "MoveRight", ()=>view.MoveRight());
-            commands.RegisterAndMap(ConsoleKey.UpArrow   , "MoveUp"   , ()=>view.MoveUp());
-            commands.RegisterAndMap(ConsoleKey.DownArrow , "MoveDown" , ()=>view.MoveDown());
-            commands.RegisterAndMap(ConsoleKey.Home      , "MoveFirst", ()=>view.First());
-            commands.RegisterAndMap(ConsoleKey.End       , "MoveLast" , ()=>view.Last());
+            commands.Map(ConsoleKey.LeftArrow , CommandFactory.Create("MoveLeft",  ()=>view.MoveLeft()));
+            commands.Map(ConsoleKey.RightArrow, CommandFactory.Create("MoveRight", ()=>view.MoveRight()));
+            commands.Map(ConsoleKey.UpArrow   , CommandFactory.Create("MoveUp"   , ()=>view.MoveUp()));
+            commands.Map(ConsoleKey.DownArrow , CommandFactory.Create("MoveDown" , ()=>view.MoveDown()));
+            commands.Map(ConsoleKey.Home      , CommandFactory.Create("MoveFirst", ()=>view.First()));
+            commands.Map(ConsoleKey.End       , CommandFactory.Create("MoveLast" , ()=>view.Last()));
 
-            commands.RegisterAndMap(ConsoleKey.F1        ,  "ToggleHelp", ()=>
+            commands.Map(ConsoleKey.F1        ,  CommandFactory.Create("ToggleHelp", ()=>
+
                     {
                         if (popup == null)
                         {
@@ -76,8 +75,8 @@ public class CountryListScene : DemoSceneBase
                         {
                             popup = null;
                         }
-                    });
-            commands.RegisterAndMap(ConsoleKey.P,           "TogglePopup", ()=>
+                    }));
+            commands.Map(ConsoleKey.P,           CommandFactory.Create("TogglePopup", ()=>
                     {
                         if (popup == null)
                         {
@@ -91,7 +90,7 @@ public class CountryListScene : DemoSceneBase
                         {
                             popup = null;
                         }
-                    });
+                    }));
 
         }
 
@@ -145,12 +144,12 @@ public class CountryListScene : DemoSceneBase
         var res = false;
         foreach(var map in commands.Mappings)
         {
-            if (map.key == key.Key)
+            if (map.Input == key.Key)
             {
                 try
                 {
                     error = null;
-                    map.cmd.Action();
+                    map.Command.Execute(new CommandContext(Host, App, this), CommandArgs.Empty);
                     res = true;
                     // dont exit, may be more than one mapping
                 }

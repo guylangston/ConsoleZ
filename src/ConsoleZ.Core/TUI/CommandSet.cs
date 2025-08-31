@@ -74,3 +74,13 @@ public class CommandSet<TInput>
         return map;
     }
 }
+
+public static class CommandFactory
+{
+    public static ITextAppCommand Create(string name, Action action)
+    {
+        return new AppCommandFunc(name, name, null, (_, _, _) => action() );
+    }
+}
+
+

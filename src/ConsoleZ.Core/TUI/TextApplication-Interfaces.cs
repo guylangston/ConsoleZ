@@ -78,9 +78,23 @@ public interface ICommandContext
     ITextScene? Scene { get; }
 }
 
+public class CommandContext(ITextApplicationHost host, ITextApplication app, ITextScene? scene) : ICommandContext
+{
+    public ITextApplicationHost Host { get; } = host;
+    public ITextApplication App { get; } = app;
+    public ITextScene? Scene { get; } = scene;
+}
+
 public interface ICommandArgs
 {
     IReadOnlyDictionary<string, object>? NamedArgs { get; }
+}
+
+public class CommandArgs(IReadOnlyDictionary<string, object>? namedArgs) : ICommandArgs
+{
+    public IReadOnlyDictionary<string, object>? NamedArgs { get; } = namedArgs;
+
+    public static readonly CommandArgs Empty = new CommandArgs(null);
 }
 
 public interface ITextAppCommand
