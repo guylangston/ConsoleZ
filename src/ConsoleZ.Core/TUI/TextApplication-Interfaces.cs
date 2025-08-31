@@ -80,7 +80,7 @@ public interface ICommandContext
 
 public interface ICommandArgs
 {
-    IReadOnlyDictionary<string, object> NamedArgs { get; }
+    IReadOnlyDictionary<string, object>? NamedArgs { get; }
 }
 
 public interface ITextAppCommand

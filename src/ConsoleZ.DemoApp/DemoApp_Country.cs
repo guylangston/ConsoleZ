@@ -1,44 +1,10 @@
 namespace ConsoleZ.Core.DemoApp;
 
-
-    public record Command(string Name, string Description, string? Help, Action Action);
-    public record Mapping(ConsoleKey key, Command cmd);
-
-    public class CommandSet
-    {
-        public List<Command> Commands { get; } = new();
-        public List<Mapping> Mappings { get; } = new();
-
-        public Command Register(Command cmd)
-        {
-            Commands.Add(cmd);
-            return cmd;
-        }
-
-        public Command Register(string name, Action action, string? desc = null)
-        {
-            return Register(new Command(name, desc ?? name, null, action));
-        }
-        public Mapping RegisterAndMap(ConsoleKey key, Command cmd)
-        {
-            Register(cmd);
-
-            var map = new Mapping(key, cmd);
-            Mappings.Add(map);
-            return map;
-        }
-
-        public Mapping RegisterAndMap(ConsoleKey key, string name, Action action, string? desc = null)
-        {
-            return RegisterAndMap(key, new Command(name, desc ?? name, null, action));
-        }
-    }
-
 public class CountryListScene : DemoSceneBase
 {
     ListView<ConsoleColor, Country>? view;
-    CommandSet? commands = null;
     IScreenBuffer<ConsoleColor>? popup;
+    CommandSet<ConsoleKey> commands = new();
 
     public CountryListScene() : base(new MyStyle(StyleProviderTemplates.CreateStdConsole()))
     {
@@ -69,6 +35,8 @@ public class CountryListScene : DemoSceneBase
         }
     }
 
+    void MoveLeft() => view?.MoveLeft();
+
     protected override void DrawBody(IScreenBuffer<ConsoleColor> body)
     {
         var (listArea, detailArea) = body.SplitVert();
@@ -78,11 +46,10 @@ public class CountryListScene : DemoSceneBase
             view = new ListView<ConsoleColor, Country>(SampleCountry.Countries, new LayoutGrid<ConsoleColor>(listArea, 3, 4));
             // view = new ListView<ConsoleColor, Country>(SampleCountry.Countries, new LayoutStack<ConsoleColor>(listArea, Orientation.Vert, 4));
 
-            commands = new CommandSet();
 
-            var quit = commands.Register( "Quit", ()=>Host.RequestQuit());
-            commands.RegisterAndMap(ConsoleKey.Q, quit);
-            commands.RegisterAndMap(ConsoleKey.Escape, quit);
+            var quit = commands.Register(new AppCommandFunc("Quit", "Quit Application", null, (_,_,_) => Host.RequestQuit()));
+            commands.Map(ConsoleKey.Q, quit);
+            commands.Map(ConsoleKey.Escape, quit);
 
             commands.RegisterAndMap(ConsoleKey.LeftArrow , "MoveLeft" , ()=>view.MoveLeft());
             commands.RegisterAndMap(ConsoleKey.RightArrow, "MoveRight", ()=>view.MoveRight());
