@@ -12,11 +12,13 @@ public static class WindowBuffer
         return new WindowScreenBuffer<TClr>(buffer, innerX, innerY, width, height);
     }
 
-    public static (WindowScreenBuffer<TClr> Left, WindowScreenBuffer<TClr> Right) SplitVert<TClr>(this IScreenBuffer<TClr> buffer)
+    public static (WindowScreenBuffer<TClr> Left, WindowScreenBuffer<TClr> Right) SplitVert<TClr>(this IScreenBuffer<TClr> buffer, int perc = 50)
     {
+        var splitAt = buffer.Width*perc/100;
+        var rem = buffer.Width - splitAt;
         return (
-                new WindowScreenBuffer<TClr>(buffer, 0, 0, buffer.Width/2, buffer.Height),
-                new WindowScreenBuffer<TClr>(buffer, 0 + buffer.Width/2, 0, buffer.Width/2,buffer.Height)
+                new WindowScreenBuffer<TClr>(buffer, 0, 0, splitAt, buffer.Height),
+                new WindowScreenBuffer<TClr>(buffer, 0 + splitAt, 0, rem,buffer.Height)
                );
     }
 

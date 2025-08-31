@@ -8,6 +8,59 @@ public class CountryListScene : DemoSceneBase
 
     public CountryListScene() : base(new MyStyle(StyleProviderTemplates.CreateStdConsole()))
     {
+        RegisterCommands();
+    }
+
+    void ToggleHelp()
+    {
+        if (popup == null)
+        {
+            popup = new ScreenBuffer(50, 5);
+            var fg = Style.GetColourOrDefault("Popup.Fg");
+            var bg = Style.GetColourOrDefault("Popup.Bg", false);
+            popup.DrawBox(fg, bg,  Glyphs.Double);
+
+            var writer = popup.Inset(2, 1).CreateWriter(fg, bg);
+            writer.WriteLine("--- HELP ---");
+            writer.WriteLine(" (p) Toggle Popup");
+            writer.WriteLine(" (F1) Show help");
+        }
+        else
+        {
+            popup = null;
+        }
+    }
+
+    void TogglePopup()
+    {
+        if (popup == null)
+        {
+            popup = new ScreenBuffer(50, 5);
+            var fg = Style.GetColourOrDefault("Popup.Fg");
+            var bg = Style.GetColourOrDefault("Popup.Bg", false);
+            popup.DrawBox(fg, bg,  Glyphs.Double);
+            popup.Write(3, 2, fg, bg, "Hello World");
+        }
+        else
+        {
+            popup = null;
+        }
+    }
+
+    void RegisterCommands()
+    {
+        var quit = commands.Register(new AppCommandFunc("Quit", "Quit Application", null, (_,_,_) => Host.RequestQuit()));
+        commands.Map(ConsoleKey.Q, quit);
+        commands.Map(ConsoleKey.Escape, quit);
+        commands.Map(ConsoleKey.LeftArrow,  CommandFactory.Create("MoveLeft",    ()=>view?.MoveLeft()));
+        commands.Map(ConsoleKey.RightArrow, CommandFactory.Create("MoveRight",   ()=>view?.MoveRight()));
+        commands.Map(ConsoleKey.UpArrow,    CommandFactory.Create("MoveUp",      ()=>view?.MoveUp()));
+        commands.Map(ConsoleKey.DownArrow,  CommandFactory.Create("MoveDown",    ()=>view?.MoveDown()));
+        commands.Map(ConsoleKey.Home,       CommandFactory.Create("MoveFirst",   ()=>view?.First()));
+        commands.Map(ConsoleKey.End,        CommandFactory.Create("MoveLast",    ()=>view?.Last()));
+        commands.Map(ConsoleKey.F1,         CommandFactory.Create("ToggleHelp",  ToggleHelp));
+        commands.Map(ConsoleKey.P,          CommandFactory.Create("TogglePopup", TogglePopup));
+
     }
 
     class MyStyle : DemoSceneBase.StyleProvider
@@ -37,61 +90,13 @@ public class CountryListScene : DemoSceneBase
 
     protected override void DrawBody(IScreenBuffer<ConsoleColor> body)
     {
-        var (listArea, detailArea) = body.SplitVert();
+        var (listArea, detailArea) = body.SplitVert(60);
 
         if (view == null)
         {
-            view = new ListView<ConsoleColor, Country>(SampleCountry.Countries, new LayoutGrid<ConsoleColor>(listArea, 3, 4));
+            var cols = listArea.Width >= 80 ? 3 : 2;
+            view = new ListView<ConsoleColor, Country>(SampleCountry.Countries, new LayoutGrid<ConsoleColor>(listArea, cols, 4));
             // view = new ListView<ConsoleColor, Country>(SampleCountry.Countries, new LayoutStack<ConsoleColor>(listArea, Orientation.Vert, 4));
-
-
-            var quit = commands.Register(new AppCommandFunc("Quit", "Quit Application", null, (_,_,_) => Host.RequestQuit()));
-            commands.Map(ConsoleKey.Q, quit);
-            commands.Map(ConsoleKey.Escape, quit);
-
-            commands.Map(ConsoleKey.LeftArrow , CommandFactory.Create("MoveLeft",  ()=>view.MoveLeft()));
-            commands.Map(ConsoleKey.RightArrow, CommandFactory.Create("MoveRight", ()=>view.MoveRight()));
-            commands.Map(ConsoleKey.UpArrow   , CommandFactory.Create("MoveUp"   , ()=>view.MoveUp()));
-            commands.Map(ConsoleKey.DownArrow , CommandFactory.Create("MoveDown" , ()=>view.MoveDown()));
-            commands.Map(ConsoleKey.Home      , CommandFactory.Create("MoveFirst", ()=>view.First()));
-            commands.Map(ConsoleKey.End       , CommandFactory.Create("MoveLast" , ()=>view.Last()));
-
-            commands.Map(ConsoleKey.F1        ,  CommandFactory.Create("ToggleHelp", ()=>
-
-                    {
-                        if (popup == null)
-                        {
-                            popup = new ScreenBuffer(50, 5);
-                            var fg = Style.GetColourOrDefault("Popup.Fg");
-                            var bg = Style.GetColourOrDefault("Popup.Bg", false);
-                            popup.DrawBox(fg, bg,  Glyphs.Double);
-
-                            var writer = popup.Inset(2, 1).CreateWriter(fg, bg);
-                            writer.WriteLine("--- HELP ---");
-                            writer.WriteLine(" (p) Toggle Popup");
-                            writer.WriteLine(" (F1) Show help");
-                        }
-                        else
-                        {
-                            popup = null;
-                        }
-                    }));
-            commands.Map(ConsoleKey.P,           CommandFactory.Create("TogglePopup", ()=>
-                    {
-                        if (popup == null)
-                        {
-                            popup = new ScreenBuffer(50, 5);
-                            var fg = Style.GetColourOrDefault("Popup.Fg");
-                            var bg = Style.GetColourOrDefault("Popup.Bg", false);
-                            popup.DrawBox(fg, bg,  Glyphs.Double);
-                            popup.Write(3, 2, fg, bg, "Hello World");
-                        }
-                        else
-                        {
-                            popup = null;
-                        }
-                    }));
-
         }
 
         foreach(var segment in view.GetViewData())
@@ -138,7 +143,6 @@ public class CountryListScene : DemoSceneBase
 
     protected override bool TryHandleKey(HandleKey type, ConsoleKeyInfo key)
     {
-
         if (view == null || commands == null) return false;
 
         var res = false;
