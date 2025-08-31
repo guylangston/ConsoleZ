@@ -13,12 +13,6 @@ public interface ITextApplicationHost : IDisposable
     void SendHost(object message);
 }
 
-public struct DrawContext
-{
-    public bool IsFinalFrame { get; set; }
-    public Exception? Exception { get; set; }
-}
-
 // Draw does not need to know about actual canvas yet
 public interface ITextApplication
 {
@@ -34,10 +28,13 @@ public interface ITextApplicationInput<TKey>
     void HandleKey(HandleKey type, TKey key);
 }
 
-public interface ITextScene<TCanvas>
+public interface ITextScene
 {
     void Init(ITextApplication app, int width, int height);
     void Step(); // advance local logic (not the whole app)
+}
+public interface ITextScene<TCanvas> : ITextScene
+{
     void Draw(TCanvas canvas);
 }
 
@@ -71,3 +68,25 @@ public abstract class TextScene<TCanvas, TKey> : ITextScene<TCanvas, TKey>
 // {
 //
 // }
+//
+//
+
+public interface ICommandContext
+{
+    ITextApplicationHost Host { get; }
+    ITextApplication App { get; }
+    ITextScene? Scene { get; }
+}
+
+public interface ICommandArgs
+{
+    IReadOnlyDictionary<string, object> NamedArgs { get; }
+}
+
+public interface ITextAppCommand
+{
+    string Name { get; }
+    string Description { get; }
+    bool CanExecute(ICommandContext ctx, ICommandArgs args);
+    void Execute(ICommandContext ctx, ICommandArgs args);
+}

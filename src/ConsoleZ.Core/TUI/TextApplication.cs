@@ -15,6 +15,12 @@ public class TextApplicationHost : ITextApplicationHost
         this.app = app;
     }
 
+    public struct DrawContext
+    {
+        public bool IsFinalFrame { get; set; }
+        public Exception? Exception { get; set; }
+    }
+
     protected int Frame => frameTimer.Frames;
     public AnimationTimer Timer => frameTimer;
 
