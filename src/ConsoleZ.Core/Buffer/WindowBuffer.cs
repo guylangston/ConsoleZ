@@ -1,3 +1,5 @@
+using ConsoleZ.Core.TUI;
+
 namespace ConsoleZ.Core.Buffer;
 
 public static class WindowBuffer
@@ -30,13 +32,13 @@ public static class WindowBuffer
     }
 }
 
-public struct WindowBuffer<T> : IBuffer<T>
+public readonly struct WindowBuffer<T> : IBuffer<T>
 {
-    IBuffer<T> inner;
-    int innerX;
-    int innerY;
-    int width;
-    int height;
+    readonly IBuffer<T> inner;
+    readonly int innerX;
+    readonly int innerY;
+    readonly int width;
+    readonly int height;
 
     public WindowBuffer(IBuffer<T> inner, int innerX, int innerY, int width, int height)
     {
@@ -71,7 +73,6 @@ public struct WindowBuffer<T> : IBuffer<T>
     public int Width => width;
     public int Height => height;
 
-
     public bool Contains(int x, int y)
     {
         if (x < 0 || x >= Width) return false;
@@ -88,13 +89,13 @@ public struct WindowBuffer<T> : IBuffer<T>
     }
 }
 
-public struct WindowScreenBuffer<TClr> : IScreenBuffer<TClr>
+public readonly struct WindowScreenBuffer<TClr> : IScreenBuffer<TClr>
 {
-    IScreenBuffer<TClr> inner;
-    int innerX;
-    int innerY;
-    int width;
-    int height;
+    readonly IScreenBuffer<TClr> inner;
+    readonly int innerX;
+    readonly int innerY;
+    readonly int width;
+    readonly int height;
 
     public WindowScreenBuffer(IScreenBuffer<TClr> inner, int innerX, int innerY, int width, int height)
     {
@@ -144,8 +145,6 @@ public struct WindowScreenBuffer<TClr> : IScreenBuffer<TClr>
         }
     }
 
-    public void Fill(TClr fg, TClr bg, char chr)
-    {
-        BufferHelper.Fill(this, new ScreenCell<TClr>(fg, bg, chr));
-    }
+    public void Fill(TClr fg, TClr bg, char chr = ' ') => BufferHelper.Fill(this, new ScreenCell<TClr>(fg, bg, chr));
+    public void Fill(TextClr<TClr> clr, char chr = ' ') => BufferHelper.Fill(this, new ScreenCell<TClr>(clr.Fg, clr.Bg, chr));
 }

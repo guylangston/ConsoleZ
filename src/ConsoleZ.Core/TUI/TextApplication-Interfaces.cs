@@ -1,3 +1,5 @@
+using System.ComponentModel.Design;
+
 namespace ConsoleZ.Core.TUI;
 
 // Host does not need to know about drawing implementation details like canvus, keys, etc
@@ -67,13 +69,15 @@ public interface ICommandContext
     ITextApplicationHost Host { get; }
     ITextApplication App { get; }
     ITextScene? Scene { get; }
+    IServiceProvider? ServiceProvider { get; }
 }
 
-public class CommandContext(ITextApplicationHost host, ITextApplication app, ITextScene? scene) : ICommandContext
+public class CommandContext(ITextApplicationHost host, ITextApplication app, ITextScene? scene, IServiceProvider? serviceProvider) : ICommandContext
 {
     public ITextApplicationHost Host { get; } = host;
     public ITextApplication App { get; } = app;
     public ITextScene? Scene { get; } = scene;
+    public IServiceProvider? ServiceProvider { get; }
 }
 
 public interface ICommandArgs

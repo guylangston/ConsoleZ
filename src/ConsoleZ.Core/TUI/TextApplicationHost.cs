@@ -105,7 +105,6 @@ public class TextApplicationHost : ITextApplicationHost
         throw new NotSupportedException();
     }
 
-
     public virtual void Dispose()
     {
     }

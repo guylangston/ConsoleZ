@@ -94,6 +94,9 @@ public class StyleProvider<TClr> : IStyleProvider<TClr>
         throw new NotSupportedException();
     }
 
+    /// <summary>Will load a `.Fg` and `.Bg` pair </summary>
+    public TextClr<TClr> GetTextStyle(string prefix) => new TextClr<TClr>(GetFg(prefix + ".Fg"), GetBg(prefix + ".Bg"));
+
     public TClr GetFg(string styleName)
     {
         if (TryGetColour(styleName, out var clr))
