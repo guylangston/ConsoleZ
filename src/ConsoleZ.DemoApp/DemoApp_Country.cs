@@ -58,6 +58,9 @@ public class CountryListScene : DemoSceneBase
         commands.Map(ConsoleKey.End,        CommandFactory.Create("MoveLast",    ()=>view?.Last()));
         commands.Map(ConsoleKey.F1,         CommandFactory.Create("ToggleHelp",  ToggleHelp));
         commands.Map(ConsoleKey.P,          CommandFactory.Create("TogglePopup", TogglePopup));
+        commands.Map(ConsoleKey.H,          CommandFactory.Create("ToggleHeader", ()=> { IsHeaderEnabled = !IsHeaderEnabled; }));
+        commands.Map(ConsoleKey.F,          CommandFactory.Create("ToggleFooter", ()=> { IsFooterEnabled = !IsFooterEnabled; }));
+
     }
 
     class MyStyle : DemoSceneBase.StyleProvider
@@ -88,7 +91,7 @@ public class CountryListScene : DemoSceneBase
         if (view == null)
         {
             var cols = listArea.Width >= 80 ? 3 : 2;
-            view = new ListView<ConsoleColor, Country>(SampleCountry.Countries, new LayoutGrid<ConsoleColor>(listArea, cols, 4));
+            view = new ListView<ConsoleColor, Country>(SampleCountry.Countries, new LayoutGrid<ConsoleColor>(listArea, cols, body.Height/2));
             // view = new ListView<ConsoleColor, Country>(SampleCountry.Countries, new LayoutStack<ConsoleColor>(listArea, Orientation.Vert, 4));
         }
 

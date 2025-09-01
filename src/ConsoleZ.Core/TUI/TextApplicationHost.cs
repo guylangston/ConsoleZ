@@ -47,14 +47,14 @@ public class TextApplicationHost : ITextApplicationHost
                 {
                     while(Console.KeyAvailable)
                     {
-                        consInfoKey.HandleKey(HandleKey.Press, Console.ReadKey());
+                        consInfoKey.HandleKey(HandleKey.Press, Console.ReadKey(true));
                     }
                 }
                 else if (app is ITextApplicationInput<ConsoleKey> consKey)
                 {
                     while(Console.KeyAvailable)
                     {
-                        consKey.HandleKey(HandleKey.Press, Console.ReadKey().Key);
+                        consKey.HandleKey(HandleKey.Press, Console.ReadKey(true).Key);
                     }
                 }
                 app.Step();
