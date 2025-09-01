@@ -4,7 +4,63 @@ namespace ConsoleZ.Core.Buffer;
 
 public static class ScreenBufferHelper
 {
-    public static void Write<TClr>(this IScreenBuffer<TClr> buf, int x, int y, TClr fg, TClr bg, ReadOnlySpan<char> txt, bool wrapElseClip)
+
+    public static void WriteTextOnly<TClr>(this IScreenBuffer<TClr> buf, int x, int y, ReadOnlySpan<char> txt, bool wrapElseClip = true)
+    {
+        foreach (var c in txt)
+        {
+            if (c == '\n')
+            {
+                x = 0;
+                y++;
+                if (y >= buf.Height) return;
+            }
+            var before = buf[x, y];
+            buf[x, y] = new ScreenCell<TClr> { Chr = c, Fg = before.Fg, Bg = before.Bg };
+            x++;
+            if (x >= buf.Width)
+            {
+                if (wrapElseClip)
+                {
+                    x = 0;
+                    y++;
+                }
+                else
+                {
+                    return;
+                }
+            }
+        }
+    }
+    public static void WriteFg<TClr>(this IScreenBuffer<TClr> buf, int x, int y, TClr fg, ReadOnlySpan<char> txt, bool wrapElseClip = true)
+    {
+        foreach (var c in txt)
+        {
+            if (c == '\n')
+            {
+                x = 0;
+                y++;
+                if (y >= buf.Height) return;
+            }
+            var before = buf[x, y];
+            buf[x, y] = new ScreenCell<TClr> { Chr = c, Fg = fg, Bg = before.Bg };
+            x++;
+            if (x >= buf.Width)
+            {
+                if (wrapElseClip)
+                {
+                    x = 0;
+                    y++;
+                }
+                else
+                {
+                    return;
+                }
+            }
+        }
+    }
+
+    public static void Write<TClr>(this IScreenBuffer<TClr> buf, int x, int y, TClr fg, TClr bg, ReadOnlySpan<char> txt, bool wrapElseClip = true)
     {
         foreach (var c in txt)
         {
@@ -32,7 +88,7 @@ public static class ScreenBufferHelper
         }
     }
 
-    public static void Draw<TClr>(this IScreenBuffer<TClr>  buf, IScreenBuffer<TClr> src, int px = 0, int py = 0)
+    public static void DrawBuffer<TClr>(this IScreenBuffer<TClr>  buf, IScreenBuffer<TClr> src, int px = 0, int py = 0)
     {
         for(int x=0;x<src.Width; x++)
         {

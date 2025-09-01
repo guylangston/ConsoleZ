@@ -48,7 +48,6 @@ class BouncingBoxScene : ITextScene<ScreenBuffer, ConsoleKeyInfo>
         if (kkey == ConsoleKey.Escape) app.Host.RequestQuit();
     }
 
-
     Queue<double> lastDraws = new ();
     public void Draw(ScreenBuffer buffer)
     {

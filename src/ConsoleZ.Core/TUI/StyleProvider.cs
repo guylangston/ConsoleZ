@@ -1,15 +1,16 @@
+using ConsoleZ.Core.Buffer;
+
 namespace ConsoleZ.Core.TUI;
 
-public struct TextClr<TClr>
+public readonly struct TextClr<TClr>(TClr fg, TClr bg)
 {
-    public TextClr(TClr fg, TClr bg)
-    {
-        Fg = fg;
-        Bg = bg;
-    }
+    public TClr Fg { get; } = fg;
+    public TClr Bg { get; } = bg;
 
-    public TClr Fg { get; set; }
-    public TClr Bg { get; set; }
+    public ScreenBuffer<TClr> CreateBuffer(ReadOnlySpan<char> txt)
+    {
+        return ScreenBuffer<TClr>.FromText(Fg, Bg, txt);
+    }
 
     public static implicit operator (TClr Fg, TClr Bg)(TextClr<TClr> data) => (data.Fg, data.Bg);
 

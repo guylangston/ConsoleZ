@@ -49,7 +49,7 @@ public class CountryListScene : DemoSceneBase
 
     void RegisterCommands()
     {
-        var quit = commands.Register(new AppCommandFunc("Quit", "Quit Application", null, (_,_,_) => Host.RequestQuit()));
+        var quit = commands.Register(CommandFactory.Create("Quit", ()=>Host.RequestQuit()));
         commands.Map(ConsoleKey.Q, quit);
         commands.Map(ConsoleKey.Escape, quit);
         commands.Map(ConsoleKey.LeftArrow,  CommandFactory.Create("MoveLeft",    ()=>view?.MoveLeft()));
@@ -60,7 +60,6 @@ public class CountryListScene : DemoSceneBase
         commands.Map(ConsoleKey.End,        CommandFactory.Create("MoveLast",    ()=>view?.Last()));
         commands.Map(ConsoleKey.F1,         CommandFactory.Create("ToggleHelp",  ToggleHelp));
         commands.Map(ConsoleKey.P,          CommandFactory.Create("TogglePopup", TogglePopup));
-
     }
 
     class MyStyle : DemoSceneBase.StyleProvider
@@ -72,19 +71,15 @@ public class CountryListScene : DemoSceneBase
         {
             Popup = Set(nameof(Popup), ConsoleColor.Yellow, ConsoleColor.DarkBlue);
         }
-
     }
 
-    protected override void DrawHeader(IScreenBuffer<ConsoleColor> header)
-    {
-    }
 
     public override void Draw(ScreenBuffer buffer)
     {
         base.Draw(buffer);
         if (popup != null)
         {
-            buffer.Draw(popup, buffer.Width/2 - popup.Width/2, buffer.Height/2 - popup.Height/2);
+            buffer.DrawBuffer(popup, buffer.Width/2 - popup.Width/2, buffer.Height/2 - popup.Height/2);
         }
     }
 
@@ -136,10 +131,10 @@ public class CountryListScene : DemoSceneBase
     }
 
     string? error = null;
-    protected override void DrawFooter(IScreenBuffer<ConsoleColor> footer)
-    {
-        footer.Write(0,0, Style.Footer.Fg, Style.Footer.Bg, $"Time: {DateTime.Now} -- [Q]uit or <ESC>   {Host.Timer.FPS:0}fps --- {error}");
-    }
+    // protected override void DrawFooter(IScreenBuffer<ConsoleColor> footer)
+    // {
+    //     footer.Write(0,0, Style.Footer.Fg, Style.Footer.Bg, $"Time: {DateTime.Now} -- [Q]uit or <ESC>   {Host.Timer.FPS:0}fps --- {error}");
+    // }
 
     protected override bool TryHandleKey(HandleKey type, ConsoleKeyInfo key)
     {
@@ -167,7 +162,4 @@ public class CountryListScene : DemoSceneBase
         return res;
     }
 
-    public override void Step()
-    {
-    }
 }

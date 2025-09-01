@@ -62,15 +62,6 @@ public abstract class TextScene<TCanvas, TKey> : ITextScene<TCanvas, TKey>
     public abstract void Step();
 }
 
-// TODO
-// Keep a queue of key events and allow query for keys, combos (concurrent presses), coords (presses in sequence within some timeframe)
-// public interface ITextInputAbstraction
-// {
-//
-// }
-//
-//
-
 public interface ICommandContext
 {
     ITextApplicationHost Host { get; }

@@ -18,16 +18,60 @@ public abstract class DemoSceneBase : ITextScene<ScreenBuffer, ConsoleKeyInfo>
     public void Init(ITextApplication app, int width, int height)
     {
         this.app = app;
+        headerSegments.Clear();
+
+        headerSegments.Add(Style.HeaderSegment.CreateBuffer($"[[ {GetType().Name} ]]"));
+
+        this.headerSegKeys = new ScreenBuffer(20, 1);
+        headerSegKeys.Write(0,0, Style.HeaderSegment.Fg, Style.HeaderSegment.Bg, $"");
+        headerSegments.Add(headerSegKeys);
+
+        footerSegments.Clear();
+
+        var txt = "[F1] Help, [Q] or [ESC] quit";
+        var help = new ScreenBuffer(Math.Min(30, txt.Length), 1);
+        help.Write(0,0, Style.HeaderSegment.Fg, Style.HeaderSegment.Bg, txt);
+        footerSegments.Add(help);
     }
 
     protected ITextApplication App => app ?? throw new NullReferenceException("Init should be called first");
     protected ITextApplicationHost Host => app?.Host ?? throw new NullReferenceException("Init should be called first");
 
-    protected abstract void DrawHeader(IScreenBuffer<ConsoleColor> header);
+    protected virtual void DrawHeader(IScreenBuffer<ConsoleColor> header)
+    {
+        var px = 1;
+        foreach(var seg in headerSegments)
+        {
+            header.DrawBuffer(seg, px, 0);
+            px += seg.Width;
+            px +=2;
+        }
+    }
     protected abstract void DrawBody(IScreenBuffer<ConsoleColor> body);
-    protected abstract void DrawFooter(IScreenBuffer<ConsoleColor> footer);
+    protected virtual void DrawFooter(IScreenBuffer<ConsoleColor> footer)
+    {
+        var px = 1;
+        foreach(var seg in footerSegments)
+        {
+            footer.DrawBuffer(seg, px, 0);
+            px += seg.Width;
+            px +=2;
+        }
+    }
 
-    public abstract void Step();
+    public virtual void Step()
+    {
+        headerSegKeys.Fill(Style.HeaderSegment.Fg, Style.HeaderSegment.Bg, ' ');
+        if (lastKey != null)
+        {
+            headerSegKeys.WriteTextOnly(0, 0, "Key:");
+            headerSegKeys.WriteFg(5, 0, Style.Highlight, lastKey.Value.Key.ToString());
+        }
+    }
+
+    List<IScreenBuffer<ConsoleColor>> headerSegments = new();
+    List<IScreenBuffer<ConsoleColor>> footerSegments = new();
+    private ScreenBuffer headerSegKeys;
 
     public virtual void Draw(ScreenBuffer canvas)
     {
@@ -35,19 +79,6 @@ public abstract class DemoSceneBase : ITextScene<ScreenBuffer, ConsoleKeyInfo>
         var header = WindowBuffer.FromBuffer(canvas, 0, 0, canvas.Width, 1);
         header.Fill(Style.Header.Fg, Style.Header.Bg, ' ');
 
-        var writer = new RichWriterScreenBuffer<ConsoleColor, string>(header, Style.Header.Fg,  Style.HeaderSegment.Bg, "");
-        writer.Write("--<< ");
-        writer.Write(Style.HeaderSegment.Fg, GetType().Name);
-        writer.Write(" >>--");
-        writer.Write(" Key:");
-        if (lastKey != null)
-        {
-            writer.Write(Style.HeaderSegment.Fg, lastKey.Value.Key.ToString());
-        }
-        if (unhandledKey != null)
-        {
-            writer.Write(Style.HeaderSegment.Fg, ConsoleColor.Red, unhandledKey.Value.Key.ToString());
-        }
         DrawHeader(header);
 
         // Body
@@ -59,15 +90,15 @@ public abstract class DemoSceneBase : ITextScene<ScreenBuffer, ConsoleKeyInfo>
         // Footer
         var footer = WindowBuffer.FromBuffer(canvas, 0, canvas.Height-1, canvas.Width, 1);
         footer.Fill(Style.Footer.Fg, Style.Footer.Bg, ' ');
-        footer.Write(0,0, Style.Footer.Fg, Style.Footer.Bg, $"Time: {DateTime.Now} -- [Q]uit or <ESC>   {Host.Timer.FPS:0}fps");
-        var fwriter = new RichWriterScreenBuffer<ConsoleColor, string>(footer, Style.Footer.Fg,  Style.HeaderSegment.Bg, "");
-        fwriter.Write(" ");
-        fwriter.Write(Style.HeaderSegment.Fg, DateTime.Now.ToString());
-        fwriter.Write(" | ");
-        fwriter.Write(Style.HeaderSegment.Fg, Host.Timer.FPS.ToString("0"));
-        fwriter.Write("fps");
-        fwriter.Write(" | ");
-        fwriter.Write(" <q> or <ESC> to exit. <F1> Help");
+        // footer.Write(0,0, Style.Footer.Fg, Style.Footer.Bg, $"Time: {DateTime.Now} -- [Q]uit or <ESC>   {Host.Timer.FPS:0}fps");
+        // var fwriter = new RichWriterScreenBuffer<ConsoleColor, string>(footer, Style.Footer.Fg,  Style.HeaderSegment.Bg, "");
+        // fwriter.Write(" ");
+        // fwriter.Write(Style.HeaderSegment.Fg, DateTime.Now.ToString());
+        // fwriter.Write(" | ");
+        // fwriter.Write(Style.HeaderSegment.Fg, Host.Timer.FPS.ToString("0"));
+        // fwriter.Write("fps");
+        // fwriter.Write(" | ");
+        // fwriter.Write(" <q> or <ESC> to exit. <F1> Help");
         DrawFooter(footer);
     }
 
