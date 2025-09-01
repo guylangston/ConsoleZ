@@ -20,18 +20,19 @@ public abstract class DemoSceneBase : ITextScene<ScreenBuffer, ConsoleKeyInfo>
         this.app = app;
         headerSegments.Clear();
 
-        headerSegments.Add(Style.HeaderSegment.CreateBuffer($"[[ {GetType().Name} ]]"));
+        headerSegments.Add(Style.HeaderSegment.CreateBuffer($" [[ {GetType().Name} ]] "));
 
         this.headerSegKeys = new ScreenBuffer(20, 1);
-        headerSegKeys.Write(0,0, Style.HeaderSegment.Fg, Style.HeaderSegment.Bg, $"");
+        headerSegKeys.Fill(Style.HeaderSegment.Fg, Style.HeaderSegment.Bg, ' ');
         headerSegments.Add(headerSegKeys);
 
         footerSegments.Clear();
 
-        var txt = "[F1] Help, [Q] or [ESC] quit";
-        var help = new ScreenBuffer(Math.Min(30, txt.Length), 1);
-        help.Write(0,0, Style.HeaderSegment.Fg, Style.HeaderSegment.Bg, txt);
-        footerSegments.Add(help);
+        var txt = " [F1] Help, [Q] or [ESC] quit ";
+        footerSegments.Add(Style.HeaderSegment.CreateBuffer(txt));
+
+        this.footerTimer =  Style.HeaderSegment.CreateBuffer(45, 1);
+        footerSegments.Add(footerTimer);
     }
 
     protected ITextApplication App => app ?? throw new NullReferenceException("Init should be called first");
@@ -64,14 +65,28 @@ public abstract class DemoSceneBase : ITextScene<ScreenBuffer, ConsoleKeyInfo>
         headerSegKeys.Fill(Style.HeaderSegment.Fg, Style.HeaderSegment.Bg, ' ');
         if (lastKey != null)
         {
-            headerSegKeys.WriteTextOnly(0, 0, "Key:");
-            headerSegKeys.WriteFg(5, 0, Style.Highlight, lastKey.Value.Key.ToString());
+            headerSegKeys.WriteTextOnly(0, 0, " Key:");
+            headerSegKeys.WriteFg(6, 0, Style.Highlight, lastKey.Value.Key.ToString());
         }
+        if (unhandledKey != null)
+        {
+            headerSegKeys.Fill(Style.Error);
+            headerSegKeys.WriteTextOnly(0, 0, " Unhandled:");
+            headerSegKeys.WriteTextOnly(12, 0,unhandledKey.Value.Key.ToString());
+        }
+
+        var fwriter = new RichWriterScreenBuffer<ConsoleColor, string>(footerTimer, Style.Footer.Fg,  Style.HeaderSegment.Bg, "");
+        fwriter.Write(" Time: ");
+        fwriter.Write(Style.HeaderSegment.Fg, DateTime.Now.ToString());
+        fwriter.Write(" | Frames: ");
+        fwriter.Write(Style.HeaderSegment.Fg, Host.Timer.FPS.ToString("0"));
+        fwriter.Write("fps");
     }
 
-    List<IScreenBuffer<ConsoleColor>> headerSegments = new();
-    List<IScreenBuffer<ConsoleColor>> footerSegments = new();
+    protected List<IScreenBuffer<ConsoleColor>> headerSegments = new();
+    protected List<IScreenBuffer<ConsoleColor>> footerSegments = new();
     private ScreenBuffer headerSegKeys;
+    private ScreenBuffer<ConsoleColor> footerTimer;
 
     public virtual void Draw(ScreenBuffer canvas)
     {
@@ -90,15 +105,6 @@ public abstract class DemoSceneBase : ITextScene<ScreenBuffer, ConsoleKeyInfo>
         // Footer
         var footer = WindowBuffer.FromBuffer(canvas, 0, canvas.Height-1, canvas.Width, 1);
         footer.Fill(Style.Footer.Fg, Style.Footer.Bg, ' ');
-        // footer.Write(0,0, Style.Footer.Fg, Style.Footer.Bg, $"Time: {DateTime.Now} -- [Q]uit or <ESC>   {Host.Timer.FPS:0}fps");
-        // var fwriter = new RichWriterScreenBuffer<ConsoleColor, string>(footer, Style.Footer.Fg,  Style.HeaderSegment.Bg, "");
-        // fwriter.Write(" ");
-        // fwriter.Write(Style.HeaderSegment.Fg, DateTime.Now.ToString());
-        // fwriter.Write(" | ");
-        // fwriter.Write(Style.HeaderSegment.Fg, Host.Timer.FPS.ToString("0"));
-        // fwriter.Write("fps");
-        // fwriter.Write(" | ");
-        // fwriter.Write(" <q> or <ESC> to exit. <F1> Help");
         DrawFooter(footer);
     }
 
@@ -122,21 +128,26 @@ public abstract class DemoSceneBase : ITextScene<ScreenBuffer, ConsoleKeyInfo>
     {
         public readonly TextClr<ConsoleColor> Header;
         public readonly TextClr<ConsoleColor> HeaderSegment;
+        public readonly ConsoleColor HeaderHilight;
+
         public readonly TextClr<ConsoleColor> Footer;
         public readonly TextClr<ConsoleColor> Body;
         public readonly TextClr<ConsoleColor> Selected;
+        public readonly TextClr<ConsoleColor> Error;
         public readonly ConsoleColor Highlight;
         public readonly ConsoleColor Lowlight;
 
         protected StyleProvider(IReadOnlyList<ConsoleColor> palette, Dictionary<string, ConsoleColor> colours, ConsoleColor defaultFore, ConsoleColor defaultBack) : base(palette, colours, defaultFore, defaultBack)
         {
-            this.Body          = Set(nameof(Body),          DefaultFore,         DefaultBack);
-            this.Header        = Set(nameof(Header),        ConsoleColor.Black,  ConsoleColor.DarkGray);
-            this.HeaderSegment = Set(nameof(HeaderSegment), ConsoleColor.Yellow, ConsoleColor.DarkGray);
-            this.Footer        = Set(nameof(Footer),        ConsoleColor.Black,  ConsoleColor.DarkGray);
-            this.Selected      = Set(nameof(Selected),      ConsoleColor.Cyan,   ConsoleColor.DarkBlue);
+            this.Body          = Set(nameof(Body),          DefaultFore,           DefaultBack);
+            this.Header        = Set(nameof(Header),        ConsoleColor.Black,    ConsoleColor.DarkGray);
+            this.HeaderSegment = Set(nameof(HeaderSegment), ConsoleColor.DarkBlue, ConsoleColor.DarkCyan);
+            this.HeaderHilight = Set(nameof(HeaderHilight), ConsoleColor.Green);
+            this.Footer        = Set(nameof(Footer),        ConsoleColor.Black,    ConsoleColor.DarkGray);
+            this.Selected      = Set(nameof(Selected),      ConsoleColor.Cyan,     ConsoleColor.DarkBlue);
+            this.Error         = Set(nameof(Error),         ConsoleColor.Yellow,   ConsoleColor.DarkRed);
             this.Highlight     = Set(nameof(Highlight),     ConsoleColor.Magenta);
-            this.Lowlight       = Set(nameof(Lowlight),     ConsoleColor.DarkBlue);
+            this.Lowlight      = Set(nameof(Lowlight),      ConsoleColor.DarkBlue);
         }
 
         protected ConsoleColor Set(string style, ConsoleColor clr)

@@ -1,3 +1,5 @@
+using ConsoleZ.Core.TUI;
+
 namespace ConsoleZ.Core.Buffer;
 
 public class ScreenBuffer<TClr> : ArrayBuffer<ScreenCell<TClr>>, IScreenBuffer<TClr>
@@ -8,7 +10,8 @@ public class ScreenBuffer<TClr> : ArrayBuffer<ScreenCell<TClr>>, IScreenBuffer<T
 
     public void Set(int x, int y, TClr fg, TClr bg, char chr) => this[x, y] = new ScreenCell<TClr>(fg, bg, chr);
 
-    public void Fill(TClr fg, TClr bg, char chr) => BufferHelper.Fill(this, new ScreenCell<TClr> { Chr = chr, Fg = fg, Bg = bg });
+    public void Fill(TClr fg, TClr bg, char chr = ' ') => BufferHelper.Fill(this, new ScreenCell<TClr> { Chr = chr, Fg = fg, Bg = bg });
+    public void Fill(TextClr<TClr> clr, char chr = ' ') => BufferHelper.Fill(this, new ScreenCell<TClr> { Chr = chr, Fg = clr.Fg, Bg = clr.Bg });
 
     public static ScreenBuffer<TClr> FromText(TClr fg, TClr bg, ReadOnlySpan<char> txt)
     {

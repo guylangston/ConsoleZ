@@ -12,6 +12,12 @@ public readonly struct TextClr<TClr>(TClr fg, TClr bg)
         return ScreenBuffer<TClr>.FromText(Fg, Bg, txt);
     }
 
+    public ScreenBuffer<TClr> CreateBuffer(int width, int height)
+    {
+        var buf = new ScreenBuffer<TClr>(width, height);
+        buf.Fill(Fg, Bg, ' ');
+        return buf;
+    }
     public static implicit operator (TClr Fg, TClr Bg)(TextClr<TClr> data) => (data.Fg, data.Bg);
 
     public void Deconstruct(out TClr fg, out TClr bg)
