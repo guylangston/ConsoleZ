@@ -1,3 +1,4 @@
+using System.Runtime.Intrinsics.X86;
 using ConsoleZ.Core.Buffer;
 
 namespace ConsoleZ.Core.TUI;
@@ -5,12 +6,20 @@ namespace ConsoleZ.Core.TUI;
 public abstract class MasterSceneApp<TClr, TInput> : TextScene<IScreenBuffer<TClr>, TInput>
 {
     protected StyleProvider<TClr> Style { get; set; }
+    protected CommandSet<TInput> Commands { get; } = new();  // TODO: Only expose readonly interface
 
     protected MasterSceneApp(StyleProvider<TClr> style)
     {
         Style = style;
     }
 
+    public override void Init(ITextApplication app, int width, int height)
+    {
+        base.Init(app, width, height);
+        InitCommands(Commands);
+    }
+
+    protected abstract void InitCommands(CommandSet<TInput> commands);
     protected abstract void DrawHeader(IScreenBuffer<TClr> header);
     protected abstract void DrawBody(IScreenBuffer<TClr> body);
     protected abstract void DrawFooter(IScreenBuffer<TClr> footer);

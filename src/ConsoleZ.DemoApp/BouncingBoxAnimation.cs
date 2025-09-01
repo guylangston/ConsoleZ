@@ -1,6 +1,6 @@
 namespace ConsoleZ.Core.DemoApp;
 
-class BouncingBoxScene : ITextScene<IScreenBuffer<ConsoleColor>, ConsoleKeyInfo>
+class BouncingBoxScene : ITextScene<IScreenBuffer<ConsoleColor>, ConsoleKey>
 {
     List<BouncingBox> boxes = new List<BouncingBox>();
     int width, height;
@@ -41,9 +41,9 @@ class BouncingBoxScene : ITextScene<IScreenBuffer<ConsoleColor>, ConsoleKeyInfo>
         }
     }
 
-    public void HandleKey(HandleKey type, ConsoleKeyInfo key)
+    public void HandleKey(HandleKey type, ConsoleKey key)
     {
-        var kkey = key.Key;
+        var kkey = key;
         if (kkey == ConsoleKey.Q) app.Host.RequestQuit();
         if (kkey == ConsoleKey.Escape) app.Host.RequestQuit();
     }

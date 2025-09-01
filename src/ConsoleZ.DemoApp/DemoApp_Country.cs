@@ -4,11 +4,9 @@ public class CountryListScene : DemoSceneBase
 {
     ListView<ConsoleColor, Country>? view;
     IScreenBuffer<ConsoleColor>? popup;
-    CommandSet<ConsoleKey> commands = new();
 
     public CountryListScene() : base(new MyStyle(StyleProviderTemplates.CreateStdConsole()))
     {
-        RegisterCommands();
     }
 
     void ToggleHelp()
@@ -47,7 +45,7 @@ public class CountryListScene : DemoSceneBase
         }
     }
 
-    void RegisterCommands()
+    protected override void InitCommands(CommandSet<ConsoleKey> commands)
     {
         var quit = commands.Register(CommandFactory.Create("Quit", ()=>Host.RequestQuit()));
         commands.Map(ConsoleKey.Q, quit);
@@ -136,14 +134,14 @@ public class CountryListScene : DemoSceneBase
     //     footer.Write(0,0, Style.Footer.Fg, Style.Footer.Bg, $"Time: {DateTime.Now} -- [Q]uit or <ESC>   {Host.Timer.FPS:0}fps --- {error}");
     // }
 
-    protected override bool TryHandleKey(HandleKey type, ConsoleKeyInfo key)
+    protected override bool TryHandleKey(HandleKey type, ConsoleKey key)
     {
-        if (view == null || commands == null) return false;
+        if (view == null || Commands == null) return false;
 
         var res = false;
-        foreach(var map in commands.Mappings)
+        foreach(var map in Commands.Mappings)
         {
-            if (map.Input == key.Key)
+            if (map.Input == key)
             {
                 try
                 {

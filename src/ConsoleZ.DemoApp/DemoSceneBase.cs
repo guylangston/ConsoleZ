@@ -1,10 +1,10 @@
 using ConsoleZ.Core.Buffer;
 using ConsoleZ.Core.TUI;
 
-public abstract class DemoSceneBase : MasterSceneApp<ConsoleColor, ConsoleKeyInfo>
+public abstract class DemoSceneBase : MasterSceneApp<ConsoleColor, ConsoleKey>
 {
-    ConsoleKeyInfo? unhandledKey;
-    ConsoleKeyInfo? lastKey;
+    ConsoleKey? unhandledKey;
+    ConsoleKey? lastKey;
 
     protected DemoSceneBase(StyleProvider style) : base(style)
     {
@@ -59,13 +59,13 @@ public abstract class DemoSceneBase : MasterSceneApp<ConsoleColor, ConsoleKeyInf
         if (lastKey != null)
         {
             headerSegKeys.WriteTextOnly(0, 0, " Key:");
-            headerSegKeys.WriteFg(6, 0, Style.Highlight, lastKey.Value.Key.ToString());
+            headerSegKeys.WriteFg(6, 0, Style.Highlight, lastKey.Value.ToString());
         }
         if (unhandledKey != null)
         {
             headerSegKeys.Fill(Style.Error);
             headerSegKeys.WriteTextOnly(0, 0, " Unhandled:");
-            headerSegKeys.WriteTextOnly(12, 0,unhandledKey.Value.Key.ToString());
+            headerSegKeys.WriteTextOnly(12, 0,unhandledKey.Value.ToString());
         }
 
         var fwriter = new RichWriterScreenBuffer<ConsoleColor, string>(footerTimer, Style.Footer.Fg,  Style.HeaderSegment.Bg, "");
@@ -81,9 +81,9 @@ public abstract class DemoSceneBase : MasterSceneApp<ConsoleColor, ConsoleKeyInf
     private ScreenBuffer headerSegKeys;
     private ScreenBuffer<ConsoleColor> footerTimer;
 
-    protected abstract bool TryHandleKey(HandleKey type, ConsoleKeyInfo key);
+    protected abstract bool TryHandleKey(HandleKey type, ConsoleKey key);
 
-    public override void HandleKey(HandleKey type, ConsoleKeyInfo key)
+    public override void HandleKey(HandleKey type, ConsoleKey key)
     {
         if (TryHandleKey(type, key))
         {

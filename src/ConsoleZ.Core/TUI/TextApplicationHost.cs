@@ -43,14 +43,20 @@ public class TextApplicationHost : ITextApplicationHost
         {
             while (running)
             {
-                if (app is ITextApplicationInput<ConsoleKeyInfo> consKey)
+                if (app is ITextApplicationInput<ConsoleKeyInfo> consInfoKey)
                 {
                     while(Console.KeyAvailable)
                     {
-                        consKey.HandleKey(HandleKey.Press, Console.ReadKey());
+                        consInfoKey.HandleKey(HandleKey.Press, Console.ReadKey());
                     }
                 }
-
+                else if (app is ITextApplicationInput<ConsoleKey> consKey)
+                {
+                    while(Console.KeyAvailable)
+                    {
+                        consKey.HandleKey(HandleKey.Press, Console.ReadKey().Key);
+                    }
+                }
                 app.Step();
                 app.Draw();
                 frameTimer.NextFrame();
