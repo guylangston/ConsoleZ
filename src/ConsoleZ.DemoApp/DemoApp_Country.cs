@@ -16,8 +16,8 @@ public class CountryListScene : DemoSceneBase
         if (popup == null)
         {
             popup = new ScreenBuffer(50, 5);
-            var fg = Style.GetColourOrDefault("Popup.Fg");
-            var bg = Style.GetColourOrDefault("Popup.Bg", false);
+            var fg = Style.GetFg("Popup.Fg");
+            var bg = Style.GetBg("Popup.Bg");
             popup.DrawBox(fg, bg,  Glyphs.Double);
 
             var writer = popup.Inset(2, 1).CreateWriter(fg, bg);
@@ -36,8 +36,8 @@ public class CountryListScene : DemoSceneBase
         if (popup == null)
         {
             popup = new ScreenBuffer(50, 5);
-            var fg = Style.GetColourOrDefault("Popup.Fg");
-            var bg = Style.GetColourOrDefault("Popup.Bg", false);
+            var fg = Style.GetFg("Popup.Fg");
+            var bg = Style.GetBg("Popup.Bg");
             popup.DrawBox(fg, bg,  Glyphs.Double);
             popup.Write(3, 2, fg, bg, "Hello World");
         }
@@ -74,7 +74,7 @@ public class CountryListScene : DemoSceneBase
     }
 
 
-    public override void Draw(ScreenBuffer buffer)
+    public override void Draw(IScreenBuffer<ConsoleColor> buffer)
     {
         base.Draw(buffer);
         if (popup != null)

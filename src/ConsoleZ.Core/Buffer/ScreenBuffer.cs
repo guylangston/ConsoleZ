@@ -23,7 +23,7 @@ public class ScreenBuffer<TClr> : ArrayBuffer<ScreenCell<TClr>>, IScreenBuffer<T
 
 }
 
-public class ScreenBuffer : ScreenBuffer<ConsoleColor>
+public class ScreenBuffer : ScreenBuffer<ConsoleColor>, IScreenBuffer<ConsoleColor>
 {
     public ScreenBuffer(ScreenCell<ConsoleColor>[,] inner) : base(inner) { }
 

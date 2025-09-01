@@ -19,7 +19,7 @@ public interface ITextApplication
     ITextApplicationHost Host { get; }
     void Init(ITextApplicationHost host); // prepare resources
     void Step(); // advance logic
-    void Draw(); // called by ITextApplicationHost, so should not know about buffers/screens setc
+    void Draw(); // called by ITextApplicationHost, so should not know about buffers/screens etc
 }
 
 public enum HandleKey { Down, Press, Up }

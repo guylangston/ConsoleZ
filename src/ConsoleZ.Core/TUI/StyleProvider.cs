@@ -34,7 +34,8 @@ public interface IStyleProvider<TClr>
     bool TryGetColour(string styleName, out TClr clr);
     bool TryParse(string clrTxt, out TClr clr);
 
-    TClr GetColourOrDefault(string styleName, bool fg = true);
+    TClr GetFg(string styleName);
+    TClr GetBg(string styleName);
 }
 
 public interface IStyleProviderStd<TClr> : IStyleProvider<TClr>
@@ -93,13 +94,21 @@ public class StyleProvider<TClr> : IStyleProvider<TClr>
         throw new NotSupportedException();
     }
 
-    public TClr GetColourOrDefault(string styleName, bool fg = true)
+    public TClr GetFg(string styleName)
     {
         if (TryGetColour(styleName, out var clr))
         {
             return clr;
         }
-        return fg ? DefaultFore : DefaultBack;
+        return DefaultFore;
+    }
+    public TClr GetBg(string styleName)
+    {
+        if (TryGetColour(styleName, out var clr))
+        {
+            return clr;
+        }
+        return DefaultBack;
     }
 }
 

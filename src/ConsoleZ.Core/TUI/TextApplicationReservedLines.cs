@@ -6,9 +6,9 @@ public sealed class TextApplicationReservedLines : ITextApplication, ITextApplic
 {
     ScreenBuffer buffer;
     ITextApplicationHost? host;
-    ITextScene<ScreenBuffer, ConsoleKeyInfo> scene;
+    ITextScene<IScreenBuffer<ConsoleColor>, ConsoleKeyInfo> scene;
 
-    public TextApplicationReservedLines(int reservedLines, ITextScene<ScreenBuffer, ConsoleKeyInfo> scene)
+    public TextApplicationReservedLines(int reservedLines, ITextScene<IScreenBuffer<ConsoleColor>, ConsoleKeyInfo> scene)
     {
         ReservedLines = reservedLines;
         this.buffer = new ScreenBuffer(Console.WindowWidth, ReservedLines);

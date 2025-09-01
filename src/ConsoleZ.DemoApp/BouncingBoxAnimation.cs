@@ -1,6 +1,6 @@
 namespace ConsoleZ.Core.DemoApp;
 
-class BouncingBoxScene : ITextScene<ScreenBuffer, ConsoleKeyInfo>
+class BouncingBoxScene : ITextScene<IScreenBuffer<ConsoleColor>, ConsoleKeyInfo>
 {
     List<BouncingBox> boxes = new List<BouncingBox>();
     int width, height;
@@ -49,7 +49,7 @@ class BouncingBoxScene : ITextScene<ScreenBuffer, ConsoleKeyInfo>
     }
 
     Queue<double> lastDraws = new ();
-    public void Draw(ScreenBuffer buffer)
+    public void Draw(IScreenBuffer<ConsoleColor> buffer)
     {
         lastDraws.Enqueue(Timer.LastFrameTime.TotalMilliseconds);
         while(lastDraws.Count > 10)

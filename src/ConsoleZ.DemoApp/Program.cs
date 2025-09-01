@@ -29,7 +29,7 @@ internal class Program
             host.Run();
         });
 
-        AddDemo("style", "list all styles", () => 
+        AddDemo("style", "list all styles", () =>
         {
            var style = StyleProviderTemplates.CreateStdConsole();
            var writer = new RichWriterConsole("");
@@ -64,4 +64,5 @@ internal class Program
             return 1;
         }
     }
+
 }

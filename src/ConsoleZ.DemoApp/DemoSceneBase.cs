@@ -1,23 +1,20 @@
-namespace ConsoleZ.Core.DemoApp;
-
 using ConsoleZ.Core.Buffer;
 using ConsoleZ.Core.TUI;
 
-public abstract class DemoSceneBase : ITextScene<ScreenBuffer, ConsoleKeyInfo>
+public abstract class DemoSceneBase : MasterSceneApp<ConsoleColor, ConsoleKeyInfo>
 {
-    ITextApplication? app;
     ConsoleKeyInfo? unhandledKey;
     ConsoleKeyInfo? lastKey;
-    protected StyleProvider Style { get; }
 
-    protected DemoSceneBase(StyleProvider style)
+    protected DemoSceneBase(StyleProvider style) : base(style)
     {
-        Style = style;
     }
 
-    public void Init(ITextApplication app, int width, int height)
+    protected new StyleProvider Style { get => (StyleProvider)base.Style; }
+
+    public override void Init(ITextApplication app, int width, int height)
     {
-        this.app = app;
+        base.Init(app, width, height);
         headerSegments.Clear();
 
         headerSegments.Add(Style.HeaderSegment.CreateBuffer($" [[ {GetType().Name} ]] "));
@@ -35,10 +32,7 @@ public abstract class DemoSceneBase : ITextScene<ScreenBuffer, ConsoleKeyInfo>
         footerSegments.Add(footerTimer);
     }
 
-    protected ITextApplication App => app ?? throw new NullReferenceException("Init should be called first");
-    protected ITextApplicationHost Host => app?.Host ?? throw new NullReferenceException("Init should be called first");
-
-    protected virtual void DrawHeader(IScreenBuffer<ConsoleColor> header)
+    protected override void DrawHeader(IScreenBuffer<ConsoleColor> header)
     {
         var px = 1;
         foreach(var seg in headerSegments)
@@ -48,8 +42,7 @@ public abstract class DemoSceneBase : ITextScene<ScreenBuffer, ConsoleKeyInfo>
             px +=2;
         }
     }
-    protected abstract void DrawBody(IScreenBuffer<ConsoleColor> body);
-    protected virtual void DrawFooter(IScreenBuffer<ConsoleColor> footer)
+    protected override void DrawFooter(IScreenBuffer<ConsoleColor> footer)
     {
         var px = 1;
         foreach(var seg in footerSegments)
@@ -60,7 +53,7 @@ public abstract class DemoSceneBase : ITextScene<ScreenBuffer, ConsoleKeyInfo>
         }
     }
 
-    public virtual void Step()
+    public override void Step()
     {
         headerSegKeys.Fill(Style.HeaderSegment.Fg, Style.HeaderSegment.Bg, ' ');
         if (lastKey != null)
@@ -88,29 +81,9 @@ public abstract class DemoSceneBase : ITextScene<ScreenBuffer, ConsoleKeyInfo>
     private ScreenBuffer headerSegKeys;
     private ScreenBuffer<ConsoleColor> footerTimer;
 
-    public virtual void Draw(ScreenBuffer canvas)
-    {
-        // Header
-        var header = WindowBuffer.FromBuffer(canvas, 0, 0, canvas.Width, 1);
-        header.Fill(Style.Header.Fg, Style.Header.Bg, ' ');
-
-        DrawHeader(header);
-
-        // Body
-        //
-        var body = WindowBuffer.FromBuffer(canvas, 0, 1, canvas.Width, canvas.Height-2);
-        body.Fill(Style.Body.Fg, Style.Body.Bg, ' ');
-        DrawBody(body);
-
-        // Footer
-        var footer = WindowBuffer.FromBuffer(canvas, 0, canvas.Height-1, canvas.Width, 1);
-        footer.Fill(Style.Footer.Fg, Style.Footer.Bg, ' ');
-        DrawFooter(footer);
-    }
-
     protected abstract bool TryHandleKey(HandleKey type, ConsoleKeyInfo key);
 
-    public void HandleKey(HandleKey type, ConsoleKeyInfo key)
+    public override void HandleKey(HandleKey type, ConsoleKeyInfo key)
     {
         if (TryHandleKey(type, key))
         {
