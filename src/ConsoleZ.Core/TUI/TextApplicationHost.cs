@@ -21,6 +21,8 @@ public class TextApplicationHost : ITextApplicationHost
         public Exception? Exception { get; set; }
     }
 
+    public DrawContext HostDrawContext => drawContext;
+
     protected int Frame => frameTimer.Frames;
     public AnimationTimer Timer => frameTimer;
 

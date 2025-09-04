@@ -38,6 +38,15 @@ public class CommandSet<TInput>
         map = default;
         return false;
     }
+
+    // Copy mappings
+    public void MapAll(CommandSet<TInput> set)
+    {
+        foreach(var map in set.Mappings)
+        {
+            Map(map.Input, map.Command);
+        }
+    }
 }
 
 public static class CommandFactory

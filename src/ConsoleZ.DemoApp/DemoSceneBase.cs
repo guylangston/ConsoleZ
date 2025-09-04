@@ -6,11 +6,11 @@ public abstract class DemoSceneBase : MasterSceneApp<ConsoleColor, ConsoleKey>
     ConsoleKey? unhandledKey;
     ConsoleKey? lastKey;
 
-    protected DemoSceneBase(StyleProvider style) : base(style)
+    protected DemoSceneBase(StyleProviderBase style) : base(style)
     {
     }
 
-    protected new StyleProvider Style { get => (StyleProvider)base.Style; }
+    protected new StyleProviderBase Style { get => (StyleProviderBase)base.Style; }
 
     public override void Init(ITextApplication app, int width, int height)
     {
@@ -97,7 +97,7 @@ public abstract class DemoSceneBase : MasterSceneApp<ConsoleColor, ConsoleKey>
         }
     }
 
-    protected class StyleProvider : StyleProviderStd<ConsoleColor>
+    public class StyleProviderBase : StyleProviderStd<ConsoleColor>
     {
         public readonly TextClr<ConsoleColor> Header;
         public readonly TextClr<ConsoleColor> HeaderSegment;
@@ -109,18 +109,21 @@ public abstract class DemoSceneBase : MasterSceneApp<ConsoleColor, ConsoleKey>
         public readonly TextClr<ConsoleColor> Error;
         public readonly ConsoleColor Highlight;
         public readonly ConsoleColor Lowlight;
+        public readonly ConsoleColor AltBg;
 
-        protected StyleProvider(IReadOnlyList<ConsoleColor> palette, Dictionary<string, ConsoleColor> colours, ConsoleColor defaultFore, ConsoleColor defaultBack) : base(palette, colours, defaultFore, defaultBack)
+        protected StyleProviderBase(IReadOnlyList<ConsoleColor> palette, Dictionary<string, ConsoleColor> colours, ConsoleColor defaultFore, ConsoleColor defaultBack) : base(palette, colours, defaultFore, defaultBack)
         {
-            this.Body          = Set(nameof(Body),          DefaultFore,           DefaultBack);
-            this.Header        = Set(nameof(Header),        ConsoleColor.Black,    ConsoleColor.DarkGray);
-            this.HeaderSegment = Set(nameof(HeaderSegment), ConsoleColor.DarkBlue, ConsoleColor.DarkCyan);
-            this.HeaderHilight = Set(nameof(HeaderHilight), ConsoleColor.Green);
-            this.Footer        = Set(nameof(Footer),        ConsoleColor.Black,    ConsoleColor.DarkGray);
-            this.Selected      = Set(nameof(Selected),      ConsoleColor.Cyan,     ConsoleColor.DarkBlue);
-            this.Error         = Set(nameof(Error),         ConsoleColor.Yellow,   ConsoleColor.DarkRed);
-            this.Highlight     = Set(nameof(Highlight),     ConsoleColor.Magenta);
-            this.Lowlight      = Set(nameof(Lowlight),      ConsoleColor.DarkBlue);
+            Body          = Set(nameof(Body),          DefaultFore,           DefaultBack);
+            AltBg         = Set(nameof(AltBg),         ConsoleColor.DarkGray);
+
+            Header        = Set(nameof(Header),        ConsoleColor.Black,    AltBg);
+            HeaderSegment = Set(nameof(HeaderSegment), ConsoleColor.Gray,     AltBg);
+            HeaderHilight = Set(nameof(HeaderHilight), ConsoleColor.Green);
+            Footer        = Set(nameof(Footer),        ConsoleColor.DarkGreen, Header.Bg);
+            Selected      = Set(nameof(Selected),      ConsoleColor.Black,     ConsoleColor.DarkBlue);
+            Error         = Set(nameof(Error),         ConsoleColor.Yellow,   ConsoleColor.DarkRed);
+            Highlight     = Set(nameof(Highlight),     ConsoleColor.Magenta);
+            Lowlight      = Set(nameof(Lowlight),      ConsoleColor.DarkBlue);
         }
 
         protected ConsoleColor Set(string style, ConsoleColor clr)

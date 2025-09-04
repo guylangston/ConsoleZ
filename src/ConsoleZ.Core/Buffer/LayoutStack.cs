@@ -3,7 +3,7 @@ using System.Collections;
 namespace ConsoleZ.Core.Buffer;
 
 public enum Orientation { Vert, Horz }
-public class LayoutStack<TClr> : ILayout<TClr>
+public class LayoutStack<TClr> : ISegmentLayout<TClr>
 {
     public LayoutStack(IScreenBuffer<TClr> buffer, Orientation orientation, int count)
     {
@@ -14,6 +14,7 @@ public class LayoutStack<TClr> : ILayout<TClr>
         CalcCellSize();
     }
 
+    IScreenBuffer<TClr> ISegmentLayout<TClr>.ParentBuffer => Buffer;
     public IScreenBuffer<TClr> Buffer { get; }
     public Orientation Orientation { get; }
     public int Count { get; }

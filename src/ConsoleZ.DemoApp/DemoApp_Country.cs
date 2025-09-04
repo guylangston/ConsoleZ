@@ -2,8 +2,10 @@ namespace ConsoleZ.Core.DemoApp;
 
 public class CountryListScene : DemoSceneBase
 {
-    ListView<ConsoleColor, Country>? view;
     IScreenBuffer<ConsoleColor>? popup;
+
+    // NOTE: We need a readonly reference to attach the `CommandSet` to. This means state, data, buffer may vary
+    readonly ListView<ConsoleColor, Country> viewMain = new(new ListViewState());
 
     public CountryListScene() : base(new MyStyle(StyleProviderTemplates.CreateStdConsole()))
     {
@@ -50,12 +52,7 @@ public class CountryListScene : DemoSceneBase
         var quit = commands.Register(CommandFactory.Create("Quit", ()=>Host.RequestQuit()));
         commands.Map(ConsoleKey.Q, quit);
         commands.Map(ConsoleKey.Escape, quit);
-        commands.Map(ConsoleKey.LeftArrow,  CommandFactory.Create("MoveLeft",    ()=>view?.MoveLeft()));
-        commands.Map(ConsoleKey.RightArrow, CommandFactory.Create("MoveRight",   ()=>view?.MoveRight()));
-        commands.Map(ConsoleKey.UpArrow,    CommandFactory.Create("MoveUp",      ()=>view?.MoveUp()));
-        commands.Map(ConsoleKey.DownArrow,  CommandFactory.Create("MoveDown",    ()=>view?.MoveDown()));
-        commands.Map(ConsoleKey.Home,       CommandFactory.Create("MoveFirst",   ()=>view?.First()));
-        commands.Map(ConsoleKey.End,        CommandFactory.Create("MoveLast",    ()=>view?.Last()));
+        commands.MapAll(viewMain.CreateStdMaps());
         commands.Map(ConsoleKey.F1,         CommandFactory.Create("ToggleHelp",  ToggleHelp));
         commands.Map(ConsoleKey.P,          CommandFactory.Create("TogglePopup", TogglePopup));
         commands.Map(ConsoleKey.H,          CommandFactory.Create("ToggleHeader", ()=> { IsHeaderEnabled = !IsHeaderEnabled; }));
@@ -63,7 +60,7 @@ public class CountryListScene : DemoSceneBase
 
     }
 
-    class MyStyle : DemoSceneBase.StyleProvider
+    public class MyStyle : StyleProviderBase
     {
         public readonly TextClr<ConsoleColor> Popup;
 
@@ -73,7 +70,6 @@ public class CountryListScene : DemoSceneBase
             Popup = Set(nameof(Popup), ConsoleColor.Yellow, ConsoleColor.DarkBlue);
         }
     }
-
 
     public override void Draw(IScreenBuffer<ConsoleColor> buffer)
     {
@@ -88,14 +84,14 @@ public class CountryListScene : DemoSceneBase
     {
         var (listArea, detailArea) = body.SplitVert(60);
 
-        if (view == null)
-        {
-            var cols = listArea.Width >= 80 ? 3 : 2;
-            view = new ListView<ConsoleColor, Country>(SampleCountry.Countries, new LayoutGrid<ConsoleColor>(listArea, cols, body.Height/2));
-            // view = new ListView<ConsoleColor, Country>(SampleCountry.Countries, new LayoutStack<ConsoleColor>(listArea, Orientation.Vert, 4));
-        }
+        var cols = listArea.Width >= 80 ? 3 : 2;
 
-        foreach(var segment in view.GetViewData())
+        // NOTE: Data and Layout/Buffer may change between each from by some external agent... 
+        //       To be safe, verify and reset them as needed
+        viewMain.VerifySource(SampleCountry.Countries);
+        viewMain.VerifyLayout(new LayoutGrid<ConsoleColor>(listArea, cols, body.Height/2));
+
+        foreach(var segment in viewMain.GetViewData())
         {
             var inner = segment.Segment.Buffer;
             var data = segment.Data;
@@ -108,6 +104,7 @@ public class CountryListScene : DemoSceneBase
             writer.Write(' ');
             writer.Write(data.Name);
             writer.WriteLine();
+            writer.Write("   ");
             writer.Write(data.Capital);
 
             if (segment.IsCursor)
@@ -139,7 +136,7 @@ public class CountryListScene : DemoSceneBase
 
     protected override bool TryHandleKey(HandleKey type, ConsoleKey key)
     {
-        if (view == null || Commands == null) return false;
+        if (Commands == null) return false;
 
         var res = false;
         foreach(var map in Commands.Mappings)
@@ -149,7 +146,7 @@ public class CountryListScene : DemoSceneBase
                 try
                 {
                     error = null;
-                    map.Command.Execute(new CommandContext(Host, App, this), CommandArgs.Empty);
+                    map.Command.Execute(new CommandContext(Host, App, this, null), CommandArgs.Empty);
                     res = true;
                     // dont exit, may be more than one mapping
                 }

@@ -2,7 +2,7 @@ using System.Collections;
 
 namespace ConsoleZ.Core.Buffer;
 
-public class LayoutGrid<TClr> : ILayout<TClr>
+public class LayoutGrid<TClr> : ISegmentLayout<TClr>
 {
     public LayoutGrid(IScreenBuffer<TClr> buffer, int columns, int rows)
     {
@@ -23,6 +23,7 @@ public class LayoutGrid<TClr> : ILayout<TClr>
 
     }
 
+    IScreenBuffer<TClr> ISegmentLayout<TClr>.ParentBuffer => Buffer;
     public IScreenBuffer<TClr> Buffer { get; }
     public int Columns { get; }
     public int Rows    { get; }

@@ -31,7 +31,7 @@ internal class Program
 
         AddDemo("style", "list all styles", () =>
         {
-           var style = StyleProviderTemplates.CreateStdConsole();
+           var style = new CountryListScene.MyStyle(StyleProviderTemplates.CreateStdConsole());
            var writer = new RichWriterConsole("");
            var cc = 0;
            foreach(var item in style.StyleToColour)

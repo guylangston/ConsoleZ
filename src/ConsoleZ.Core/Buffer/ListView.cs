@@ -1,20 +1,32 @@
+using ConsoleZ.Core.TUI;
+
 namespace ConsoleZ.Core.Buffer;
 
-public class ListView<TClr, TData>
+public class ListViewState
 {
+    public virtual int Offset { get; set; }
+    public virtual int CursorWindowIdx { get; set; }
 
-    public ListView(IReadOnlyList<TData> data, ILayout<TClr> layout)
+    public virtual void Reset()
     {
-        Data = data;
-        Layout = layout;
         Offset = 0;
         CursorWindowIdx = 0;
     }
+}
 
-    public IReadOnlyList<TData> Data { get; }
-    public ILayout<TClr> Layout { get; }
-    public int Offset { get; set; }
-    public int CursorWindowIdx { get; set; }
+public class ListView<TClr, TData>
+{
+    readonly ListViewState state;
+
+    public ListView(ListViewState state)
+    {
+        this.state = state;
+    }
+
+    public IReadOnlyList<TData>? Data { get; private set;}
+    public ISegmentLayout<TClr>? Layout { get; private set; }
+    public int Offset { get => state.Offset; set => state.Offset = value; }
+    public int CursorWindowIdx { get => state.CursorWindowIdx; set => state.CursorWindowIdx = value; }
     public int CursorDataIdx => Offset + CursorWindowIdx;
 
     public readonly struct ViewSegment
@@ -23,6 +35,46 @@ public class ListView<TClr, TData>
         public TData Data { get; init; }
         public int DataIdx { get; init; }
         public bool IsCursor { get; init; }
+    }
+
+    public void Reset() => state.Reset();
+
+    /// <returns>false if source reset</returns>
+    public bool VerifySource(IReadOnlyList<TData>? data)
+    {
+        if (Data == null && data == null) return false; // nothing to do
+
+        if (Data == null && data != null)
+        {
+            Data = data;
+            state.Reset();
+            return false;
+        }
+
+        if (Data != null && data == null)
+        {
+            Data = null;
+            state.Reset();
+            return false;
+        }
+
+        if (object.ReferenceEquals(Data, data)) return true;
+
+        if (Data!.Count != data!.Count)
+        {
+            state.Reset();
+            Data = data;
+            return false;
+        }
+
+        Data = data;
+        return false;
+    }
+
+    public void VerifyLayout(ISegmentLayout<TClr> layout)
+    {
+        // don't detect, just reassign
+        this.Layout = layout;
     }
 
     public void First()
@@ -145,6 +197,21 @@ public class ListView<TClr, TData>
             };
             dataIdx++;
         }
+    }
+
+    // TODO: Move to helper
+    public CommandSet<ConsoleKey> CreateStdMaps()
+    {
+        var commands = new CommandSet<ConsoleKey>();
+        commands.Map(ConsoleKey.LeftArrow,  CommandFactory.Create("MoveLeft",    ()=>this.MoveLeft()));
+        commands.Map(ConsoleKey.RightArrow, CommandFactory.Create("MoveRight",   ()=>this.MoveRight()));
+        commands.Map(ConsoleKey.UpArrow,    CommandFactory.Create("MoveUp",      ()=>this.MoveUp()));
+        commands.Map(ConsoleKey.DownArrow,  CommandFactory.Create("MoveDown",    ()=>this.MoveDown()));
+        commands.Map(ConsoleKey.Home,       CommandFactory.Create("MoveFirst",   ()=>this.First()));
+        commands.Map(ConsoleKey.End,        CommandFactory.Create("MoveLast",    ()=>this.Last()));
+
+        // TODO: PageUp, PageDown (SetFilter/Search)
+        return commands;
     }
 
 }

@@ -1,7 +1,8 @@
 namespace ConsoleZ.Core.Buffer;
 
-public interface ILayout<TClr> : IEnumerable<Segment<TClr>>
+public interface ISegmentLayout<TClr> : IEnumerable<Segment<TClr>>
 {
+    IScreenBuffer<TClr> ParentBuffer { get; }
     int CellCount { get; }
 }
 

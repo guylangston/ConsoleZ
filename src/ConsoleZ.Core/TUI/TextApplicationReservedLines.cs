@@ -21,6 +21,7 @@ public sealed class TextApplicationReservedLines : ITextApplication, ITextApplic
     public int Width => buffer.Width;
     public int Height => ReservedLines;
     public bool ClearBeforeDraw { get; set; } = true;
+    public bool CleanOnFinalDraw { get; set; } = false;
 
     public ITextApplicationHost Host => host ?? throw new NullReferenceException("Only available after Init");
 
@@ -50,6 +51,13 @@ public sealed class TextApplicationReservedLines : ITextApplication, ITextApplic
             buffer.Fill(ConsoleColor.DarkGray, ConsoleColor.Black, ' ');
         }
         scene.Draw(buffer);
+        if (CleanOnFinalDraw && Host is TextApplicationHost th && th.HostDrawContext.IsFinalFrame)
+        {
+            buffer.Fill(ConsoleColor.DarkGray, ConsoleColor.Black, ' ');
+            CopyToConsole(buffer);
+            Console.CursorTop = StartLine;
+            return;
+        }
         CopyToConsole(buffer);
     }
 
