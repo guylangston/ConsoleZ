@@ -22,16 +22,18 @@ public static class Glyphs
             '║', ' ', '║',
             '╚', '═', '╝' );
 
-    public const char Tick        = '✔';
-    public const char Cross       = '✖';
-    public const char Warning     = '⚠';
-    public const char Info        = 'ℹ';
-    public const char Question    = '❓';
-    public const char Star        = '★';
-    public const char ArrowRight  = '→';
-    public const char ArrowLeft   = '←';
-    public const char ArrowUp     = '↑';
-    public const char ArrowDown   = '↓';
+    public const char Tick           = '✔';
+    public const char Cross          = '✖';
+    public const char Warning        = '⚠';
+    public const char Info           = 'ℹ';
+    public const char Question       = '❓';
+    public const char Star           = '★';
+    public const char ArrowRight     = '→';
+    public const char ArrowLeft      = '←';
+    public const char ArrowUp        = '↑';
+    public const char ArrowDown      = '↓';
+    public const char ArrowDownRight = '↳';
+
     public const char CircleEmpty = '○';
     public const char CircleFull  = '●';
 
