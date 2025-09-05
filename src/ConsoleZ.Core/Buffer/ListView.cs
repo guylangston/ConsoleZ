@@ -1,4 +1,4 @@
-using ConsoleZ.Core.TUI;
+
 
 namespace ConsoleZ.Core.Buffer;
 
@@ -85,6 +85,7 @@ public class ListView<TClr, TData>
 
     public void Last()
     {
+        if (Data == null || Layout == null) return;
         if (Data.Count > Layout.CellCount)
         {
             Offset = Data.Count - Layout.CellCount;
@@ -94,6 +95,7 @@ public class ListView<TClr, TData>
 
     public bool Next()
     {
+        if (Data == null || Layout == null) return false;
         if (CursorDataIdx < Data.Count-1)
         {
             CursorWindowIdx++;
@@ -115,6 +117,7 @@ public class ListView<TClr, TData>
 
     public bool Previous()
     {
+        if (Data == null || Layout == null) return false;
         if (CursorWindowIdx >= 0)
         {
             CursorWindowIdx--;
@@ -143,6 +146,7 @@ public class ListView<TClr, TData>
 
     public bool MoveUp()
     {
+        if (Data == null || Layout == null) return false;
         if (Layout is LayoutGrid<TClr> grid)
         {
             if (CursorWindowIdx - grid.Columns >= 0)
@@ -162,9 +166,10 @@ public class ListView<TClr, TData>
 
     public bool MoveDown()
     {
+        if (Data == null || Layout == null) return false;
         if (Layout is LayoutGrid<TClr> grid)
         {
-            if (Offset + grid.Columns < Data.Count)
+            if (Offset + CursorWindowIdx + grid.Columns < Data.Count)
             {
                 if (CursorWindowIdx + grid.Columns < Layout.CellCount)
                 {
@@ -184,6 +189,8 @@ public class ListView<TClr, TData>
 
     public IEnumerable<ViewSegment> GetViewData()
     {
+        if (Data == null || Layout == null) yield break;
+
         var dataIdx = Offset;
         foreach(var segment in Layout)
         {
@@ -197,21 +204,6 @@ public class ListView<TClr, TData>
             };
             dataIdx++;
         }
-    }
-
-    // TODO: Move to helper
-    public CommandSet<ConsoleKey> CreateStdMaps()
-    {
-        var commands = new CommandSet<ConsoleKey>();
-        commands.Map(ConsoleKey.LeftArrow,  CommandFactory.Create("MoveLeft",    ()=>this.MoveLeft()));
-        commands.Map(ConsoleKey.RightArrow, CommandFactory.Create("MoveRight",   ()=>this.MoveRight()));
-        commands.Map(ConsoleKey.UpArrow,    CommandFactory.Create("MoveUp",      ()=>this.MoveUp()));
-        commands.Map(ConsoleKey.DownArrow,  CommandFactory.Create("MoveDown",    ()=>this.MoveDown()));
-        commands.Map(ConsoleKey.Home,       CommandFactory.Create("MoveFirst",   ()=>this.First()));
-        commands.Map(ConsoleKey.End,        CommandFactory.Create("MoveLast",    ()=>this.Last()));
-
-        // TODO: PageUp, PageDown (SetFilter/Search)
-        return commands;
     }
 
 }

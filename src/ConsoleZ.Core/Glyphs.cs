@@ -1,4 +1,4 @@
-namespace ConsoleZ.Core;
+
 
 public static class Glyphs
 {
@@ -22,17 +22,20 @@ public static class Glyphs
             '║', ' ', '║',
             '╚', '═', '╝' );
 
-    public static char Tick        = '✔';
-    public static char Cross       = '✖';
-    public static char Warning     = '⚠';
-    public static char Info        = 'ℹ';
-    public static char Question    = '❓';
-    public static char Star        = '★';
-    public static char ArrowRight  = '→';
-    public static char ArrowLeft   = '←';
-    public static char ArrowUp     = '↑';
-    public static char ArrowDown   = '↓';
-    public static char CircleEmpty = '○';
-    public static char CircleFull  = '●';
+    public const char Tick        = '✔';
+    public const char Cross       = '✖';
+    public const char Warning     = '⚠';
+    public const char Info        = 'ℹ';
+    public const char Question    = '❓';
+    public const char Star        = '★';
+    public const char ArrowRight  = '→';
+    public const char ArrowLeft   = '←';
+    public const char ArrowUp     = '↑';
+    public const char ArrowDown   = '↓';
+    public const char CircleEmpty = '○';
+    public const char CircleFull  = '●';
+
+    public const string Folder  = "📁";
+    public const string File  = "📄";
 }
 

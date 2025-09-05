@@ -138,5 +138,12 @@ public static class ScreenBufferHelper
         var fwriter = new RichWriterScreenBuffer<TClr, string>(buffer, fg, bg, style);
         return fwriter;
     }
+
+    public static void UpdateCells<TClr>(this IScreenBuffer<TClr> buffer, Func<ScreenCell<TClr>, ScreenCell<TClr>> update)
+    {
+        for(var y=0; y<buffer.Height; y++)
+            for(var x=0; x<buffer.Width; x++)
+                buffer[x,y] = update(buffer[x,y]);
+    }
 }
 
