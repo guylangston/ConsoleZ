@@ -2,13 +2,13 @@ using ConsoleZ.Core.Buffer;
 
 namespace ConsoleZ.Core.TUI;
 
-public sealed class TextApplicationReservedLines : ITextApplication, ITextApplicationInput<ConsoleKey>
+public sealed class TextApplicationReservedLines<TInput> : ITextApplication, ITextApplicationInput<TInput>
 {
     readonly ScreenBuffer buffer;
     ITextApplicationHost? host;
-    readonly ITextScene<IScreenBuffer<ConsoleColor>, ConsoleKey> scene;
+    readonly ITextScene<IScreenBuffer<ConsoleColor>, TInput> scene;
 
-    public TextApplicationReservedLines(int reservedLines, ITextScene<IScreenBuffer<ConsoleColor>, ConsoleKey> scene)
+    public TextApplicationReservedLines(int reservedLines, ITextScene<IScreenBuffer<ConsoleColor>, TInput> scene)
     {
         ReservedLines = reservedLines;
         this.buffer = new ScreenBuffer(Console.WindowWidth, ReservedLines);
@@ -95,7 +95,7 @@ public sealed class TextApplicationReservedLines : ITextApplication, ITextApplic
         }
     }
 
-    public void HandleKey(HandleKey type, ConsoleKey key)
+    public void HandleKey(HandleKey type, TInput key)
     {
         scene.HandleKey(type, key);
     }

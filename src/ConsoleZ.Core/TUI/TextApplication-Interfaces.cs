@@ -77,7 +77,7 @@ public class CommandContext(ITextApplicationHost host, ITextApplication app, ITe
     public ITextApplicationHost Host { get; } = host;
     public ITextApplication App { get; } = app;
     public ITextScene? Scene { get; } = scene;
-    public IServiceProvider? ServiceProvider { get; }
+    public IServiceProvider? ServiceProvider { get; } = serviceProvider;
 }
 
 public interface ICommandArgs
