@@ -16,7 +16,7 @@ internal class Program
         AddDemo("bounce", "Random coloured boxses bouncing around",  ()=>
         {
             var scene = new BouncingBoxScene();
-            var app = new TextApplicationReservedLines(10, scene);
+            var app = new TextApplicationReservedLines<ConsoleKey>(10, scene);
             var host = new TextApplicationHost(args, app, 10);
             host.Run();
         });
@@ -24,7 +24,7 @@ internal class Program
         AddDemo("app", "Sample Country List Browser app (Header, Body, Footer)", ()=>
         {
             var scene = new CountryListScene();
-            var app = new TextApplicationReservedLines(10, scene);
+            var app = new TextApplicationReservedLines<ConsoleKey>(10, scene);
             var host = new TextApplicationHost(args, app, 10);
             host.Run();
         });
