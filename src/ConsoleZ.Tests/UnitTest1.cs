@@ -1,8 +1,10 @@
 ﻿using System.Linq.Expressions;
 
+using ConsoleZ.Core;
+
 namespace ConsoleZ.Tests;
 
-public class UnitTest1
+public class ExpressionTests
 {
     [Fact]
     public void CanUseExpressionToGetActionName()

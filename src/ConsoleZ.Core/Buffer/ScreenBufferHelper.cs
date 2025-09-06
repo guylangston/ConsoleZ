@@ -105,24 +105,26 @@ public static class ScreenBufferHelper
     {
         int x = 0, y = 0;
         char l = box.TopLeft, m = box.TopMiddle, r = box.TopRight;
-        buf.Set(x++,y, fg, bg, l);
-        for(var cc=0; cc < buf.Width - 3; cc++) buf.Set(x++,y, fg, bg, m);
-        buf.Set(x,y++, fg, bg, r);
+        DrawLine(l, m, r);
 
         l = box.MiddleLeft; m = box.Middle; r = box.MiddleRight;
         for(var ln=0; ln< buf.Height-2; ln++)
         {
             x = 0;
-            buf.Set(x++,y, fg, bg, l);
-            for(var cc=0; cc < buf.Width - 3; cc++) buf.Set(x++,y, fg, bg, m);
-            buf.Set(x,y++, fg, bg, r);
+            DrawLine(l, m, r);
         }
 
         l = box.BottomLeft; m = box.BottomMiddle; r = box.BottomRight;
         x = 0;
-        buf.Set(x++,y, fg, bg, l);
-        for(var cc=0; cc < buf.Width - 3; cc++) buf.Set(x++,y, fg, bg, m);
-        buf.Set(x,y++, fg, bg, r);
+        DrawLine(l, m, r);
+
+
+        void DrawLine(char l, char m, char r)
+        {
+            buf.Set(x++,y, fg, bg, l);
+            for(var cc=0; cc < buf.Width - 2; cc++) buf.Set(x++,y, fg, bg, m);
+            buf.Set(x,y++, fg, bg, r);
+        }
     }
 
     public static void FillLine<TClr>(this IScreenBuffer<TClr> buffer, int line, TClr fg, TClr bg, char chr)

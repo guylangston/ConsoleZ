@@ -52,12 +52,12 @@ public class CountryListScene : DemoSceneBase
         var quit = commands.Register(CommandFactory.Create("Quit", ()=>Host.RequestQuit()));
         commands.Map(ConsoleKey.Q, quit);
         commands.Map(ConsoleKey.Escape, quit);
-        commands.Map(ConsoleKey.UpArrow,    CommandFactory.Create("Up", () => viewMain.MoveUp()));
-        commands.Map(ConsoleKey.RightArrow,    CommandFactory.Create("Right", () => viewMain.MoveRight()));
-        commands.Map(ConsoleKey.LeftArrow,    CommandFactory.Create("Left", () => viewMain.MoveLeft()));
-        commands.Map(ConsoleKey.DownArrow,    CommandFactory.Create("Down", () => viewMain.MoveDown()));
-        commands.Map(ConsoleKey.F1,         CommandFactory.Create("ToggleHelp",  ToggleHelp));
-        commands.Map(ConsoleKey.P,          CommandFactory.Create("TogglePopup", TogglePopup));
+        commands.Map(ConsoleKey.UpArrow,    CommandFactory.Create("Up",           () => viewMain.MoveUp()));
+        commands.Map(ConsoleKey.RightArrow, CommandFactory.Create("Right",        () => viewMain.MoveRight()));
+        commands.Map(ConsoleKey.LeftArrow,  CommandFactory.Create("Left",         () => viewMain.MoveLeft()));
+        commands.Map(ConsoleKey.DownArrow,  CommandFactory.Create("Down",         () => viewMain.MoveDown()));
+        commands.Map(ConsoleKey.F1,         CommandFactory.Create("ToggleHelp",   ToggleHelp));
+        commands.Map(ConsoleKey.P,          CommandFactory.Create("TogglePopup",  TogglePopup));
         commands.Map(ConsoleKey.H,          CommandFactory.Create("ToggleHeader", ()=> { IsHeaderEnabled = !IsHeaderEnabled; }));
         commands.Map(ConsoleKey.F,          CommandFactory.Create("ToggleFooter", ()=> { IsFooterEnabled = !IsFooterEnabled; }));
 

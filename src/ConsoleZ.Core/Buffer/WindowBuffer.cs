@@ -4,15 +4,14 @@ namespace ConsoleZ.Core.Buffer;
 
 public static class WindowBuffer
 {
-    public static WindowBuffer<T> FromBuffer<T>(IBuffer<T> buffer, int innerX, int innerY, int width, int height)
-    {
-        return new WindowBuffer<T>(buffer, innerX, innerY, width, height);
-    }
+    public static WindowBuffer<T> FromBuffer<T>(this IBuffer<T> buffer, int innerX, int innerY, int width, int height)
+        => new(buffer, innerX, innerY, width, height);
 
-    public static WindowScreenBuffer<TClr> FromBuffer<TClr>(IScreenBuffer<TClr> buffer, int innerX, int innerY, int width, int height)
-    {
-        return new WindowScreenBuffer<TClr>(buffer, innerX, innerY, width, height);
-    }
+    public static WindowScreenBuffer<TClr> FromBuffer<TClr>(this IScreenBuffer<TClr> buffer, int innerX, int innerY, int width, int height)
+        => new(buffer, innerX, innerY, width, height);
+
+    public static WindowScreenBuffer<TClr> Empty<TClr>(this IScreenBuffer<TClr> buffer)
+        => new(buffer, 0, 0, 0, 0);
 
     public static (WindowScreenBuffer<TClr> Left, WindowScreenBuffer<TClr> Right) SplitVert<TClr>(this IScreenBuffer<TClr> buffer, int perc = 50)
     {
@@ -24,11 +23,12 @@ public static class WindowBuffer
                );
     }
 
-    public static WindowScreenBuffer<TClr> Inset<TClr>(this IScreenBuffer<TClr> buffer, int size) => Inset(buffer, size, size);
+    public static WindowScreenBuffer<TClr> Inset<TClr>(this IScreenBuffer<TClr> buffer, int size)
+        => Inset(buffer, size, size);
 
     public static WindowScreenBuffer<TClr> Inset<TClr>(this IScreenBuffer<TClr> buffer, int sizeX, int sizeY)
     {
-        return new WindowScreenBuffer<TClr>(buffer, sizeX, sizeY, buffer.Width - sizeX *2, buffer.Height - sizeY*2);
+        return new WindowScreenBuffer<TClr>(buffer, sizeX, sizeY, buffer.Width - sizeX*2, buffer.Height - sizeY*2);
     }
 }
 
@@ -115,14 +115,14 @@ public readonly struct WindowScreenBuffer<TClr> : IScreenBuffer<TClr>
         get
         {
             if (x < 0 || x >= width) throw new IndexOutOfRangeException($"X:{x} must be in [0..{width-1}]");
-            if (y < 0 || y >= width) throw new IndexOutOfRangeException($"Y:{x} must be in [0..{width-1}]");
+            if (y < 0 || y >= height) throw new IndexOutOfRangeException($"Y:{x} must be in [0..{height-1}]");
             return inner[innerX + x, innerY + y];
         }
 
         set
         {
             if (x < 0 || x >= width) throw new IndexOutOfRangeException($"X:{x} must be in [0..{width-1}]");
-            if (y < 0 || y >= width) throw new IndexOutOfRangeException($"Y:{x} must be in [0..{width-1}]");
+            if (y < 0 || y >= height) throw new IndexOutOfRangeException($"Y:{x} must be in [0..{height-1}]");
             inner[innerX + x, innerY + y] = value;
         }
     }
