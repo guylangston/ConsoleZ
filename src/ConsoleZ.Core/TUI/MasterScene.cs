@@ -24,8 +24,8 @@ public abstract class MasterSceneApp<TClr, TInput> : TextScene<IScreenBuffer<TCl
     protected abstract void DrawBody(IScreenBuffer<TClr> body);
     protected abstract void DrawFooter(IScreenBuffer<TClr> footer);
 
-    public bool IsHeaderEnabled { get; set; } = true;
-    public bool IsFooterEnabled { get; set; } = true;
+    public virtual bool IsHeaderEnabled { get; set; } = true;
+    public virtual bool IsFooterEnabled { get; set; } = true;
 
     public override void Draw(IScreenBuffer<TClr> canvas)
     {

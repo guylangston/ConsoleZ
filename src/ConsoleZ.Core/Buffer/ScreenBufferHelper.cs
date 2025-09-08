@@ -5,88 +5,52 @@ namespace ConsoleZ.Core.Buffer;
 public static class ScreenBufferHelper
 {
 
-    public static void WriteTextOnly<TClr>(this IScreenBuffer<TClr> buf, int x, int y, ReadOnlySpan<char> txt, bool wrapElseClip = true)
+    /// <summary>
+    /// Will clip, Wont throw on overflow
+    /// Will respect newline char starting a `x`
+    /// Allow negative x, y meaning rel top, rel bottom
+    /// Nothing special for '\t'
+    /// </summary>
+    public static void WriteSeq<TClr>(this IScreenBuffer<TClr> buf,
+            int x, int y, ReadOnlySpan<char> txt,
+            Func<ScreenCell<TClr>, char, ScreenCell<TClr>> transform)
     {
-        foreach (var c in txt)
+        var xx = x >= 0 ? x : buf.Width + x;
+        var yy = y >= 0 ? y : buf.Height + y;
+
+        // start point on buffer
+        if (!buf.Contains(xx, yy)) return;
+
+        var px = xx;
+        var py = yy;
+        foreach(var c in txt)
         {
             if (c == '\n')
             {
-                x = 0;
-                y++;
-                if (y >= buf.Height) return;
+                px = xx;
+                py++;
             }
-            var before = buf[x, y];
-            buf[x, y] = new ScreenCell<TClr> { Chr = c, Fg = before.Fg, Bg = before.Bg };
-            x++;
-            if (x >= buf.Width)
+            else if (px >= buf.Width)
             {
-                if (wrapElseClip)
-                {
-                    x = 0;
-                    y++;
-                }
-                else
-                {
-                    return;
-                }
+                px++; // don't break as there be be a line break ahead
             }
-        }
-    }
-    public static void WriteFg<TClr>(this IScreenBuffer<TClr> buf, int x, int y, TClr fg, ReadOnlySpan<char> txt, bool wrapElseClip = true)
-    {
-        foreach (var c in txt)
-        {
-            if (c == '\n')
+            else
             {
-                x = 0;
-                y++;
-                if (y >= buf.Height) return;
-            }
-            var before = buf[x, y];
-            buf[x, y] = new ScreenCell<TClr> { Chr = c, Fg = fg, Bg = before.Bg };
-            x++;
-            if (x >= buf.Width)
-            {
-                if (wrapElseClip)
-                {
-                    x = 0;
-                    y++;
-                }
-                else
-                {
-                    return;
-                }
+                var before = buf[px, py];
+                buf[px, py] = transform(before, c);
+                px++;
             }
         }
     }
 
-    public static void Write<TClr>(this IScreenBuffer<TClr> buf, int x, int y, TClr fg, TClr bg, ReadOnlySpan<char> txt, bool wrapElseClip = true)
-    {
-        foreach (var c in txt)
-        {
-            if (c == '\n')
-            {
-                x = 0;
-                y++;
-                if (y >= buf.Height) return;
-            }
+    public static void WriteTextOnly<TClr>(this IScreenBuffer<TClr> buf, int x, int y, ReadOnlySpan<char> txt)
+        => WriteSeq(buf, x, y, txt, (before, chr) => new ScreenCell<TClr>(before.Fg, before.Bg, chr));
 
-            buf[x, y] = new ScreenCell<TClr> { Chr = c, Fg = fg, Bg = bg };
-            x++;
-            if (x >= buf.Width)
-            {
-                if (wrapElseClip)
-                {
-                    x = 0;
-                    y++;
-                }
-                else
-                {
-                    return;
-                }
-            }
-        }
-    }
+    public static void WriteFg<TClr>(this IScreenBuffer<TClr> buf, int x, int y, TClr fg, ReadOnlySpan<char> txt)
+        => WriteSeq(buf, x, y, txt, (before, chr) => new ScreenCell<TClr>(fg, before.Bg, chr));
+
+    public static void Write<TClr>(this IScreenBuffer<TClr> buf, int x, int y, TClr fg, TClr bg, ReadOnlySpan<char> txt)
+        => WriteSeq(buf, x, y, txt, (before, chr) => new ScreenCell<TClr>(fg, bg, chr));
 
     public static void DrawBuffer<TClr>(this IScreenBuffer<TClr>  buf, IScreenBuffer<TClr> src, int px = 0, int py = 0)
     {
