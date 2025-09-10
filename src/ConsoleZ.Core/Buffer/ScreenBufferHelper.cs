@@ -99,6 +99,12 @@ public static class ScreenBufferHelper
         }
     }
 
+    public static RichWriterFluentConsoleColor CreateWriterFluent(this IScreenBuffer<ConsoleColor> buffer, ConsoleColor fg, ConsoleColor bg, string style = "")
+    {
+        var fwriter = new RichWriterScreenBuffer<ConsoleColor, string>(buffer, fg, bg, style);
+        return new RichWriterFluentConsoleColor(fwriter);
+
+    }
     public static RichWriterScreenBuffer<TClr, string> CreateWriter<TClr>(this IScreenBuffer<TClr> buffer, TClr fg, TClr bg, string style = "")
     {
         var fwriter = new RichWriterScreenBuffer<TClr, string>(buffer, fg, bg, style);

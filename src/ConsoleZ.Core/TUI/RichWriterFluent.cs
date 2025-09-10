@@ -33,6 +33,13 @@ public abstract class RichWriterFluent<TClr, TStyle, TSelf> : TextWriterFluentBa
     public TSelf SetBack(TClr bg)                    { inner.Back = bg; return Self; }
     public TSelf SetStyle(TStyle style)                    { inner.Style = style; return Self; }
 
+
+    public TSelf SetIf(bool test, TClr fg, TClr bg, TStyle style) { if (test) inner.Set(fg, bg, style); return Self; }
+    public TSelf SetIf(bool test, TClr fg, TClr bg) { if (test) inner.Set(fg, bg); return Self; }
+
+    public TSelf WriteIf(bool test, TClr fg, ReadOnlySpan<char> txt) { if (!test) return Self; Set(fg); inner.Write(txt); return Self; }
+    public TSelf WriteIf(bool test, ReadOnlySpan<char> txt) { if (test) inner.Write(txt); return Self; }
+
     public TSelf Write(TClr fg, ReadOnlySpan<char> txt)                        { inner.Set(fg); inner.Write(txt); return Self; }
 }
 

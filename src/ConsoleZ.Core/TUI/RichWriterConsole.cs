@@ -1,8 +1,8 @@
 namespace ConsoleZ.Core.TUI;
 
-public class RichWriterConsole : RichWriter<ConsoleColor, string>
+public class RichWriterConsoleColor : RichWriter<ConsoleColor, string>
 {
-    public RichWriterConsole(string style) : base(Console.ForegroundColor, Console.BackgroundColor, style)
+    public RichWriterConsoleColor(string style) : base(Console.ForegroundColor, Console.BackgroundColor, style)
     {
     }
 
@@ -14,10 +14,12 @@ public class RichWriterConsole : RichWriter<ConsoleColor, string>
     public override void WriteLine() => Console.WriteLine();
 }
 
-public class RichWriterFluentConsole : RichWriterFluent<ConsoleColor, string, RichWriterFluentConsole>
+public class RichWriterFluentConsoleColor : RichWriterFluent<ConsoleColor, string, RichWriterFluentConsoleColor>
 {
-    public RichWriterFluentConsole(RichWriter<ConsoleColor, string> inner) : base(inner)
+    public RichWriterFluentConsoleColor(RichWriter<ConsoleColor, string> inner) : base(inner)
     {
     }
 }
+
+
 
