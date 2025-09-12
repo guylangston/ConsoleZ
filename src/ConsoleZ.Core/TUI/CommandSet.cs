@@ -17,6 +17,11 @@ public class CommandSet<TInput>
         return cmd;
     }
 
+    public Mapping<TInput> Map( TInput input, string cmdName)
+    {
+        return Map(input, commands[cmdName]);
+    }
+
     public Mapping<TInput> Map( TInput input, ITextAppCommand cmd)
     {
         if (!commands.ContainsKey(cmd.Name)) Register(cmd);
