@@ -24,6 +24,7 @@ public class AnimationTimer
 
     public int Frames => frames;
     public double FPS => fps;
+    public TimeSpan GoalFps => fpsGoal;
     public TimeSpan Elapsed => DateTime.Now - start;
     public TimeSpan LastFrameTime => lastFrameTime;
     public TimeSpan NextFrame()

@@ -51,10 +51,12 @@ public class TextApplicationHost : ITextApplicationHost
         this.app = app;
     }
 
-    public struct DrawContext
+    public struct DrawContext  // GL: I forget, why is this a struct?
     {
         public bool IsFinalFrame { get; set; }
         public Exception? Exception { get; set; }
+        public bool IsPauseStart { get;  set; }
+        public bool IsPauseEnd { get;  set; }
     }
 
     public DrawContext HostDrawContext => drawContext;
@@ -63,7 +65,14 @@ public class TextApplicationHost : ITextApplicationHost
     public AnimationTimer Timer => frameTimer;
 
     public ITextApplication Implementation => app;
+
+    /// <inheritdoc/>
     public bool IsRunning => running;
+
+    /// <inheritdoc/>
+    public bool IsPaused => pauseThenRun != null;
+    private Action? pauseThenRun  = null;
+    public void RequestPauseAndRun(Action runThenUnPause) => pauseThenRun = runThenUnPause;
 
     protected virtual void Init()
     {
@@ -103,11 +112,29 @@ public class TextApplicationHost : ITextApplicationHost
         {
             while (running)
             {
-                HandleKeyInput();
+                if (Console.KeyAvailable) HandleKeyInput();
                 app.Step();
-                app.Draw();
-                frameTimer.NextFrame();
-                frameTimer.WaitIfNeeded(frameTimer.LastFrameTime);
+                if (!IsPaused)
+                {
+                    app.Draw();
+                    frameTimer.NextFrame();
+                    frameTimer.WaitIfNeeded(frameTimer.LastFrameTime);
+                }
+                else
+                {
+                    var pauseCopy = this.pauseThenRun;
+                    if (pauseCopy != null)
+                    {
+                        drawContext.IsPauseStart = true;
+                        app.Draw(); // allow the app to clear/etc
+                        drawContext.IsPauseStart = false;
+                        pauseCopy();
+                        this.pauseThenRun = null;
+                        drawContext.IsPauseEnd = true;
+                        app.Draw(); // allow the app to clear/etc
+                        drawContext.IsPauseEnd = false;
+                    }
+                }
             }
             FinalDraw();
         }

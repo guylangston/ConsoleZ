@@ -1,12 +1,13 @@
 using ConsoleZ.Core.Buffer;
+using ConsoleZ.Core.Enriched;
 
 namespace ConsoleZ.Core.TUI;
 
 public sealed class TextApplicationReservedLines<TInput> : ITextApplication, ITextApplicationInput<TInput>
 {
     readonly ScreenBuffer buffer;
-    ITextApplicationHost? host;
     readonly ITextScene<IScreenBuffer<ConsoleColor>, TInput> scene;
+    ITextApplicationHost? host;
 
     public TextApplicationReservedLines(int reservedLines, ITextScene<IScreenBuffer<ConsoleColor>, TInput> scene)
     {
@@ -22,6 +23,7 @@ public sealed class TextApplicationReservedLines<TInput> : ITextApplication, ITe
     public int Height => ReservedLines;
     public bool ClearBeforeDraw { get; set; } = true;
     public bool CleanOnFinalDraw { get; set; } = false;
+    public ConsoleState InitialConsoleState { get; private set; }
 
     public ITextApplicationHost Host => host ?? throw new NullReferenceException("Only available after Init");
 
@@ -33,6 +35,7 @@ public sealed class TextApplicationReservedLines<TInput> : ITextApplication, ITe
     public void Init(ITextApplicationHost host)
     {
         this.host = host;
+        this.InitialConsoleState = ConsoleState.Capture();
         if (Console.WindowHeight <= ReservedLines) throw new Exception("ReservedLines larger than screensize");
         for(int cc=0; cc<ReservedLines; cc++)
         {
@@ -46,6 +49,21 @@ public sealed class TextApplicationReservedLines<TInput> : ITextApplication, ITe
 
     public void Draw()
     {
+        if (Host is TextApplicationHost th2 && th2.HostDrawContext.IsPauseStart)
+        {
+            Console.ForegroundColor = InitialConsoleState.Fg;
+            Console.BackgroundColor = InitialConsoleState.Bg;
+            buffer.Fill(InitialConsoleState.Fg, InitialConsoleState.Bg);
+            CopyToConsole(buffer);
+            Console.CursorVisible = true;
+            Console.SetCursorPosition(0, StartLine);
+            return;
+        }
+        if (Host is TextApplicationHost th3 && th3.HostDrawContext.IsPauseEnd)
+        {
+            Console.CursorVisible = false;
+            buffer.Fill(ConsoleColor.DarkGray, ConsoleColor.Black, ' ');
+        }
         if (ClearBeforeDraw)
         {
             buffer.Fill(ConsoleColor.DarkGray, ConsoleColor.Black, ' ');
@@ -59,6 +77,7 @@ public sealed class TextApplicationReservedLines<TInput> : ITextApplication, ITe
             return;
         }
         CopyToConsole(buffer);
+
     }
 
     void CopyToConsole(ScreenBuffer buffer)

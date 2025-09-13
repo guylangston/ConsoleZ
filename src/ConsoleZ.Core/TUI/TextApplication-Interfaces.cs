@@ -8,7 +8,14 @@ public interface ITextApplicationHost : IDisposable
     string[] Args { get; }
     ITextApplication Implementation { get; }
     AnimationTimer Timer { get; }
+
+    /// <summary>Is the animation loop running</summary>
     bool IsRunning { get; }
+
+    /// <summary>While running, it may be useful to Pause the application to allow normal terminal operation</ry>
+    bool IsPaused { get; }
+    void RequestPauseAndRun(Action runThenUnPause);
+
     void Run();
     void RequestQuit();
     void RequestRedraw();
