@@ -117,9 +117,9 @@ public sealed class TextApplicationReservedLines<TInput> : ITextApplication, ITe
         }
     }
 
-    public void HandleKey(HandleKey type, TInput key)
+    public bool HandleKey(HandleKey type, TInput key)
     {
-        scene.HandleKey(type, key);
+        return scene.HandleKey(type, key);
     }
 }
 

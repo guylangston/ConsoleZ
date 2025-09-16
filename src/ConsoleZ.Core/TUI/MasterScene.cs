@@ -1,4 +1,3 @@
-using System.Runtime.Intrinsics.X86;
 using ConsoleZ.Core.Buffer;
 
 namespace ConsoleZ.Core.TUI;

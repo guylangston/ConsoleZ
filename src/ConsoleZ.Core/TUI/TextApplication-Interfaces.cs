@@ -1,4 +1,5 @@
 using System.ComponentModel.Design;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ConsoleZ.Core.TUI;
 
@@ -34,7 +35,15 @@ public interface ITextApplication
 public enum HandleKey { Down, Press, Up }
 public interface ITextApplicationInput<TKey>
 {
-    void HandleKey(HandleKey type, TKey key);
+    /// <returns>false means unhandled</returns>
+    bool HandleKey(HandleKey type, TKey key);
+}
+
+public interface IInputComponent<TKey>
+{
+    bool AreEqual(TKey key, char simpleChar);
+    bool AreEqual(TKey a, TKey b);
+    bool TryParse(string fromStr, [NotNullWhen(true)] out TKey success);
 }
 
 public interface ITextScene
@@ -67,7 +76,7 @@ public abstract class TextScene<TCanvas, TKey> : ITextScene<TCanvas, TKey>
     }
 
     public abstract void Draw(TCanvas canvas);
-    public abstract void HandleKey(HandleKey type, TKey key);
+    public abstract bool HandleKey(HandleKey type, TKey key); // TODO: Should return bool meaning ishandled
     public abstract void Step();
 }
 
