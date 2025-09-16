@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using ConsoleZ.Core.Buffer;
 
 namespace ConsoleZ.Core.TUI;
@@ -31,8 +32,8 @@ public interface IStyleProvider<TClr>
 {
     TClr DefaultFore { get; }
     TClr DefaultBack { get; }
-    bool TryGetColour(string styleName, out TClr clr);
-    bool TryParse(string clrTxt, out TClr clr);
+    bool TryGetColour(string styleName, [NotNullWhen(true)] out TClr? clr);
+    bool TryParse(string clrTxt, [NotNullWhen(true)] out TClr? clr);
 
     TClr GetFg(string styleName);
     TClr GetBg(string styleName);
@@ -77,22 +78,26 @@ public class StyleProvider<TClr> : IStyleProvider<TClr>
     public TClr DefaultFore { get; set; }
     public TClr DefaultBack { get; set; }
 
-    public virtual  bool TryGetColour(string styleName, out TClr clr)
+    public virtual  bool TryGetColour(string styleName, [NotNullWhen(true)] out TClr? clr)
     {
         if (StyleToColour.TryGetValue(styleName, out var hit))
         {
-            clr = hit;
-            return true;
+            if (hit != null)
+            {
+                clr = hit;
+                return true;
+            }
         }
 
         clr = default;
         return false;
     }
 
-    public virtual bool TryParse(string clrTxt, out TClr clr2)
+    public bool TryParse(string clrTxt, [NotNullWhen(true)] out TClr? clr)
     {
-        throw new NotSupportedException();
+        throw new NotImplementedException();
     }
+
 
     /// <summary>Will load a `.Fg` and `.Bg` pair </summary>
     public TextClr<TClr> GetTextStyle(string prefix) => new TextClr<TClr>(GetFg(prefix + ".Fg"), GetBg(prefix + ".Bg"));

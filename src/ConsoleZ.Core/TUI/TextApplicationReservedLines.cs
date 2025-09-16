@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using ConsoleZ.Core.Buffer;
 using ConsoleZ.Core.Enriched;
 
@@ -14,6 +15,7 @@ public sealed class TextApplicationReservedLines<TInput> : ITextApplication, ITe
         ReservedLines = reservedLines;
         this.buffer = new ScreenBuffer(Console.WindowWidth, ReservedLines);
         this.scene = scene;
+        this.InitialConsoleState = null;
     }
 
     public int ReservedLines { get; private init; }
@@ -23,7 +25,7 @@ public sealed class TextApplicationReservedLines<TInput> : ITextApplication, ITe
     public int Height => ReservedLines;
     public bool ClearBeforeDraw { get; set; } = true;
     public bool CleanOnFinalDraw { get; set; } = false;
-    public ConsoleState InitialConsoleState { get; private set; }
+    public ConsoleState? InitialConsoleState { get; private set; }
 
     public ITextApplicationHost Host => host ?? throw new NullReferenceException("Only available after Init");
 
@@ -51,7 +53,8 @@ public sealed class TextApplicationReservedLines<TInput> : ITextApplication, ITe
     {
         if (Host is TextApplicationHost th2 && th2.HostDrawContext.IsPauseStart)
         {
-            Console.ForegroundColor = InitialConsoleState.Fg;
+            Debug.Assert(InitialConsoleState == null);
+            Console.ForegroundColor = InitialConsoleState!.Fg;
             Console.BackgroundColor = InitialConsoleState.Bg;
             buffer.Fill(InitialConsoleState.Fg, InitialConsoleState.Bg);
             CopyToConsole(buffer);

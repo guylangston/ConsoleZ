@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace ConsoleZ.Core.TUI;
 
 public record Mapping<TInput>(ITextAppCommand Command, TInput Input);
@@ -30,17 +32,17 @@ public class CommandSet<TInput>
         return map;
     }
 
-    public bool TryFindInput(TInput input, out Mapping<TInput> map)
+    public bool TryFindInput(TInput input, [NotNullWhen(true)] out Mapping<TInput>? map)
     {
         foreach(var item in mappings)
         {
-            if (item.Input.Equals(input))
+            if (item.Input != null && item.Input.Equals(input))
             {
                 map = item;
                 return true;
             }
         }
-        map = default;
+        map = null;
         return false;
     }
 
