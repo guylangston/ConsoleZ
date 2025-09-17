@@ -41,11 +41,12 @@ class BouncingBoxScene : ITextScene<IScreenBuffer<ConsoleColor>, ConsoleKey>
         }
     }
 
-    public void HandleKey(HandleKey type, ConsoleKey key)
+    public bool HandleKey(HandleKey type, ConsoleKey key)
     {
         var kkey = key;
         if (kkey == ConsoleKey.Q) app.Host.RequestQuit();
         if (kkey == ConsoleKey.Escape) app.Host.RequestQuit();
+        return false;
     }
 
     Queue<double> lastDraws = new ();
@@ -62,7 +63,7 @@ class BouncingBoxScene : ITextScene<IScreenBuffer<ConsoleColor>, ConsoleKey>
         }
 
         buffer.Write(3, 0, ConsoleColor.Yellow, ConsoleColor.DarkBlue,
-                $"[ Frames: {Timer.Frames} at {Timer.FPS:0.00}f/s, draw time {lastDraws.Average():0.0}ms after {Timer.Elapsed} ]", false);
+                $"[ Frames: {Timer.Frames} at {Timer.FPS:0.00}f/s, draw time {lastDraws.Average():0.0}ms after {Timer.Elapsed} ]");
     }
 
 

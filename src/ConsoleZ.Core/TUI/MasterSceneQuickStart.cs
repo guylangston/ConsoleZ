@@ -1,12 +1,13 @@
 using ConsoleZ.Core.Buffer;
+using ConsoleZ.Core.Input;
 
 namespace ConsoleZ.Core.TUI;
 
 public abstract class MasterSceneQuickStart<TInput> : MasterSceneApp<ConsoleColor, TInput>
 {
-    readonly IInputComponent<TInput> compInput;
+    readonly IKeyboardInputComponent<TInput> compInput;
 
-    public MasterSceneQuickStart(IInputComponent<TInput> compInput) : base(StyleProviderTemplates.CreateStdConsole())
+    public MasterSceneQuickStart(IKeyboardInputComponent<TInput> compInput) : base(StyleProviderTemplates.CreateStdConsole())
     {
         this.compInput = compInput;
         if (!compInput.TryParse("Esc", out escape))

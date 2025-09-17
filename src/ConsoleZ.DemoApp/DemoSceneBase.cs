@@ -83,17 +83,19 @@ public abstract class DemoSceneBase : MasterSceneApp<ConsoleColor, ConsoleKey>
 
     protected abstract bool TryHandleKey(HandleKey type, ConsoleKey key);
 
-    public override void HandleKey(HandleKey type, ConsoleKey key)
+    public override bool HandleKey(HandleKey type, ConsoleKey key)
     {
         if (TryHandleKey(type, key))
         {
             unhandledKey = null;
             lastKey = key;
+            return true;
         }
         else
         {
             lastKey = null;
             unhandledKey = key;
+            return false;
         }
     }
 

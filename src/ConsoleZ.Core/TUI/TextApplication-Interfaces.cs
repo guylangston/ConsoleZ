@@ -39,12 +39,6 @@ public interface ITextApplicationInput<TKey>
     bool HandleKey(HandleKey type, TKey key);
 }
 
-public interface IInputComponent<TKey>
-{
-    bool AreEqual(TKey key, char simpleChar);
-    bool AreEqual(TKey a, TKey b);
-    bool TryParse(string fromStr, [NotNullWhen(true)] out TKey success);
-}
 
 public interface ITextScene
 {
