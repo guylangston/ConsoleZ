@@ -30,6 +30,11 @@ public static class WindowBuffer
     {
         return new WindowScreenBuffer<TClr>(buffer, sizeX, sizeY, buffer.Width - sizeX*2, buffer.Height - sizeY*2);
     }
+
+    public static WindowScreenBuffer<TClr> Inset<TClr>(this IScreenBuffer<TClr> buffer, int left, int top, int right, int bottom )
+    {
+        return new WindowScreenBuffer<TClr>(buffer, left, top, buffer.Width - left - right , buffer.Height - top - bottom);
+    }
 }
 
 public readonly struct WindowBuffer<T> : IBuffer<T>

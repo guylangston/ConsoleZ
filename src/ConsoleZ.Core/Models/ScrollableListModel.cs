@@ -4,7 +4,7 @@ public class ScrollableListModel
 {
     public int ListSize { get; set; }
     public int WindowSize { get; set; }
-    public int Offset { get; private set; }
+    public int Offset { get; protected set; }
 
     public ScrollableListModel( int windowSize, int listSize)
     {

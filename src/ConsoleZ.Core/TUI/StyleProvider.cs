@@ -169,7 +169,6 @@ public class StyleProviderStd<TClr> : StyleProvider<TClr>, IStyleProviderStd<TCl
 
 public static class StyleProviderTemplates
 {
-
     public static StyleProviderStd<ConsoleColor> CreateStdConsole()
     {
         var dict = new Dictionary<string, ConsoleColor>();
@@ -181,7 +180,22 @@ public static class StyleProviderTemplates
             dict[clr.ToString()] = clr;
         }
 
-        return new StyleProviderStd<ConsoleColor>(list, dict, ConsoleColor.Gray, ConsoleColor.Black);
+        var def = AddTextStyle("Default", ConsoleColor.Gray, ConsoleColor.Black);
+        AddTextStyle("Item", def.Fg, def.Bg);
+        AddTextStyle("Highlight", ConsoleColor.Yellow, def.Bg);
+        AddTextStyle("Selected.Item", ConsoleColor.Black, ConsoleColor.Cyan);
+        AddTextStyle("Highlight.Item", ConsoleColor.Yellow, ConsoleColor.Cyan);
+
+
+        TextClr<ConsoleColor> AddTextStyle(string baseName, ConsoleColor fg, ConsoleColor bg)
+        {
+            var tc = new TextClr<ConsoleColor>(fg, bg);
+            dict[$"{baseName}.Fg"] = fg;
+            dict[$"{baseName}.Bg"] = bg;
+            return tc;
+        }
+
+        return new StyleProviderStd<ConsoleColor>(list, dict, def.Fg, def.Bg);
     }
 }
 

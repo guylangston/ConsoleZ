@@ -10,6 +10,25 @@ public class ScrollableListWithCurrentItemModel : ScrollableListModel
 
     public int CurrentItemIndex => Offset + cursorLine;
 
+    public bool ConfirmSizes(int windowSize, int itemCount)
+    {
+        var ret = true;
+        if (WindowSize != windowSize || ListSize != itemCount)
+        {
+            WindowSize = windowSize;
+            ListSize = itemCount;
+            ret = false;
+        }
+
+        if (CurrentItemIndex >= ListSize)
+        {
+            ret = false;
+            Last();
+        }
+
+        return ret;
+    }
+
     public int LastLine => WindowSize-1;
 
     public bool TryGetWindowItemIndex(int windowIdx, out int itemIdex)
@@ -74,12 +93,12 @@ public class ScrollableListWithCurrentItemModel : ScrollableListModel
         return (abs == CurrentItemIndex, items[abs]);
     }
 
-    public IEnumerable<(bool IsCurrent, T Data)> GetWindowItemsWithCurrent<T>(IEnumerable<T> items)
+    public IEnumerable<(bool IsCurrent, T Data, int Idx)> GetWindowItemsWithCurrent<T>(IEnumerable<T> items)
     {
         var cc = Offset;
         foreach(var item in items.Skip(Offset).Take(WindowSize))
         {
-            yield return (cc == CurrentItemIndex, item);
+            yield return (cc == CurrentItemIndex, item, cc);
             cc++;
         }
     }

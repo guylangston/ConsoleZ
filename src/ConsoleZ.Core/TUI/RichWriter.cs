@@ -63,6 +63,7 @@ public abstract class RichWriter<TClr, TStyle> : TextWriterBase
     public void Set(TClr fg) { Fore = fg; }
     public void Set(TClr fg, TClr bg) { Fore = fg; Back = bg; }
     public void Set(TClr fg, TClr bg, TStyle style) { Fore = fg; Back = bg; Style = style; }
+    public void Set(TextClr<TClr> txtClr) => Set(txtClr.Fg, txtClr.Bg);
 
     public virtual void Revert()
     {
