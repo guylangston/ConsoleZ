@@ -26,7 +26,7 @@ public static class Glyphs
     public const char Cross          = '✖';
     public const char Warning        = '⚠';
     public const char Info           = 'ℹ';
-    public const char Question       = '❓';
+    public const char Question       = '⍰';
     public const char Star           = '★';
     public const char ArrowRight     = '→';
     public const char ArrowLeft      = '←';
@@ -37,7 +37,8 @@ public static class Glyphs
     public const char CircleEmpty = '○';
     public const char CircleFull  = '●';
 
-    public const string Folder  = "📁";
-    public const string File  = "📄";
+    // single-char unicode only
+    public const string Folder  = "🗀";
+    public const string File  = "🗎";
 }
 

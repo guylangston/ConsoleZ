@@ -80,8 +80,9 @@ public sealed class TextApplicationReservedLines<TInput> : ITextApplication, ITe
             return;
         }
         CopyToConsole(buffer);
-
     }
+
+    public bool IgnoreSurrogate { get; set; } = true;
 
     void CopyToConsole(ScreenBuffer buffer)
     {
@@ -104,9 +105,14 @@ public sealed class TextApplicationReservedLines<TInput> : ITextApplication, ITe
                 }
                 if (char.IsSurrogate(cell.Chr))
                 {
-                    Console.Write('?');
-                    // Console.Write($" {cell.Chr}");
-                    // Not sure how to handle this?
+                    if (IgnoreSurrogate)
+                    {
+                        Console.Write('?');
+                    }
+                    else
+                    {
+                        Console.Write(cell.Chr);
+                    }
                 }
                 else
                 {
