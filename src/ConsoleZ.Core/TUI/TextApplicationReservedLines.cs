@@ -27,6 +27,11 @@ public sealed class TextApplicationReservedLines<TInput> : ITextApplication, ITe
     public bool CleanOnFinalDraw { get; set; } = false;
     public ConsoleState? InitialConsoleState { get; private set; }
 
+    /// <summary>
+    /// Complex unicode surrogate items are replaced with '?'.
+    /// As some unicode chars take more then one cell, making buffers render incorrectly
+    /// </summary>
+    public bool IgnoreSurrogate { get; set; } = true;
     public ITextApplicationHost Host => host ?? throw new NullReferenceException("Only available after Init");
 
     public void Step()
@@ -82,7 +87,6 @@ public sealed class TextApplicationReservedLines<TInput> : ITextApplication, ITe
         CopyToConsole(buffer);
     }
 
-    public bool IgnoreSurrogate { get; set; } = true;
 
     void CopyToConsole(ScreenBuffer buffer)
     {
