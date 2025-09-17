@@ -86,12 +86,12 @@ public class TextInputModel
         if (input.IsBackspace()) { Backspace(); return true; }
         if (input.IsDelete())    { Delete(); return true; }
 
-        if (input.ToString() == "<Ctrl+W>") { DeleteWord(); return true; }
-        if (input.ToString() == "<Ctrl+A>") { SelectAll(); return true; }
-        if (input.ToString() == "<Shift+Right>") throw new NotImplementedException();
-        if (input.ToString() == "<Shift+Left>") throw new NotImplementedException();
-        if (input.ToString() == "<Ctrl+Right>") { MoveWordRight(); return true; }
-        if (input.ToString() == "<Ctrl+Left>") { MoveWordLeft(); return true; }
+        if (input.CanonicalString == "Ctrl+W")     { DeleteWord(); return true; }
+        if (input.CanonicalString == "Ctrl+A")     { SelectAll(); return true; }
+        if (input.CanonicalString == "Shift+Right"){ IncreaseSelectionRight(); return true; }
+        if (input.CanonicalString == "Shift+Left"){ IncreaseSelectionLeft(); return true; }
+        if (input.CanonicalString == "Ctrl+Right") { MoveWordRight(); return true; }
+        if (input.CanonicalString == "Ctrl+Left")  { MoveWordLeft(); return true; }
 
         if (input.NativeChar != null && char.IsAscii(input.NativeChar.Value) && (int)input.NativeChar >= 32 )
         {
@@ -101,12 +101,15 @@ public class TextInputModel
         return false;
     }
 
+    public void IncreaseSelectionLeft() { throw new NotImplementedException(); }
+    public void IncreaseSelectionRight() { throw new NotImplementedException(); }
+
     public bool MoveWordLeft()  { throw new NotImplementedException(); }
     public bool MoveWordRight() { throw new NotImplementedException(); }
-    public void Copy() { throw new NotImplementedException(); }
-    public void Paste() { throw new NotImplementedException(); }
-    public void DeleteWord() { throw new NotImplementedException(); }
-    public void DeleteAll() { throw new NotImplementedException(); }
+    public virtual void Copy()  { throw new NotSupportedException(); }
+    public virtual void Paste() { throw new NotSupportedException(); }
+    public void DeleteWord()    { throw new NotImplementedException(); }
+    public void DeleteAll()     { throw new NotImplementedException(); }
 
     public void SelectAll() => selection = new TextRange(0, text.Count - 1);
 

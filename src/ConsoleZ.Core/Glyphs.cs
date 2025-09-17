@@ -1,5 +1,5 @@
 
-
+/// <summary> https://www.lookuptables.com/text/ascii-table </summary>
 public static class Glyphs
 {
     public record BoxChar(
@@ -34,11 +34,11 @@ public static class Glyphs
     public const char ArrowDown      = '↓';
     public const char ArrowDownRight = '↳';
 
-    public const char CircleEmpty = '○';
-    public const char CircleFull  = '●';
+    public const char CircleEmpty    = '○';
+    public const char CircleFull     = '●';
 
     // single-char unicode only
-    public const string Folder  = "🗀";
-    public const string File  = "🗎";
+    public const string Folder       = "🗀";
+    public const string File         = "🗎";
 }
 
