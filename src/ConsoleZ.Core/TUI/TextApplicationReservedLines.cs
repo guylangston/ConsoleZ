@@ -56,28 +56,31 @@ public sealed class TextApplicationReservedLines<TInput> : ITextApplication, ITe
 
     public void Draw()
     {
-        if (Host is TextApplicationHost th2 && th2.HostDrawContext.IsPauseStart)
+        if (Host is TextApplicationHost th)
         {
-            Debug.Assert(InitialConsoleState == null);
-            Console.ForegroundColor = InitialConsoleState!.Fg;
-            Console.BackgroundColor = InitialConsoleState.Bg;
-            buffer.Fill(InitialConsoleState.Fg, InitialConsoleState.Bg);
-            CopyToConsole(buffer);
-            Console.CursorVisible = true;
-            Console.SetCursorPosition(0, StartLine);
-            return;
-        }
-        if (Host is TextApplicationHost th3 && th3.HostDrawContext.IsPauseEnd)
-        {
-            Console.CursorVisible = false;
-            buffer.Fill(ConsoleColor.DarkGray, ConsoleColor.Black, ' ');
+            if (th.HostDrawContext.IsPauseStart)
+            {
+                Debug.Assert(InitialConsoleState != null);
+                Console.ForegroundColor = InitialConsoleState!.Fg;
+                Console.BackgroundColor = InitialConsoleState.Bg;
+                buffer.Fill(InitialConsoleState.Fg, InitialConsoleState.Bg);
+                CopyToConsole(buffer);
+                Console.CursorVisible = true;
+                Console.SetCursorPosition(0, StartLine);
+                return;
+            }
+            if (th.HostDrawContext.IsPauseEnd)
+            {
+                Console.CursorVisible = false;
+                buffer.Fill(ConsoleColor.DarkGray, ConsoleColor.Black, ' ');
+            }
         }
         if (ClearBeforeDraw)
         {
             buffer.Fill(ConsoleColor.DarkGray, ConsoleColor.Black, ' ');
         }
         scene.Draw(buffer);
-        if (CleanOnFinalDraw && Host is TextApplicationHost th && th.HostDrawContext.IsFinalFrame)
+        if (CleanOnFinalDraw && Host is TextApplicationHost th2 && th2.HostDrawContext.IsFinalFrame)
         {
             buffer.Fill(ConsoleColor.DarkGray, ConsoleColor.Black, ' ');
             CopyToConsole(buffer);
