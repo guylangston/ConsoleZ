@@ -9,7 +9,7 @@ public static class Layout
         int cellWidth = buf.Width / cols;
         while(true)
         {
-            yield return (cc++, WindowBuffer.FromBuffer(buf, px, py, cellWidth, rowsPerCol));
+            yield return (cc++, WindowBuffer.CreateWindow(buf, px, py, cellWidth, rowsPerCol));
             px += cellWidth;
             if (px >= buf.Width - cellWidth /* also needs space to write to */)
             {

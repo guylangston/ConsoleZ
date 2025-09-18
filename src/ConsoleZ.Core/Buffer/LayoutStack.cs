@@ -46,12 +46,12 @@ public class LayoutStack<TClr> : ISegmentLayout<TClr>
         {
             if (Orientation == Orientation.Vert)
             {
-                var buf = WindowBuffer.FromBuffer(Buffer, 0, cc * CellHeight, CellWidth, CellHeight);
+                var buf = WindowBuffer.CreateWindow(Buffer, 0, cc * CellHeight, CellWidth, CellHeight);
                 yield return new Segment<TClr>(0, cc, cc, buf);
             }
             else
             {
-                var buf = WindowBuffer.FromBuffer(Buffer, cc * CellWidth, 0,  CellWidth, CellHeight);
+                var buf = WindowBuffer.CreateWindow(Buffer, cc * CellWidth, 0,  CellWidth, CellHeight);
                 yield return new Segment<TClr>( cc, 0, cc, buf);
             }
         }

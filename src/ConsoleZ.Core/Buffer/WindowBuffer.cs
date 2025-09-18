@@ -4,10 +4,10 @@ namespace ConsoleZ.Core.Buffer;
 
 public static class WindowBuffer
 {
-    public static WindowBuffer<T> FromBuffer<T>(this IBuffer<T> buffer, int innerX, int innerY, int width, int height)
+    public static WindowBuffer<T> CreateWindow<T>(this IBuffer<T> buffer, int innerX, int innerY, int width, int height)
         => new(buffer, innerX, innerY, width, height);
 
-    public static WindowScreenBuffer<TClr> FromBuffer<TClr>(this IScreenBuffer<TClr> buffer, int innerX, int innerY, int width, int height)
+    public static WindowScreenBuffer<TClr> CreateWindow<TClr>(this IScreenBuffer<TClr> buffer, int innerX, int innerY, int width, int height)
         => new(buffer, innerX, innerY, width, height);
 
     public static WindowScreenBuffer<TClr> Empty<TClr>(this IScreenBuffer<TClr> buffer)

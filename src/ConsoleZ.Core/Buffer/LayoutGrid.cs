@@ -40,7 +40,7 @@ public class LayoutGrid<TClr> : ISegmentLayout<TClr>
         for( int y=0; y<Rows; y++)
             for(int x=0; x< Columns; x++)
             {
-                var buf = WindowBuffer.FromBuffer(Buffer, x * CellWidth, y * CellHeight, CellWidth, CellHeight);
+                var buf = WindowBuffer.CreateWindow(Buffer, x * CellWidth, y * CellHeight, CellWidth, CellHeight);
                 yield return new Segment<TClr>(x, y, cc++, buf);
             }
 

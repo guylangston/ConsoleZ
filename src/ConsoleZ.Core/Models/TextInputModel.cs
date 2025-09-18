@@ -9,13 +9,9 @@ public class TextInputModel
     TextRange selection;
     readonly List<char> text = new();
 
-    public TextInputModel()
+    public TextInputModel(string txt, int viewSize, int viewOffset)
     {
         selection = TextRange.CreateEmpty();
-    }
-
-    public TextInputModel(string txt, int viewSize, int viewOffset) : this()
-    {
         ViewSize = viewSize;
         ViewOffset = viewOffset;
         foreach(var x in txt) text.Add(x);

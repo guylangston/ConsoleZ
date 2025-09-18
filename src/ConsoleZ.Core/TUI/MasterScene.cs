@@ -35,7 +35,7 @@ public abstract class MasterSceneApp<TClr, TInput> : TextScene<IScreenBuffer<TCl
         // Header
         if (IsHeaderEnabled)
         {
-            var header = WindowBuffer.FromBuffer(canvas, 0, 0, canvas.Width, 1);
+            var header = WindowBuffer.CreateWindow(canvas, 0, 0, canvas.Width, 1);
             header.Fill(Style.GetTextStyle("Header"));
             DrawHeader(header);
             bodyStart++;
@@ -45,14 +45,14 @@ public abstract class MasterSceneApp<TClr, TInput> : TextScene<IScreenBuffer<TCl
         // Footer
         if (IsFooterEnabled)
         {
-            var footer = WindowBuffer.FromBuffer(canvas, 0, canvas.Height-1, canvas.Width, 1);
+            var footer = WindowBuffer.CreateWindow(canvas, 0, canvas.Height-1, canvas.Width, 1);
             footer.Fill(Style.GetTextStyle("Footer"));
             DrawFooter(footer);
             bodyShrink++;
         }
 
         // Body
-        var body = WindowBuffer.FromBuffer(canvas, 0, bodyStart, canvas.Width, canvas.Height-bodyShrink);
+        var body = WindowBuffer.CreateWindow(canvas, 0, bodyStart, canvas.Width, canvas.Height-bodyShrink);
         body.Fill(Style.GetTextStyle("Body"));
 
 
