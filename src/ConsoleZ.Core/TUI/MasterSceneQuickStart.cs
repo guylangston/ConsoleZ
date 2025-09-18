@@ -18,7 +18,7 @@ public abstract class MasterSceneQuickStart<TInput> : MasterSceneApp<ConsoleColo
 
     TInput? unhandled = default(TInput);
     TInput escape;
-    public override bool HandleKey(HandleKey type, TInput key)
+    protected override bool HandleKeyBefore(HandleKey type, TInput key)
     {
         unhandled = default(TInput);
         if (compInput.AreEqual(key, escape))

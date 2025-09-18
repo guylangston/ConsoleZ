@@ -2,7 +2,7 @@ using ConsoleZ.Core.Buffer;
 
 namespace ConsoleZ.Core.TUI;
 
-public abstract class MasterSceneApp<TClr, TInput> : TextScene<IScreenBuffer<TClr>, TInput>
+public abstract class MasterSceneApp<TClr, TInput> : TextScene<IScreenBuffer<TClr>, TInput>, ICompoundScene<IScreenBuffer<TClr>, TInput>
 {
     protected StyleProvider<TClr> Style { get; set; }
     protected CommandSet<TInput> Commands { get; } = new();  // TODO: Only expose readonly interface
@@ -25,6 +25,7 @@ public abstract class MasterSceneApp<TClr, TInput> : TextScene<IScreenBuffer<TCl
 
     public virtual bool IsHeaderEnabled { get; set; } = true;
     public virtual bool IsFooterEnabled { get; set; } = true;
+
 
     public override void Draw(IScreenBuffer<TClr> canvas)
     {
@@ -53,7 +54,46 @@ public abstract class MasterSceneApp<TClr, TInput> : TextScene<IScreenBuffer<TCl
         // Body
         var body = WindowBuffer.FromBuffer(canvas, 0, bodyStart, canvas.Width, canvas.Height-bodyShrink);
         body.Fill(Style.GetTextStyle("Body"));
-        DrawBody(body);
+
+
+        if (HasNestedSchene)
+        {
+            Current.Draw(body);
+        }
+        else
+        {
+            DrawBody(body);
+        }
+
     }
+
+
+    protected virtual bool HandleKeyBefore(HandleKey type, TInput key) => false;
+    protected virtual bool HandleKeyAfter(HandleKey type, TInput key) => false;
+    protected abstract bool HandleKeyWhenFocused(HandleKey type, TInput key);
+
+    public sealed override bool HandleKey(HandleKey type, TInput key)
+    {
+        if (HandleKeyBefore(type, key)) return true;
+
+        if (HasNestedSchene)
+        {
+            if (Current.HandleKey(type, key)) return true;
+        }
+        else
+        {
+            if (HandleKeyWhenFocused(type, key)) return true;
+        }
+
+        return HandleKeyAfter(type, key);
+    }
+
+
+
+    readonly Stack<ITextScene<IScreenBuffer<TClr>, TInput>> sceneStack = new();
+    public bool HasNestedSchene => sceneStack.Count > 0;
+    public ITextScene<IScreenBuffer<TClr>, TInput> Current => sceneStack.Count > 0 ? sceneStack.Peek() : this;
+    public void Push(ITextScene<IScreenBuffer<TClr>, TInput> newScene) => sceneStack.Push(newScene);
+    public void Pop() => sceneStack.Pop();
 }
 
