@@ -117,8 +117,17 @@ public class TextApplicationHost : ITextApplicationHost
                 if (!IsPaused)
                 {
                     app.Draw();
-                    frameTimer.NextFrame();
-                    frameTimer.WaitIfNeeded(frameTimer.LastFrameTime);
+
+                    // Don't wait for key input
+                    if (Console.KeyAvailable)
+                    {
+                        HandleKeyInput();
+                    }
+                    if (running)
+                    {
+                        frameTimer.NextFrame();
+                        frameTimer.WaitIfNeeded(frameTimer.LastFrameTime);
+                    }
                 }
                 else
                 {
