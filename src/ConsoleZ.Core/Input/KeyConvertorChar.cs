@@ -2,7 +2,7 @@
 
 public class KeyConvertorChar : IKeyInputConvertor<char>
 {
-    public bool TryConvert(char inKey, out KeyInput outKey)
+    public bool TryConvert(char inKey, out KeyInput? outKey)
     {
         if (inKey == ' ')
         {

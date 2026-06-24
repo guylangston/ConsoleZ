@@ -18,7 +18,7 @@ public interface IKeyInputParser
 
 public interface IKeyInputConvertor<in T>
 {
-    bool TryConvert(T inKey, out KeyInput outKey);
+    bool TryConvert(T inKey, out KeyInput? outKey);
 }
 
 public record class KeyMap(string Cannonical, char? Native, char? NativeShift);
